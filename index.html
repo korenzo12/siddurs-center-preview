@@ -1057,6 +1057,15 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
   .hc-card.light { color: var(--ink); } .hc-card.light .kick { color: var(--gold); } .hc-card.light .sub { color: var(--ink-2); } .hc-card.light em { color: var(--gold); }
   .hc-card.light .btn.solid { background: var(--navy); color: #fff; }
 }
+
+/* v17 category header tiles */
+.ctiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(8px, 1vw, 14px); }
+.ct { position: relative; aspect-ratio: 1; border-radius: 18px; background: #fff; display: grid; place-items: center; box-shadow: 0 14px 30px -20px rgba(40,30,18,.45), inset 0 0 0 1px rgba(25,22,19,.04); transition: transform .8s var(--out), box-shadow .5s var(--ease); }
+.ct .pic { width: 80%; height: 80%; object-fit: contain; }
+.ct:nth-child(even) { transform: translateY(10px); }
+@media (hover: hover) { .ct:hover { transform: translateY(-6px); box-shadow: 0 22px 36px -20px rgba(40,30,18,.5), inset 0 0 0 1px rgba(25,22,19,.04); } .ct:nth-child(even):hover { transform: translateY(4px); } }
+@media (max-width: 860px) { .ctiles { gap: 8px; } .ct { border-radius: 14px; } .ct:nth-child(even) { transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { .ct { transition: none; } }
 </style>
 
 <div class="app" dir="rtl" lang="he" id="app">
@@ -1614,7 +1623,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
     return '<div class="wrap">' +
       '<header class="chead"><div class="cbox"><div><nav class="crumbs" aria-label="מיקום באתר"><a href="#home">דף הבית</a><span aria-hidden="true">/</span><span aria-current="page">' + esc(m.name) + '</span></nav>' +
         '<h1 class="draw" data-draw>' + ic(m.id) + esc(m.name) + '</h1>' + (m.blurb ? '<p>' + esc(m.blurb) + '</p>' : '') + '</div>' +
-        '<div class="shelf2" aria-hidden="true">' + uniq(src).sort((a, b) => b.local - a.local).slice(0, 4).map(x => '<a href="#p-' + x.id + '" tabindex="-1"><span class="bk">' + pic(x) + '</span></a>').join('') + '</div></div></header>' +
+        '<div class="ctiles" aria-hidden="true">' + uniq(src).sort((a, b) => b.local - a.local).slice(0, 4).map(x => '<a class="ct" href="#p-' + x.id + '" tabindex="-1">' + pic(x) + '</a>').join('') + '</div></div></header>' +
       '<div class="smart">' +
         (m.nus ? '<div class="row"><span class="lbl">נוסח</span><div class="seg" role="group" aria-label="בחירת נוסח">' + [{ id: 'all', name: 'כל הנוסחים' }].concat(NUSACH).map(n => '<button type="button" data-nus="' + n.id + '" aria-pressed="' + (cstate.nus === n.id) + '">' + esc(n.name) + '<span class="k">' + nusCount(n.id) + '</span></button>').join('') + '</div></div>' : '') +
         '<div class="row"><span class="lbl">' + (keep ? 'באותו נוסח, גם' : 'עוברים ל') + '</span><div class="chips">' + related.map(x => '<a class="chip" href="#c-' + x.id + (x.nus ? keep : '') + '">' + ic(x.id) + esc(x.name) + '</a>').join('') + '</div></div>' +
