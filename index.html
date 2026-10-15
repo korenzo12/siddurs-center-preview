@@ -1390,7 +1390,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
   };
   const SZ = { s: 17, L: 34, M: 25, m: 18 };
   const dedNames = () => ded.names.split('\n').map(x => x.trim()).filter(Boolean);
-  const dedFee = q => ded.mode === 'one' ? DED_ONE : ded.mode === 'names' ? DED_NAME * Math.max(dedNames().length, q || 0) : 0;
+  const dedFee = q => ded.mode === 'one' ? ((q || 1) <= 1 ? DED_NAME : DED_ONE) : ded.mode === 'names' ? DED_NAME * Math.max(dedNames().length, q || 0) : 0;
   const paint = id => ded.c === 'ink' ? '#1B1917' : 'url(#fg-' + id + '-' + ded.c + ')';
   function plateInner(id) {
     const t = TPL[ded.tpl]; const ph = {}; t.fields.forEach(([k, , x]) => { ph[k] = x; });
@@ -1419,7 +1419,9 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
     if (typeof syncQty === 'function' && $('#tot-line')) syncQty();
   }
   function priceLine() {
-    if (ded.mode === 'one') return '<b>₪' + DED_ONE + '</b><span>להזמנה כולה, אותה הקדשה על כל העותקים</span>';
+    const q = $('#qty-in') ? pstate.qty : 0;
+    if (ded.mode === 'one' && q === 1) return '<b>₪' + DED_NAME + '</b><span>הקדשה על עותק אחד. מ-2 עותקים, אותה הקדשה לכל הכמות ב-₪' + DED_ONE + ' להזמנה</span>';
+    if (ded.mode === 'one') return '<b>₪' + DED_ONE + '</b><span>להזמנה כולה, אותה הקדשה על כל העותקים' + (q ? '' : ' (עותק בודד ₪' + DED_NAME + ')') + '</span>';
     const n = dedNames().length;
     return '<b>₪' + DED_NAME + '</b><span>לכל עותק עם שם' + (n ? ' · ' + n + ' שמות = ₪' + (n * DED_NAME) : '') + '</span>';
   }
@@ -1455,7 +1457,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
     }
     if (t.id === 'qty-in') { pstate.qty = Math.max(1, Math.min(999, parseInt(t.value, 10) || 1)); syncQty(true); }
   });
-  function redrawDed() { document.querySelectorAll('[data-ded]').forEach(el => { const id = el.dataset.ded; const p = id === 'ded-p' ? curProduct : byId[2614]; const tmp = document.createElement('div'); tmp.innerHTML = dedBlock(id, p); const nw = tmp.firstChild; el.replaceWith(nw); nw.querySelectorAll('[data-plate]').forEach(fitPlate); }); }
+  function redrawDed() { document.querySelectorAll('[data-ded]').forEach(el => { const id = el.dataset.ded; const p = id === 'ded-p' ? curProduct : byId[2614]; const tmp = document.createElement('div'); tmp.innerHTML = dedBlock(id, p); const nw = tmp.firstChild; el.replaceWith(nw); nw.querySelectorAll('[data-plate]').forEach(fitPlate); }); if ($('#tot-line')) syncQty(); }
 
   /* ---------- views ---------- */
   const INDEX = ['siddur', 'machzor', 'tehilim', 'chumash', 'limud', 'birkon', 'zmirot', 'hagada', 'mazkeret'];
@@ -1510,7 +1512,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
 
     '<section class="sec" id="engrave" aria-labelledby="eng-h"><div class="wrap"><div class="split">' +
       '<div class="tx rv">' + kick('', 'הקדשה אישית') + '<h2 class="h2" id="eng-h">שם על הכריכה. זיכרון לשנים.</h2><p class="lead">לכל מוצר באתר אפשר להוסיף הקדשה או חריטה, בתוספת תשלום. בוחרים אירוע, ממלאים פרטים ורואים איך זה ייראה.</p>' +
-        '<ol class="steps"><li><span>1</span><div><b>הקדשה אחידה לכל הכמות</b><p>אותה הקדשה על כל העותקים: ₪130 להזמנה, לא משנה כמה עותקים.</p></div></li><li><span>2</span><div><b>שם אישי לכל עותק</b><p>שם משפחה או שם פרטי על כל ספר: ₪10 לעותק.</p></div></li><li><span>3</span><div><b>סקיצה לאישור</b><p>לפני העבודה נשלחת סקיצה בוואטסאפ, ורק אחרי אישור מתחילים.</p></div></li></ol>' +
+        '<ol class="steps"><li><span>1</span><div><b>הקדשה אחידה לכל הכמות</b><p>אותה הקדשה על כל העותקים: ₪130 להזמנה, לא משנה כמה עותקים.</p></div></li><li><span>2</span><div><b>שם אישי לכל עותק</b><p>שם משפחה או שם פרטי על כל ספר, או הקדשה על עותק בודד: ₪10 לעותק.</p></div></li><li><span>3</span><div><b>סקיצה לאישור</b><p>לפני העבודה נשלחת סקיצה בוואטסאפ, ורק אחרי אישור מתחילים.</p></div></li></ol>' +
         '<div class="ctas" style="margin-top:32px"><a class="btn solid mag" href="#c-mazkeret">למזכרות לאירועים' + BI + '</a></div></div>' +
       '<div class="rv">' + dedBlock('ded-home', byId[2614] || { id: 2614 }) + '</div>' +
     '</div></div></section>' +
@@ -1572,7 +1574,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
   function syncQty(fromInput) {
     const q = $('#qty-in'); if (q && !fromInput) q.value = pstate.qty;
     document.querySelectorAll('[data-qc]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.qc === pstate.qty)));
-    const tot = $('#tot-line'); if (tot && curProduct) tot.textContent = 'סה״כ ' + money(+(curProduct.price * pstate.qty + dedFee(pstate.qty)).toFixed(2)) + (ded.mode !== 'none' ? ' כולל הקדשה' : '');
+    const tot = $('#tot-line'); if (tot && curProduct) tot.textContent = 'סה״כ ' + money(+(curProduct.price * pstate.qty + dedFee(pstate.qty)).toFixed(2)) + (ded.mode !== 'none' ? ' כולל הקדשה' : ''); document.querySelectorAll('[data-ded-price]').forEach(el => { el.innerHTML = priceLine(); });
   }
   function viewProduct(id) {
     const hv = HERO.findIndex(h => String(h.id) === String(id));
@@ -1905,7 +1907,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
       let note = '';
       const col = onP ? (pstate.col || '') : '';
       let fee = 0;
-      if (onP && ded.mode === 'one') { const f = ded.f; note = TPL[ded.tpl].name + ': ' + [f.n, f.p, f.d].filter(Boolean).join(', ').slice(0, 60) + ' (' + ({ gold: 'זהב', silver: 'כסף', ink: 'שחור' })[ded.c] + ')'; fee = DED_ONE; }
+      if (onP && ded.mode === 'one') { const f = ded.f; note = TPL[ded.tpl].name + ': ' + [f.n, f.p, f.d].filter(Boolean).join(', ').slice(0, 60) + ' (' + ({ gold: 'זהב', silver: 'כסף', ink: 'שחור' })[ded.c] + ')'; fee = dedFee(pstate.qty); }
       if (onP && ded.mode === 'names') { const ns = dedNames(); if (ns.length) note = TPL[ded.tpl].name + ', ' + ns.length + ' שמות: ' + ns.slice(0, 3).join(', ') + (ns.length > 3 ? '…' : ''); fee = DED_NAME * Math.max(ns.length, pstate.qty); }
       addToCart(d.add, onP ? pstate.qty : 1, note, col, fee); return;
     }
