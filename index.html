@@ -1066,6 +1066,15 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
 @media (hover: hover) { .ct:hover { transform: translateY(-6px); box-shadow: 0 22px 36px -20px rgba(40,30,18,.5), inset 0 0 0 1px rgba(25,22,19,.04); } .ct:nth-child(even):hover { transform: translateY(4px); } }
 @media (max-width: 860px) { .ctiles { gap: 8px; } .ct { border-radius: 14px; } .ct:nth-child(even) { transform: translateY(6px); } }
 @media (prefers-reduced-motion: reduce) { .ct { transition: none; } }
+
+/* v18 designed key-visual slides */
+.hc-card.kv::after { display: none; }
+.hc-card.kv .pz img { object-fit: cover; object-position: 50% 50%; transform: none !important; }
+.hc-card.kv .kv-go { position: absolute; inset: 0; z-index: 2; border-radius: inherit; }
+.hc-card.kv .kv-go:focus-visible { outline: 2px solid var(--gold); outline-offset: -6px; }
+@media (max-width: 860px) {
+  .hc-card.kv .pz { bottom: 0 !important; -webkit-mask-image: none !important; mask-image: none !important; }
+}
 </style>
 
 <div class="app" dir="rtl" lang="he" id="app">
@@ -1387,12 +1396,17 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
 
   /* ---------- hero: cinematic card carousel ---------- */
   const SLIDES = [
-    { img: 'gen4/hero-l1.jpg', tone: 'light', pos: '28% 50%', ey: 'בס״ד · מרכז הסידורים', h: 'ספרי קודש, <em>כמו שצריך.</em>', sub: 'סידורים, מחזורים, תהילים וחומשים בכל הנוסחים, בכריכות עור ועם הקדשה אישית.', cta: ['לכל הסידורים', '#c-siddur'], cta2: ['בחירה לפי נוסח', '#nusach'], tag: [ic('nusach'), 'סידור רויאל, כריכת עור'], pid: 2614 },
+    { kv: true, img: 'gen4/kv-b.jpg', m: 'gen4/kv-b-m.jpg', alt: 'כל ספרי הקודש במקום אחד. סידורים, מחזורים, תהילים, חומשים והקדשה אישית', href: '#c-siddur', go: 'לכל הסידורים', tone: 'light', h: '', sub: '', cta: ['', ''], tag: ['', ''] },
     { img: 'gen4/hero-l2.jpg', tone: 'light', pos: '28% 50%', ey: 'לקראת החגים', h: 'מחזור אחד, <em>לכל השנה.</em>', sub: 'סטים מלאים לראש השנה, יום כיפור ושלושת הרגלים, בכל הנוסחים.', cta: ['למחזורים', '#c-machzor'], tag: [ic('machzor'), 'סט מחזורים'], pid: 2078 },
     { img: 'gen4/slide-mazkeret.jpg', tone: 'light', pos: '30% 50%', ey: 'מזכרות לאירועים', h: 'מזכרת לכל אורח, <em>עם הקדשה.</em>', sub: 'ברכונים ושירונים בכמות לחתונה, לבר מצווה ולשבע ברכות. הקדשה אחידה לכל הכמות, או שם לכל אחד.', cta: ['למזכרות', '#c-mazkeret'], cta2: ['איך עובדת הקדשה', '#engrave'], tag: [ic('users'), 'הנחה לכמות'], pid: 11835 },
     { img: 'gen4/hero-l3.jpg', tone: 'light', pos: '28% 50%', ey: 'ספרי לימוד', h: 'ספרייה שלמה, <em>על מדף אחד.</em>', sub: 'ש״ס, משניות וספרי הלכה בסטים מלאים ובכריכות מהודרות.', cta: ['לספרי הלימוד', '#c-limud'], tag: [ic('limud'), 'סטים מלאים'], pid: 12296 }
   ];
   let hsT = null, hsI = 0; const HS_DUR = 7000; let hsPaused = false;
+  function kvCard(sl, i) {
+    const H = i === 0 ? 'h1' : 'h2';
+    return '<article class="hc-card kv light' + (i === 0 ? ' on' : '') + '" aria-roledescription="שקופית" aria-label="' + (i + 1) + ' מתוך ' + SLIDES.length + '"><div class="pz"><picture>' + (sl.m ? '<source media="(max-width: 860px)" srcset="' + sl.m + '">' : '') + '<img src="' + sl.img + '" alt="' + esc(sl.alt) + '"' + (i === 0 ? ' fetchpriority="high"' : ' loading="lazy"') + '></picture></div>' +
+      '<' + H + ' class="sr">' + esc(sl.alt) + '</' + H + '><a class="kv-go" href="' + sl.href + '"><span class="sr">' + esc(sl.go) + '</span></a></article>';
+  }
   function hsGo(i) {
     const el = $('#hc'); if (!el) return;
     hsI = (i + SLIDES.length) % SLIDES.length;
@@ -1449,8 +1463,8 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
   };
   /* line kinds: s small header, E emblem, L large name, M medium fixed, m small detail */
   const TPL = {
-    neshama: { name: 'לעילוי נשמת', fields: [['n', 'שם הנפטר/ת', 'רוז (אליס) אקנין'], ['p', 'בן/בת', 'בת אליס ופרדי ז״ל'], ['d', 'תאריך הפטירה', 'כ״ט תשרי תשפ״ז']], lines: f => [['s', 'מוקדש לעילוי נשמת'], ['E'], ['L', f.n], ['m', f.p], ['m', f.d], ['m', 'ת.נ.צ.ב.ה.']] },
-    barmitzva: { name: 'בר מצווה', fields: [['n', 'שם החוגג', 'לירוי אהרון'], ['d', 'תאריך', 'י״ד בטבת תשפ״ז']], lines: f => [['E'], ['L', f.n], ['M', 'חוגג בר מצווה'], ['M', f.d]] },
+    neshama: { name: 'לעילוי נשמת', fields: [['n', 'שם הנפטר/ת', 'שרה לוי'], ['p', 'בן/בת', 'בת רחל ויעקב ז״ל'], ['d', 'תאריך הפטירה', 'כ״ט תשרי תשפ״ז']], lines: f => [['s', 'מוקדש לעילוי נשמת'], ['E'], ['L', f.n], ['m', f.p], ['m', f.d], ['m', 'ת.נ.צ.ב.ה.']] },
+    barmitzva: { name: 'בר מצווה', fields: [['n', 'שם החוגג', 'יוסף חיים'], ['d', 'תאריך', 'י״ד בטבת תשפ״ז']], lines: f => [['E'], ['L', f.n], ['M', 'חוגג בר מצווה'], ['M', f.d]] },
     wedding: { name: 'חתונה', fields: [['n', 'החתן והכלה', 'יוסף ושרה'], ['d', 'תאריך', 'כ״ה באדר תשפ״ז']], lines: f => [['s', 'מזכרת משמחת נישואי'], ['E'], ['L', f.n], ['m', f.d]] },
     chatan: { name: 'שבת חתן', fields: [['n', 'שם החתן', 'יוסף כהן'], ['d', 'השבת', 'שבת פרשת וישב תשפ״ז']], lines: f => [['s', 'מזכרת משבת חתן'], ['E'], ['L', f.n], ['m', f.d]] },
     henna: { name: 'חינה', fields: [['n', 'החתן והכלה', 'יוסף ושרה'], ['d', 'תאריך', 'כ״ג באדר תשפ״ז']], lines: f => [['s', 'מזכרת מטקס החינה'], ['E'], ['L', f.n], ['m', f.d]] },
@@ -1541,7 +1555,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
     const ixItems = INDEX.map((id, i) => { const m = menuOf(id); return { id, m, n: inGroup(id).length, no: String(i + 1).padStart(2, '0') }; });
     return '' +
     '<section class="hc" id="hc" tabindex="0" aria-roledescription="קרוסלה" aria-label="מחלקות נבחרות"><span class="sr" id="hc-live" aria-live="polite"></span><div class="hc-vp"><div class="hc-track" id="hc-track">' +
-      SLIDES.map((sl, i) => '<article class="hc-card ' + sl.tone + (i === 0 ? ' on' : '') + '" aria-roledescription="שקופית" aria-label="' + (i + 1) + ' מתוך ' + SLIDES.length + '"><div class="pz">' + (sl.m ? '<picture><source media="(max-width: 860px)" srcset="' + sl.m + '"><img src="' + sl.img + '" alt="" fetchpriority="high" style="object-position:' + sl.pos + '"></picture>' : '<img src="' + sl.img + '" alt="" loading="lazy" style="object-position:' + sl.pos + '">') + '</div>' +
+      SLIDES.map((sl, i) => sl.kv ? kvCard(sl, i) : '<article class="hc-card ' + sl.tone + (i === 0 ? ' on' : '') + '" aria-roledescription="שקופית" aria-label="' + (i + 1) + ' מתוך ' + SLIDES.length + '"><div class="pz">' + (sl.m ? '<picture><source media="(max-width: 860px)" srcset="' + sl.m + '"><img src="' + sl.img + '" alt="" fetchpriority="high" style="object-position:' + sl.pos + '"></picture>' : '<img src="' + sl.img + '" alt="" loading="lazy" style="object-position:' + sl.pos + '">') + '</div>' +
         (byId[sl.pid] ? '<a class="hc-prod" href="#p-' + sl.pid + '"><span class="t">' + pic(byId[sl.pid]) + '</span><span class="x"><b>' + esc(base(byId[sl.pid])) + '</b><span>' + money(byId[sl.pid].price) + '</span></span>' + ARW + '</a>' : '') +
         '<span class="hc-no" dir="ltr" aria-hidden="true">' + String(i + 1).padStart(2, '0') + ' / ' + String(SLIDES.length).padStart(2, '0') + '</span>' +
         '<div class="cp"><p class="kick">' + esc(sl.ey) + '</p>' + (i === 0 ? '<h1>' : '<h2>') + sl.h + (i === 0 ? '</h1>' : '</h2>') + '<p class="sub">' + esc(sl.sub) + '</p><div class="ctas"><a class="btn ' + (sl.tone === 'dark' ? 'light' : 'solid') + ' mag" href="' + sl.cta[1] + '">' + esc(sl.cta[0]) + BI + '</a>' + (sl.cta2 ? '<a class="tlink" href="' + sl.cta2[1] + '">' + esc(sl.cta2[0]) + ARW + '</a>' : '') + '</div></div></article>').join('') +
