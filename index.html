@@ -1400,7 +1400,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
 
     '<section class="sec dark" id="nusach" aria-labelledby="nus-h"><div class="wrap">' +
       '<div class="sh"><div class="tx rv">' + kick('', 'בוחרים פעם אחת') + '<h2 class="h2" id="nus-h">באיזה נוסח מתפללים אצלכם?</h2><p class="lead">בוחרים נוסח, והאתר זוכר: סידורים, מחזורים, ברכונים וזמירות יוצגו מעכשיו בנוסח שלכם. אפשר להחליף בכל רגע מהכפתור "נוסח" בראש האתר.</p></div></div>' +
-      '<div class="doors">' + NUSACH.map(n => '<a class="door rv" href="#c-siddur-' + n.id + '" data-pick="' + n.id + '"><img src="gen4/nus-' + n.id + '.jpg" alt="" loading="lazy" draggable="false"><span class="c"><b>' + esc(n.name) + '</b><span>סידורים, מחזורים, ברכונים וזמירות בנוסח ' + esc(n.name) + '</span><i>לסידורי ' + esc(n.full) + ARW + '</i></span>' + (myNus === n.id ? '<em class="mine">' + ic('check') + 'הנוסח שלכם</em>' : '') + '</a>').join('') + '</div>' +
+      '<div class="doors">' + NUSACH.map(n => '<a class="door rv" href="#c-siddur-' + n.id + '" data-pick="' + n.id + '"><img src="gen4/nus-' + n.id + '.jpg" alt="" loading="lazy" draggable="false"><span class="c"><b>' + esc(n.name) + '</b><span>סידורים, מחזורים, ברכונים וזמירות</span><i>לסידורי ' + esc(n.full) + ARW + '</i></span>' + (myNus === n.id ? '<em class="mine">' + ic('check') + 'הנוסח שלכם</em>' : '') + '</a>').join('') + '</div>' +
     '</div></section>' +
 
     '<section class="feat" aria-labelledby="mz-h"><div class="pz" data-par="0.1"><img src="' + IMG.machzor + '" alt="סט מחזורים עת רצון בכריכת עור ורודה, על מפת פשתן" loading="lazy" style="object-position:70% 50%"></div>' +
