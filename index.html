@@ -1022,6 +1022,27 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
   .ded .seg button { min-height: 44px; }
   select, input, textarea { font-size: 16px !important; }
 }
+
+/* v15 calm category header: light panel, a small shelf of real products */
+.chead { display: block; padding-top: calc(var(--ut) + 96px); padding-bottom: clamp(18px, 2.4vw, 28px); }
+.chead .cbox { display: grid; grid-template-columns: 1fr minmax(260px, 440px); align-items: center; gap: clamp(24px, 4vw, 64px); padding: clamp(24px, 3.2vw, 44px) clamp(24px, 3.6vw, 52px); border-radius: 28px; background: radial-gradient(120% 150% at 90% 0%, #FBF8F2 0%, #F2EDE4 55%, #EBE4D8 100%); box-shadow: inset 0 0 0 1px rgba(25,22,19,.05); }
+.chead h1 { font-size: clamp(36px, 4vw, 56px); }
+.chead h1 .ic { width: clamp(28px, 2.6vw, 38px); height: clamp(28px, 2.6vw, 38px); }
+.shelf2 { position: relative; display: flex; align-items: flex-end; justify-content: center; height: clamp(130px, 13vw, 180px); }
+.shelf2::after { content: ""; position: absolute; inset: auto 6% -2px 6%; height: 14px; border-radius: 50%; background: radial-gradient(closest-side, rgba(40,30,18,.18), transparent); }
+.shelf2 a { position: relative; z-index: 1; width: 26%; height: 100%; display: flex; align-items: flex-end; justify-content: center; mix-blend-mode: multiply; transition: transform .9s var(--out); }
+.shelf2 a + a { margin-inline-start: -3%; }
+.shelf2 a:nth-child(2), .shelf2 a:nth-child(3) { height: 92%; }
+.shelf2 .bk { display: block; width: 100%; height: 100%; }
+.shelf2 .bk .pic { width: 100%; height: 100%; object-position: bottom; }
+.shelf2 span.pic { background-size: 700% 700%; }
+@media (hover: hover) { .chead .cbox:hover .shelf2 a:nth-child(odd) { transform: translateY(-6px); } .chead .cbox:hover .shelf2 a:nth-child(even) { transform: translateY(-3px); } }
+@media (max-width: 860px) {
+  .chead { padding-top: calc(var(--ut) + 88px); }
+  .chead .cbox { grid-template-columns: 1fr; padding: 22px 20px 18px; border-radius: 22px; gap: 14px; }
+  .shelf2 { height: 120px; } .shelf2 a:nth-child(4) { display: none; } .shelf2 a { width: 30%; }
+}
+@media (prefers-reduced-motion: reduce) { .shelf2 a { transition: none; } }
 </style>
 
 <div class="app" dir="rtl" lang="he" id="app">
@@ -1577,9 +1598,9 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
     const keep = m.nus && cstate.nus !== 'all' ? '-' + cstate.nus : '';
     const related = MENU.filter(x => x.id !== m.id).slice(0, 8);
     return '<div class="wrap">' +
-      '<header class="chead"><div><nav class="crumbs" aria-label="מיקום באתר"><a href="#home">דף הבית</a><span aria-hidden="true">/</span><span aria-current="page">' + esc(m.name) + '</span></nav>' +
+      '<header class="chead"><div class="cbox"><div><nav class="crumbs" aria-label="מיקום באתר"><a href="#home">דף הבית</a><span aria-hidden="true">/</span><span aria-current="page">' + esc(m.name) + '</span></nav>' +
         '<h1 class="draw" data-draw>' + ic(m.id) + esc(m.name) + '</h1>' + (m.blurb ? '<p>' + esc(m.blurb) + '</p>' : '') + '</div>' +
-        (CIMG[m.id] ? '<div class="ph rvimg"><img src="' + CIMG[m.id] + '" alt=""></div>' : '') + '</header>' +
+        '<div class="shelf2" aria-hidden="true">' + uniq(src).sort((a, b) => b.local - a.local).slice(0, 4).map(x => '<a href="#p-' + x.id + '" tabindex="-1"><span class="bk">' + pic(x) + '</span></a>').join('') + '</div></div></header>' +
       '<div class="smart">' +
         (m.nus ? '<div class="row"><span class="lbl">נוסח</span><div class="seg" role="group" aria-label="בחירת נוסח">' + [{ id: 'all', name: 'כל הנוסחים' }].concat(NUSACH).map(n => '<button type="button" data-nus="' + n.id + '" aria-pressed="' + (cstate.nus === n.id) + '">' + esc(n.name) + '<span class="k">' + nusCount(n.id) + '</span></button>').join('') + '</div></div>' : '') +
         '<div class="row"><span class="lbl">' + (keep ? 'באותו נוסח, גם' : 'עוברים ל') + '</span><div class="chips">' + related.map(x => '<a class="chip" href="#c-' + x.id + (x.nus ? keep : '') + '">' + ic(x.id) + esc(x.name) + '</a>').join('') + '</div></div>' +
