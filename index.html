@@ -1093,9 +1093,6 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
   .feat .pz { height: auto !important; min-height: 0 !important; aspect-ratio: 2.1 / 1; }
   .lib-ph { aspect-ratio: 16 / 9; }
 }
-
-/* v20 shorter home: gifts are products only */
-.gifts .grid4 .pc .pl { aspect-ratio: 4 / 5; }
 </style>
 
 <div class="app" dir="rtl" lang="he" id="app">
@@ -1604,6 +1601,11 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
       '<div class="rail-row" id="rail-best">' + best.map(p => card(p, { rv: false, nusBadge: true })).join('') + '</div>' +
     '</div></section>' +
 
+    '<section class="feat" aria-labelledby="mz-h"><div class="pz" data-par="0.1"><img src="' + IMG.machzor + '" alt="סט מחזורים עת רצון בכריכת עור ורודה, על מפת פשתן" loading="lazy" style="object-position:50% 62%"></div>' +
+      '<div class="wrap"><div class="tx rv">' + kick('', 'לקראת החגים') + '<h2 class="h2" id="mz-h">סט אחד, כל החגים.</h2><p class="lead">ראש השנה, יום כיפור ושלושת הרגלים, באותה כריכה ובאותו נוסח. אפשר להוסיף הקדשה על כל הסט.</p>' +
+      '<div class="ctas"><a class="btn solid mag" href="#c-machzor' + (myNus !== 'all' ? '-' + myNus : '') + '">למחזורים' + BI + '</a><a class="tlink" href="#p-2078">סט עת רצון, סדרת אלגנט' + ARW + '</a></div></div></div>' +
+    '</section>' +
+
     '<section class="sec" id="engrave" aria-labelledby="eng-h"><div class="wrap"><div class="split">' +
       '<div class="tx rv">' + kick('', 'הקדשה אישית') + '<h2 class="h2" id="eng-h">שם על הכריכה. זיכרון לשנים.</h2><p class="lead">לכל מוצר באתר אפשר להוסיף הקדשה או חריטה, בתוספת תשלום. בוחרים אירוע, ממלאים פרטים ורואים איך זה ייראה.</p>' +
         '<ol class="steps"><li><span>1</span><div><b>הקדשה עם גלופה</b><p>גלופת ברזל שמכינים במיוחד, לעילוי נשמת, בר מצווה ואירועים: ₪130 להזמנה, אותו מחיר ל-10 עותקים או ל-100.</p></div></li><li><span>2</span><div><b>חריטת שם</b><p>שם על כל ספר, לכל אורח או בן משפחה: ₪10 לספר.</p></div></li><li><span>3</span><div><b>סקיצה לאישור</b><p>לפני העבודה נשלחת סקיצה בוואטסאפ, ורק אחרי אישור מתחילים.</p></div></li></ol>' +
@@ -1613,12 +1615,13 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
 
     '<section class="sec paper" aria-labelledby="gift-h"><div class="wrap">' +
       '<div class="sh"><div class="tx rv">' + kick('', 'מזכרות בכמות') + '<h2 class="h2" id="gift-h">מזכרת שכל אורח לוקח הביתה.</h2><p class="lead">ברכונים ושירונים לחתונה, לבר מצווה, לשבת חתן ולאזכרה. מזמינים בכמות, עם הקדשה, ומקבלים הצעת מחיר.</p></div><a class="tlink rv" href="#c-mazkeret">לכל המזכרות' + ARW + '</a></div>' +
-      '<div class="gifts">' +
+      '<div class="gifts"><a class="ph rvimg" href="#c-mazkeret" aria-label="למזכרות לאירועים"><img src="' + CIMG.mazkeret + '" alt="" loading="lazy" style="object-position:50% 72%"></a>' +
       '<div class="grid4">' + gift.map(p => card(p)).join('') + '</div></div>' +
     '</div></section>' +
 
     '<section class="sec dark" aria-labelledby="sets-h"><div class="wrap">' +
       '<div class="sh"><div class="tx rv">' + kick('', 'ספרי לימוד') + '<h2 class="h2" id="sets-h">ספרייה שלמה, על מדף אחד.</h2><p class="lead">ש״ס, משניות וספרי הלכה בסטים מלאים ובכריכות מהודרות.</p></div><a class="btn light rv mag" href="#c-limud">לספרי הלימוד' + BI + '</a></div>' +
+      '<div class="lib-ph rvimg"><img src="' + IMG.shas + '" alt="סט ש״ס מתיבתא בכריכת עור, על מדף עץ כהה" loading="lazy"></div>' +
       '<div class="sets">' + [12296, 6387, 12257].filter(id => byId[id]).map(id => card(byId[id])).join('') + '</div>' +
     '</div></section>' +
 
