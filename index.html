@@ -998,6 +998,30 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
 .ded .sw.ink { background: #1B1917; }
 .tpls [fill="var(--hole)"] { fill: var(--hole); }
 @media (max-width: 860px) { .tpls { grid-template-columns: repeat(3, 1fr); } .tpls button { min-height: 52px; } }
+
+/* v14 dedication choice cards */
+.dmodes { display: grid; gap: 8px; }
+.dmodes button { display: flex; align-items: center; gap: 12px; text-align: start; min-height: 56px; padding: 12px 16px; border-radius: 16px; box-shadow: inset 0 0 0 1px var(--hair); transition: box-shadow .25s var(--ease), background-color .25s var(--ease); }
+.dmodes .r { width: 20px; height: 20px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--ink-3); flex: none; transition: box-shadow .25s var(--ease); }
+.dmodes [aria-pressed="true"] { box-shadow: inset 0 0 0 1.5px var(--ink); background: var(--paper); }
+.dmodes [aria-pressed="true"] .r { box-shadow: inset 0 0 0 6px var(--ink); }
+.dmodes .tt { display: grid; gap: 2px; flex: 1; } .dmodes b { font: 600 15.5px/1.25 var(--disp); } .dmodes .tt span { font-size: 13px; color: var(--ink-3); line-height: 1.4; }
+.dmodes em { font-style: normal; font: 600 15px/1 var(--sans); white-space: nowrap; }
+@media (hover: hover) { .dmodes button:hover { box-shadow: inset 0 0 0 1px var(--ink-3); } .dmodes [aria-pressed="true"]:hover { box-shadow: inset 0 0 0 1.5px var(--ink); } }
+/* v14 menu sheet header with a real close button */
+.sh-hd { position: sticky; top: -10px; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 -22px 6px; padding: 6px 22px 10px; background: var(--paper); }
+.sh-hd h2 { margin: 0; }
+.sh-x { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--stone); flex: none; }
+.sh-x .ic { width: 20px; height: 20px; }
+.sheet .grab { width: 48px; height: 5px; margin: 6px auto 8px; touch-action: none; }
+@media (max-width: 860px) {
+  .a11y-btn { top: auto; bottom: calc(80px + env(safe-area-inset-bottom)); inset-inline-end: 12px; width: 44px; height: 44px; border-radius: 50%; box-shadow: 0 8px 20px -8px rgba(0,0,0,.4); transition: bottom .4s var(--out); }
+  html.fb-on .a11y-btn { bottom: calc(154px + env(safe-area-inset-bottom)); }
+  .a11y { bottom: calc(136px + env(safe-area-inset-bottom)); }
+  .dfl { grid-template-columns: 1fr; }
+  .ded .seg button { min-height: 44px; }
+  select, input, textarea { font-size: 16px !important; }
+}
 </style>
 
 <div class="app" dir="rtl" lang="he" id="app">
@@ -1088,7 +1112,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
       <div class="sres" id="sres" aria-live="polite"></div>
     </div>
   </div>
-  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden><div class="grab" aria-hidden="true"></div><h2 id="sheet-title">קטגוריות</h2><div id="sheet-in"></div></div>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden><div class="grab" aria-hidden="true"></div><div class="sh-hd"><h2 id="sheet-title">קטגוריות</h2><button class="sh-x" type="button" data-close aria-label="סגירת התפריט"><i data-ic="close"></i></button></div><div id="sheet-in"></div></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </div>
 
@@ -1390,9 +1414,13 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
   };
   const SZ = { s: 17, L: 34, M: 25, m: 18 };
   const dedNames = () => ded.names.split('\n').map(x => x.trim()).filter(Boolean);
-  const dedFee = q => ded.mode === 'one' ? ((q || 1) <= 1 ? DED_NAME : DED_ONE) : ded.mode === 'names' ? DED_NAME * Math.max(dedNames().length, q || 0) : 0;
+  const dedFee = q => ded.mode === 'one' ? DED_ONE : ded.mode === 'names' ? DED_NAME * Math.max(dedNames().length, q || 0) : 0;
   const paint = id => ded.c === 'ink' ? '#1B1917' : 'url(#fg-' + id + '-' + ded.c + ')';
   function plateInner(id) {
+    if (ded.mode === 'names') {
+      const nm = dedNames()[0] || ''; const fs = SZ.L;
+      return '<text x="150" y="' + (190 + fs * .35).toFixed(1) + '" font-size="' + fs + '" text-anchor="middle" direction="rtl" fill="' + paint(id) + '"' + (nm ? '' : ' opacity=".5"') + ' data-fit>' + esc(nm || 'משפחת כהן') + '</text>';
+    }
     const t = TPL[ded.tpl]; const ph = {}; t.fields.forEach(([k, , x]) => { ph[k] = x; });
     const val = k => (k === 'n' && ded.mode === 'names') ? (dedNames()[0] || '') : (ded.f[k] || '');
     const f = {}; t.fields.forEach(([k]) => { f[k] = val(k) || ph[k]; });
@@ -1419,12 +1447,11 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
     if (typeof syncQty === 'function' && $('#tot-line')) syncQty();
   }
   function priceLine() {
-    const q = $('#qty-in') ? pstate.qty : 0;
-    if (ded.mode === 'one' && q === 1) return '<b>₪' + DED_NAME + '</b><span>הקדשה על עותק אחד. מ-2 עותקים, אותה הקדשה לכל הכמות ב-₪' + DED_ONE + ' להזמנה</span>';
-    if (ded.mode === 'one') return '<b>₪' + DED_ONE + '</b><span>להזמנה כולה, אותה הקדשה על כל העותקים' + (q ? '' : ' (עותק בודד ₪' + DED_NAME + ')') + '</span>';
-    const n = dedNames().length;
-    return '<b>₪' + DED_NAME + '</b><span>לכל עותק עם שם' + (n ? ' · ' + n + ' שמות = ₪' + (n * DED_NAME) : '') + '</span>';
+    if (ded.mode === 'one') return '<b>₪' + DED_ONE + '</b><span>להזמנה כולה, אותו מחיר ל-10 עותקים או ל-100</span>';
+    const n = dedNames().length; const q = $('#qty-in') ? pstate.qty : 0; const k = Math.max(n, q);
+    return '<b>₪' + DED_NAME + '</b><span>לכל ספר' + (k ? ' · ' + k + (k === 1 ? ' ספר' : ' ספרים') + ' = ₪' + (k * DED_NAME) : '') + '</span>';
   }
+
   function nusShow(k, focus) {
     document.querySelectorAll('[data-nt]').forEach(b => { const on = b.dataset.nt === k; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; if (on && focus) b.focus(); });
     document.querySelectorAll('.nsw-panel').forEach(pn => { const on = pn.id === 'np-' + k; pn.hidden = !on; requestAnimationFrame(() => pn.classList.toggle('on', on)); });
@@ -1435,18 +1462,18 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
     if (id === 'ded-home' && ded.mode === 'none') ded.mode = 'one';
     const t = TPL[ded.tpl];
     return '<div class="ded" data-ded="' + id + '">' +
-      '<div class="seg" role="group" aria-label="סוג ההקדשה">' + (id === 'ded-home' ? [['one', 'הקדשה לכל הכמות'], ['names', 'שם לכל עותק']] : [['none', 'בלי הקדשה'], ['one', 'הקדשה לכל הכמות'], ['names', 'שם לכל עותק']]).map(m => '<button type="button" data-ded-mode="' + m[0] + '" aria-pressed="' + (ded.mode === m[0]) + '">' + m[1] + '</button>').join('') + '</div>' +
-      (ded.mode === 'none' ? '<div class="note">' + ic('quill') + '<span>אפשר להוסיף הטבעה על הכריכה: הקדשה אחידה לכל הכמות ב-₪' + DED_ONE + ' להזמנה, או שם אישי לכל עותק ב-₪' + DED_NAME + '. לפני העבודה תקבלו סקיצה לאישור.</span></div>' :
-        '<div class="tpls" role="radiogroup" aria-label="סוג האירוע">' + Object.keys(TPL).map(k => '<button type="button" role="radio" data-ded-tpl="' + k + '" aria-checked="' + (ded.tpl === k) + '"><svg viewBox="0 0 120 64" aria-hidden="true"><g fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="--hole:var(--paper)">' + EMB[k] + '</g></svg><span>' + TPL[k].name + '</span></button>').join('') + '</div>' +
+      '<div class="dmodes" role="group" aria-label="סוג ההקדשה">' + (id === 'ded-home' ? [] : [['none', 'בלי הקדשה', '', '']]).concat([['one', 'הקדשה עם גלופה', '₪' + DED_ONE, 'לעילוי נשמת, בר מצווה ואירועים. אותו מחיר לכל כמות'], ['names', 'חריטת שם', '₪' + DED_NAME + ' לספר', 'שם על כל ספר, לכל אורח או בן משפחה']]).map(m => '<button type="button" data-ded-mode="' + m[0] + '" aria-pressed="' + (ded.mode === m[0]) + '"><span class="r" aria-hidden="true"></span><span class="tt"><b>' + m[1] + '</b>' + (m[3] ? '<span>' + m[3] + '</span>' : '') + '</span>' + (m[2] ? '<em>' + m[2] + '</em>' : '') + '</button>').join('') + '</div>' +
+      (ded.mode === 'none' ? '' :
+        (ded.mode === 'one' ? '<div class="tpls" role="radiogroup" aria-label="סוג האירוע">' + Object.keys(TPL).map(k => '<button type="button" role="radio" data-ded-tpl="' + k + '" aria-checked="' + (ded.tpl === k) + '"><svg viewBox="0 0 120 64" aria-hidden="true"><g fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="--hole:var(--paper)">' + EMB[k] + '</g></svg><span>' + TPL[k].name + '</span></button>').join('') + '</div>' : '') +
         dedPreview(id) +
-        '<div class="dfl">' + t.fields.filter(([k]) => !(k === 'n' && ded.mode === 'names')).map(([k, label, ph]) => '<div class="fld"><label for="' + id + '-' + k + '">' + label + '</label><input id="' + id + '-' + k + '" data-ded-fld="' + k + '" maxlength="40" placeholder="' + esc(ph) + '" value="' + esc(ded.f[k] || '') + '" autocomplete="off"></div>').join('') + '</div>' +
-        (ded.mode === 'names' ? '<div class="fld"><label for="' + id + '-n">שם לכל עותק, שם בכל שורה</label><textarea class="names" id="' + id + '-n" data-ded-n placeholder="משפחת כהן&#10;משפחת לוי&#10;משפחת מזרחי">' + esc(ded.names) + '</textarea><small id="' + id + '-nc" aria-live="polite">' + namesInfo() + '</small></div>' : '') +
+        (ded.mode !== 'one' ? '' : '<div class="dfl">' + t.fields.map(([k, label, ph]) => '<div class="fld"><label for="' + id + '-' + k + '">' + label + '</label><input id="' + id + '-' + k + '" data-ded-fld="' + k + '" maxlength="40" placeholder="' + esc(ph) + '" value="' + esc(ded.f[k] || '') + '" autocomplete="off"></div>').join('') + '</div>') +
+        (ded.mode === 'names' ? '<div class="fld"><label for="' + id + '-n">שם לחריטה, שורה לכל ספר</label><textarea class="names" id="' + id + '-n" data-ded-n placeholder="משפחת כהן&#10;משפחת לוי&#10;משפחת מזרחי">' + esc(ded.names) + '</textarea><small id="' + id + '-nc" aria-live="polite">' + namesInfo() + '</small></div>' : '') +
         '<div class="ded-two"><div><span class="ol2">צבע ההטבעה</span><div class="seg" role="group" aria-label="צבע ההטבעה">' + [['gold', 'זהב'], ['silver', 'כסף'], ['ink', 'שחור']].map(c => '<button type="button" data-ded-c="' + c[0] + '" aria-pressed="' + (ded.c === c[0]) + '"><i class="sw ' + c[0] + '" aria-hidden="true"></i>' + c[1] + '</button>').join('') + '</div></div></div>' +
         '<div class="dprice" data-ded-price aria-live="polite">' + priceLine() + '</div>' +
         '<div class="note">' + ic('tag') + '<span>לפני העבודה נשלחת סקיצה לאישור בוואטסאפ, ורק אחרי אישור מטביעים.</span></div>') +
     '</div>';
   }
-  function namesInfo() { const n = dedNames().length; return n ? n + ' שמות, ' + n + ' עותקים. הכמות בהזמנה תתעדכן בהתאם.' : 'כל שורה היא עותק אחד עם שם משלו.'; }
+  function namesInfo() { const n = dedNames().length; return n ? n + (n === 1 ? ' שם, ספר אחד.' : ' שמות, ' + n + ' ספרים.') + ' הכמות בהזמנה תתעדכן בהתאם.' : 'כל שורה היא ספר אחד עם שם משלו.'; }
   document.addEventListener('input', e => {
     const t = e.target;
     if (t.matches('[data-ded-fld]')) { ded.f[t.dataset.dedFld] = t.value; document.querySelectorAll('[data-ded-fld="' + t.dataset.dedFld + '"]').forEach(x => { if (x !== t) x.value = t.value; }); refreshFoil(); }
@@ -1512,7 +1539,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
 
     '<section class="sec" id="engrave" aria-labelledby="eng-h"><div class="wrap"><div class="split">' +
       '<div class="tx rv">' + kick('', 'הקדשה אישית') + '<h2 class="h2" id="eng-h">שם על הכריכה. זיכרון לשנים.</h2><p class="lead">לכל מוצר באתר אפשר להוסיף הקדשה או חריטה, בתוספת תשלום. בוחרים אירוע, ממלאים פרטים ורואים איך זה ייראה.</p>' +
-        '<ol class="steps"><li><span>1</span><div><b>הקדשה אחידה לכל הכמות</b><p>אותה הקדשה על כל העותקים: ₪130 להזמנה, לא משנה כמה עותקים.</p></div></li><li><span>2</span><div><b>שם אישי לכל עותק</b><p>שם משפחה או שם פרטי על כל ספר, או הקדשה על עותק בודד: ₪10 לעותק.</p></div></li><li><span>3</span><div><b>סקיצה לאישור</b><p>לפני העבודה נשלחת סקיצה בוואטסאפ, ורק אחרי אישור מתחילים.</p></div></li></ol>' +
+        '<ol class="steps"><li><span>1</span><div><b>הקדשה עם גלופה</b><p>גלופת ברזל שמכינים במיוחד, לעילוי נשמת, בר מצווה ואירועים: ₪130 להזמנה, אותו מחיר ל-10 עותקים או ל-100.</p></div></li><li><span>2</span><div><b>חריטת שם</b><p>שם על כל ספר, לכל אורח או בן משפחה: ₪10 לספר.</p></div></li><li><span>3</span><div><b>סקיצה לאישור</b><p>לפני העבודה נשלחת סקיצה בוואטסאפ, ורק אחרי אישור מתחילים.</p></div></li></ol>' +
         '<div class="ctas" style="margin-top:32px"><a class="btn solid mag" href="#c-mazkeret">למזכרות לאירועים' + BI + '</a></div></div>' +
       '<div class="rv">' + dedBlock('ded-home', byId[2614] || { id: 2614 }) + '</div>' +
     '</div></div></section>' +
@@ -1625,14 +1652,14 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
   }
   function setFbuy() {
     const f = $('#fbuy'); const p = curProduct;
-    if (!location.hash.startsWith('#p-') || !p) { f.classList.remove('on'); f.innerHTML = ''; f.setAttribute('aria-hidden', 'true'); return; }
+    if (!location.hash.startsWith('#p-') || !p) { document.documentElement.classList.remove('fb-on'); f.classList.remove('on'); f.innerHTML = ''; f.setAttribute('aria-hidden', 'true'); return; }
     f.innerHTML = '<span class="t">' + pic(p) + '</span><span class="x"><b>' + esc(base(p)) + '</b><span>' + money(p.price) + '</span></span><button class="btn solid" type="button" data-add="' + p.id + '" data-fbuy>הוספה לסל</button>';
   }
   function fbuyWatch() {
     const f = $('#fbuy'); const b = $('#buy');
     if (!b || !location.hash.startsWith('#p-')) return;
     const r = b.getBoundingClientRect(); const out = r.bottom < 80 || r.top > innerHeight;
-    f.classList.toggle('on', out); f.setAttribute('aria-hidden', String(!out));
+    f.classList.toggle('on', out); f.setAttribute('aria-hidden', String(!out)); document.documentElement.classList.toggle('fb-on', out);
   }
 
   const pageHead = (crumb, title, lead) => '<header class="ph-head"><nav class="crumbs" aria-label="מיקום באתר"><a href="#home">דף הבית</a><span aria-hidden="true">/</span><span aria-current="page">' + esc(crumb) + '</span></nav><h1>' + esc(title) + '</h1>' + (lead ? '<p class="lead">' + esc(lead) + '</p>' : '') + '</header>';
@@ -1834,6 +1861,12 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
       setTimeout(() => { const f = el.querySelector('[aria-pressed="true"]'); if (f) f.focus(); }, 60);
     }
   }
+  /* drag the sheet down to close it */
+  (() => { const sh = $('#sheet'); if (!sh) return; let y0 = null, dy = 0;
+    sh.addEventListener('touchstart', e => { if (sh.scrollTop > 0 && !e.target.closest('.grab, .sh-hd')) return; y0 = e.touches[0].clientY; dy = 0; }, { passive: true });
+    sh.addEventListener('touchmove', e => { if (y0 === null) return; dy = Math.max(0, e.touches[0].clientY - y0); if (dy > 4) { sh.style.transition = 'none'; sh.style.transform = 'translateY(' + dy + 'px)'; } }, { passive: true });
+    sh.addEventListener('touchend', () => { if (y0 === null) return; sh.style.transition = ''; sh.style.transform = ''; if (dy > 90) closeAll(); y0 = null; dy = 0; });
+  })();
   function closeAll() {
     if (!openId) return;
     const el = $('#' + openId); el.classList.remove('open'); $('#scrim').classList.remove('on'); document.body.classList.remove('locked');
@@ -1907,8 +1940,8 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
       let note = '';
       const col = onP ? (pstate.col || '') : '';
       let fee = 0;
-      if (onP && ded.mode === 'one') { const f = ded.f; note = TPL[ded.tpl].name + ': ' + [f.n, f.p, f.d].filter(Boolean).join(', ').slice(0, 60) + ' (' + ({ gold: 'זהב', silver: 'כסף', ink: 'שחור' })[ded.c] + ')'; fee = dedFee(pstate.qty); }
-      if (onP && ded.mode === 'names') { const ns = dedNames(); if (ns.length) note = TPL[ded.tpl].name + ', ' + ns.length + ' שמות: ' + ns.slice(0, 3).join(', ') + (ns.length > 3 ? '…' : ''); fee = DED_NAME * Math.max(ns.length, pstate.qty); }
+      if (onP && ded.mode === 'one') { const f = ded.f; note = 'גלופה, ' + TPL[ded.tpl].name + ': ' + [f.n, f.p, f.d].filter(Boolean).join(', ').slice(0, 60) + ' (' + ({ gold: 'זהב', silver: 'כסף', ink: 'שחור' })[ded.c] + ')'; fee = dedFee(pstate.qty); }
+      if (onP && ded.mode === 'names') { const ns = dedNames(); if (ns.length) note = 'חריטת שם, ' + ns.length + ' שמות: ' + ns.slice(0, 3).join(', ') + (ns.length > 3 ? '…' : ''); fee = DED_NAME * Math.max(ns.length, pstate.qty); }
       addToCart(d.add, onP ? pstate.qty : 1, note, col, fee); return;
     }
     if (d.cq !== undefined) { const c = cart[+d.cq]; c.q += +d.d; if (c.q <= 0) cart.splice(+d.cq, 1); return saveCart(); }
