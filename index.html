@@ -1043,6 +1043,20 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
   .shelf2 { height: 120px; } .shelf2 a:nth-child(4) { display: none; } .shelf2 a { width: 30%; }
 }
 @media (prefers-reduced-motion: reduce) { .shelf2 a { transition: none; } }
+
+/* v16 light hero: soft ivory behind every slide, dark words, also on phones */
+.hc-track { background: #F1ECE4; }
+.hc-card.light { background: #F1ECE4; }
+.hc-card.light::after { background: linear-gradient(to left, rgba(246,242,235,.78) 0%, rgba(246,242,235,.32) 40%, transparent 60%); }
+.hc-card.light .btn.solid { background: var(--navy); color: #fff; }
+.hc-card.light .tlink { color: var(--ink); }
+.hc-card.light .hc-no { color: var(--ink-3); }
+.hc-nav .rb, .hc-dots { background: rgba(25,22,19,.32); }
+.feat .pz { inset: -4% 0; }
+@media (max-width: 860px) {
+  .hc-card.light { color: var(--ink); } .hc-card.light .kick { color: var(--gold); } .hc-card.light .sub { color: var(--ink-2); } .hc-card.light em { color: var(--gold); }
+  .hc-card.light .btn.solid { background: var(--navy); color: #fff; }
+}
 </style>
 
 <div class="app" dir="rtl" lang="he" id="app">
@@ -1364,10 +1378,10 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
 
   /* ---------- hero: cinematic card carousel ---------- */
   const SLIDES = [
-    { img: IMG.hero, m: IMG.heroM, tone: 'dark', pos: '30% 50%', ey: 'בס״ד · מרכז הסידורים', h: 'ספרי קודש, <em>כמו שצריך.</em>', sub: 'סידורים, מחזורים, תהילים וחומשים בכל הנוסחים, בכריכות עור ועם הקדשה אישית.', cta: ['לכל הסידורים', '#c-siddur'], cta2: ['בחירה לפי נוסח', '#nusach'], tag: [ic('nusach'), 'סידור רויאל, כריכת עור'], pid: 2614 },
-    { img: 'gen4/hero-2.jpg', tone: 'dark', pos: '22% 50%', ey: 'לקראת החגים', h: 'מחזור אחד, <em>לכל השנה.</em>', sub: 'סטים מלאים לראש השנה, יום כיפור ושלושת הרגלים, בכל הנוסחים.', cta: ['למחזורים', '#c-machzor'], tag: [ic('machzor'), 'סט מחזורים'], pid: 2078 },
+    { img: 'gen4/hero-l1.jpg', tone: 'light', pos: '28% 50%', ey: 'בס״ד · מרכז הסידורים', h: 'ספרי קודש, <em>כמו שצריך.</em>', sub: 'סידורים, מחזורים, תהילים וחומשים בכל הנוסחים, בכריכות עור ועם הקדשה אישית.', cta: ['לכל הסידורים', '#c-siddur'], cta2: ['בחירה לפי נוסח', '#nusach'], tag: [ic('nusach'), 'סידור רויאל, כריכת עור'], pid: 2614 },
+    { img: 'gen4/hero-l2.jpg', tone: 'light', pos: '28% 50%', ey: 'לקראת החגים', h: 'מחזור אחד, <em>לכל השנה.</em>', sub: 'סטים מלאים לראש השנה, יום כיפור ושלושת הרגלים, בכל הנוסחים.', cta: ['למחזורים', '#c-machzor'], tag: [ic('machzor'), 'סט מחזורים'], pid: 2078 },
     { img: 'gen4/slide-mazkeret.jpg', tone: 'light', pos: '30% 50%', ey: 'מזכרות לאירועים', h: 'מזכרת לכל אורח, <em>עם הקדשה.</em>', sub: 'ברכונים ושירונים בכמות לחתונה, לבר מצווה ולשבע ברכות. הקדשה אחידה לכל הכמות, או שם לכל אחד.', cta: ['למזכרות', '#c-mazkeret'], cta2: ['איך עובדת הקדשה', '#engrave'], tag: [ic('users'), 'הנחה לכמות'], pid: 11835 },
-    { img: 'gen4/hero-3.jpg', tone: 'dark', pos: '25% 55%', ey: 'ספרי לימוד', h: 'ספרייה שלמה, <em>על מדף אחד.</em>', sub: 'ש״ס, משניות וספרי הלכה בסטים מלאים ובכריכות מהודרות.', cta: ['לספרי הלימוד', '#c-limud'], tag: [ic('limud'), 'סטים מלאים'], pid: 12296 }
+    { img: 'gen4/hero-l3.jpg', tone: 'light', pos: '28% 50%', ey: 'ספרי לימוד', h: 'ספרייה שלמה, <em>על מדף אחד.</em>', sub: 'ש״ס, משניות וספרי הלכה בסטים מלאים ובכריכות מהודרות.', cta: ['לספרי הלימוד', '#c-limud'], tag: [ic('limud'), 'סטים מלאים'], pid: 12296 }
   ];
   let hsT = null, hsI = 0; const HS_DUR = 7000; let hsPaused = false;
   function hsGo(i) {
@@ -1538,7 +1552,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
       '<div class="doors">' + NUSACH.map(n => '<a class="door rv" href="#c-siddur-' + n.id + '" data-pick="' + n.id + '"><img src="gen4/nus-' + n.id + '.jpg" alt="" loading="lazy" draggable="false"><span class="c"><b>' + esc(n.name) + '</b><span>סידורים, מחזורים, ברכונים וזמירות</span><i>לסידורי ' + esc(n.full) + ARW + '</i></span>' + (myNus === n.id ? '<em class="mine">' + ic('check') + 'הנוסח שלכם</em>' : '') + '</a>').join('') + '</div>' +
     '</div></section>' +
 
-    '<section class="feat" aria-labelledby="mz-h"><div class="pz" data-par="0.1"><img src="' + IMG.machzor + '" alt="סט מחזורים עת רצון בכריכת עור ורודה, על מפת פשתן" loading="lazy" style="object-position:50% 50%"></div>' +
+    '<section class="feat" aria-labelledby="mz-h"><div class="pz" data-par="0.1"><img src="' + IMG.machzor + '" alt="סט מחזורים עת רצון בכריכת עור ורודה, על מפת פשתן" loading="lazy" style="object-position:50% 62%"></div>' +
       '<div class="wrap"><div class="tx rv">' + kick('', 'לקראת החגים') + '<h2 class="h2" id="mz-h">סט אחד, כל החגים.</h2><p class="lead">ראש השנה, יום כיפור ושלושת הרגלים, באותה כריכה ובאותו נוסח. אפשר להוסיף הקדשה על כל הסט.</p>' +
       '<div class="ctas"><a class="btn solid mag" href="#c-machzor' + (myNus !== 'all' ? '-' + myNus : '') + '">למחזורים' + BI + '</a><a class="tlink" href="#p-2078">סט עת רצון, סדרת אלגנט' + ARW + '</a></div></div></div>' +
     '</section>' +
