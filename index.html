@@ -955,6 +955,23 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
   .door { scroll-snap-align: center; border-radius: 22px; }
 }
 @media (prefers-reduced-motion: reduce) { .door img, .door i, .door i .ic { transition: none; } }
+
+/* v12 service promises under the hero, Lottie icons */
+.prom2 { padding: clamp(18px, 2.6vw, 34px) 0 clamp(8px, 1.6vw, 18px); }
+.prom2 ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+.prom2 li { display: flex; align-items: center; gap: 14px; padding: 6px clamp(10px, 1.6vw, 24px); }
+.prom2 li + li { border-inline-start: 1px solid var(--hair); }
+.prom2 li:first-child { padding-inline-start: 0; }
+.prom2 .lot { width: 52px; height: 52px; flex: none; display: grid; place-items: center; border-radius: 16px; background: var(--stone); color: var(--gold); }
+.prom2 .lot svg { width: 44px !important; height: 44px !important; }
+.prom2 .lot .ic { width: 28px; height: 28px; }
+.prom2 .tx { display: grid; gap: 3px; } .prom2 b { font: 600 15.5px/1.2 var(--disp); } .prom2 .tx span { font-size: 13px; color: var(--ink-3); }
+@media (max-width: 1100px) { .prom2 ul { grid-template-columns: repeat(2, 1fr); row-gap: 14px; } .prom2 li:nth-child(3) { border-inline-start: 0; padding-inline-start: 0; } }
+@media (max-width: 860px) {
+  .prom2 ul { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 76%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: calc(var(--gut) * -1); padding-inline: var(--gut); }
+  .prom2 li, .prom2 li:first-child, .prom2 li:nth-child(3) { scroll-snap-align: start; padding: 12px 14px; border: 1px solid var(--hair); border-radius: 18px; }
+  .prom2 li + li { margin-inline-start: 10px; }
+}
 </style>
 
 <div class="app" dir="rtl" lang="he" id="app">
@@ -1053,6 +1070,8 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
 <script src="catalog-all.js"></script>
 <script src="urls.js"></script>
 <script src="colors.js"></script>
+<script src="lot-icons.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie_light.min.js" defer></script>
 <script>
 (function () {
   const $ = s => document.querySelector(s);
@@ -1148,8 +1167,8 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
   const nusPick = (() => { let c = null; return id => { if (!c) { c = {}; const used = new Set(); NUSACH.forEach(n => { c[n.id] = uniq(inGroup('siddur').filter(x => x.n === n.id && !used.has(base(x)))).sort((a, b) => (b.local - a.local) || ((b.c === 'עור') - (a.c === 'עור')) || (b.price - a.price)).slice(0, 5); c[n.id].forEach(x => used.add(base(x))); }); } return c[id]; }; })();
   const nusIdx = () => Math.max(0, NUSACH.findIndex(n => n.id === myNus));
   const nusCountSiddur = k => inGroup('siddur').filter(p => p.n && fitsNus(p, k)).length;
-  const IMG = { hero: 'gen4/hero-desktop.jpg', heroM: 'gen4/hero-mobile.jpg', machzor: 'gen4/tile-machzor.jpg', shas: 'gen4/tile-shas.jpg', tehilim: 'gen4/tile-tehilim.jpg', gilt: 'gen4/detail-gilt.jpg' };
-  const CIMG = { siddur: 'gen4/cat-siddur.jpg', machzor: 'gen4/cat-machzor.jpg', tehilim: 'gen4/cat-tehilim.jpg', chumash: 'gen4/cat-chumash.jpg', limud: 'gen4/cat-limud.jpg', birkon: 'gen4/cat-birkon.jpg', zmirot: 'gen4/cat-zmirot.jpg', hagada: 'gen4/cat-hagada.jpg', mazkeret: 'gen4/cat-mazkeret3.jpg', kids: 'gen4/cat-kids.jpg' };
+  const IMG = { hero: 'gen4/hero-desktop.jpg', heroM: 'gen4/hero-mobile.jpg', machzor: 'gen4/feat-machzor.jpg', shas: 'gen4/tile-shas.jpg', tehilim: 'gen4/tile-tehilim.jpg', gilt: 'gen4/detail-gilt.jpg' };
+  const CIMG = { siddur: 'gen4/c2-siddur.jpg', machzor: 'gen4/c2-machzor.jpg', tehilim: 'gen4/c2-tehilim.jpg', chumash: 'gen4/c2-chumash.jpg', limud: 'gen4/c2-limud.jpg', birkon: 'gen4/c2-birkon.jpg', zmirot: 'gen4/c2-zmirot.jpg', hagada: 'gen4/c2-hagada.jpg', mazkeret: 'gen4/cat-mazkeret3.jpg', kids: 'gen4/c2-kids.jpg' };
   /* real Google reviews, pulled 14.10.2026, quoted verbatim (emojis removed, cuts marked with …) */
   const REV = { rating: 4.3, count: 65, url: 'https://www.google.com/maps/search/%D7%9E%D7%A8%D7%9B%D7%96+%D7%94%D7%A1%D7%99%D7%93%D7%95%D7%A8%D7%99%D7%9D', list: [
     ['כרמי י.', 5, 'לפני 3 חודשים', 'רוצה להודות למשה היקר ממרכז הסידורים ירושלים. הזמנתי סידורי תפילה לעילוי נשמת אבא שלי ז"ל וקבלתי שירות מעולה מקצועי סובלני ומהיר עם משלוח של הסידורים עד פתח הבית'],
@@ -1393,6 +1412,8 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
       '<div class="hc-nav"><button class="rb" type="button" data-hs="prev" aria-label="השקופית הקודמת">' + ic('prev') + '</button><div class="hc-dots" role="tablist" aria-label="בחירת שקופית">' + SLIDES.map((sl, i) => '<button type="button" role="tab" data-slide="' + i + '" aria-label="שקופית ' + (i + 1) + '" aria-current="' + (i === 0) + '"><span class="b"><i></i></span></button>').join('') + '</div><button class="rb" type="button" data-hs="next" aria-label="השקופית הבאה">' + ic('next') + '</button><button class="rb" type="button" data-hs-pause aria-label="עצירת ההחלפה האוטומטית">' + ic('pause') + '</button></div></div>' +
     '</section>' +
 
+    '<section class="prom2" aria-label="השירות שלנו"><div class="wrap"><ul tabindex="0" aria-label="ההבטחות שלנו">' + [['truck', 'משלוח חינם', 'בכל הזמנה מעל 350 ₪, לכל הארץ'], ['quill', 'הקדשה אישית', 'לכל מוצר, עם סקיצה לאישור'], ['users', 'הנחה לכמות', 'מזכרות לאירועים ולמוסדות'], ['shield', 'תשלום מאובטח', 'ושירות אישי בוואטסאפ']].map(x => '<li class="rv"><span class="lot" data-lot="' + x[0] + '">' + ic(x[0]) + '</span><span class="tx"><b>' + x[1] + '</b><span>' + x[2] + '</span></span></li>').join('') + '</ul></div></section>' +
+
     '<section class="sec tight" style="padding-bottom:clamp(40px,5vw,64px)" aria-labelledby="cat-h"><div class="wrap">' +
       '<div class="sh"><div class="tx rv"><h2 class="h2" id="cat-h">קנייה לפי קטגוריה</h2></div>' + railBtns('cats') + '</div>' +
       '<div class="cat-row" id="rail-cats">' + INDEX.concat(['kids']).map(id => { const m = menuOf(id); return '<a class="cc2" href="#c-' + id + '"><div class="ph"><img src="' + CIMG[id] + '" alt="" loading="lazy" draggable="false"></div><div class="cap">' + ic(id) + '<b>' + esc(m.name) + '</b></div></a>'; }).join('') + '</div>' +
@@ -1403,7 +1424,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
       '<div class="doors">' + NUSACH.map(n => '<a class="door rv" href="#c-siddur-' + n.id + '" data-pick="' + n.id + '"><img src="gen4/nus-' + n.id + '.jpg" alt="" loading="lazy" draggable="false"><span class="c"><b>' + esc(n.name) + '</b><span>סידורים, מחזורים, ברכונים וזמירות</span><i>לסידורי ' + esc(n.full) + ARW + '</i></span>' + (myNus === n.id ? '<em class="mine">' + ic('check') + 'הנוסח שלכם</em>' : '') + '</a>').join('') + '</div>' +
     '</div></section>' +
 
-    '<section class="feat" aria-labelledby="mz-h"><div class="pz" data-par="0.1"><img src="' + IMG.machzor + '" alt="סט מחזורים עת רצון בכריכת עור ורודה, על מפת פשתן" loading="lazy" style="object-position:70% 50%"></div>' +
+    '<section class="feat" aria-labelledby="mz-h"><div class="pz" data-par="0.1"><img src="' + IMG.machzor + '" alt="סט מחזורים עת רצון בכריכת עור ורודה, על מפת פשתן" loading="lazy" style="object-position:50% 50%"></div>' +
       '<div class="wrap"><div class="tx rv">' + kick('', 'לקראת החגים') + '<h2 class="h2" id="mz-h">סט אחד, כל החגים.</h2><p class="lead">ראש השנה, יום כיפור ושלושת הרגלים, באותה כריכה ובאותו נוסח. אפשר להוסיף הקדשה על כל הסט.</p>' +
       '<div class="ctas"><a class="btn solid mag" href="#c-machzor' + (myNus !== 'all' ? '-' + myNus : '') + '">למחזורים' + BI + '</a><a class="tlink" href="#p-2078">סט עת רצון, סדרת אלגנט' + ARW + '</a></div></div></div>' +
     '</section>' +
@@ -1442,12 +1463,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
       '<div class="grid4">' + gift.map(p => card(p)).join('') + '</div></div>' +
     '</div></section>' +
 
-    '<section class="sec tight" aria-label="השירות שלנו"><div class="wrap"><div class="prom draw" data-draw>' +
-      '<div>' + ic('truck') + '<b>משלוח חינם</b><p>בכל הזמנה מעל 350 ₪, לכל הארץ.</p></div>' +
-      '<div>' + ic('quill') + '<b>הקדשה אישית</b><p>לכל מוצר, עם סקיצה לאישור.</p></div>' +
-      '<div>' + ic('users') + '<b>הנחה לכמות</b><p>מזכרות לאירועים ולמוסדות.</p></div>' +
-      '<div>' + ic('shield') + '<b>תשלום מאובטח</b><p>ושירות אישי בוואטסאפ, מאדם אמיתי.</p></div>' +
-    '</div></div></section>';
+    '';
   }
 
   let cstate = { nus: 'all', cover: '', sort: 'rec', shown: 24 };
@@ -1647,7 +1663,20 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
     route.ran = true;
   }
   window.addEventListener('hashchange', route);
-  function afterRender() { reveal(); initRails(); initIndex(); bindMag(); onScrollFx(); }
+  /* service icons: Lottie when the player is there, the drawn SVG otherwise */
+  function initLot() {
+    const els = document.querySelectorAll('[data-lot]:not([data-lon])'); if (!els.length) return;
+    if (!window.lottie || !window.LOT) { setTimeout(initLot, 400); return; }
+    const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { const a = e.target._lot; if (a) a.goToAndPlay(0, true); io.unobserve(e.target); } }), { threshold: .6 }) : null;
+    els.forEach((el, n) => {
+      const k = el.dataset.lot; if (!LOT[k]) return; el.dataset.lon = '1'; el.innerHTML = '';
+      const a = lottie.loadAnimation({ container: el, renderer: 'svg', loop: false, autoplay: false, animationData: JSON.parse(JSON.stringify(LOT[k])) });
+      el._lot = a;
+      a.addEventListener('DOMLoaded', () => { if (reduced()) a.goToAndStop(a.totalFrames - 1, true); else if (io) { a.goToAndStop(0, true); setTimeout(() => io.observe(el), n * 140); } else a.play(); });
+      const li = el.closest('li'); if (li && fine()) li.addEventListener('mouseenter', () => { if (!reduced()) a.goToAndPlay(0, true); });
+    });
+  }
+  function afterRender() { initLot(); reveal(); initRails(); initIndex(); bindMag(); onScrollFx(); }
 
   /* ---------- category index: hover swaps the picture ---------- */
   function initIndex() {
