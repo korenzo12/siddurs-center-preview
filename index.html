@@ -1,7 +1,7 @@
 <!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex"></head><body><title>מרכז הסידורים · קונספט</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&family=Frank+Ruhl+Libre:wght@500;700&family=Bellefair&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&family=Frank+Ruhl+Libre:wght@500;700;900&family=Bellefair&display=swap">
 <style>
 /* v5 "Sefer": luxury Judaica house. Bellefair for display, Noto Sans Hebrew for UI (Apple-like).
    One object per frame, studio photography, hand-drawn line icons, quiet motion. */
@@ -972,6 +972,32 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
   .prom2 li, .prom2 li:first-child, .prom2 li:nth-child(3) { scroll-snap-align: start; padding: 12px 14px; border: 1px solid var(--hair); border-radius: 18px; }
   .prom2 li + li { margin-inline-start: 10px; }
 }
+
+/* v13 dedication templates */
+.tpls { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.tpls button { display: grid; justify-items: center; gap: 4px; padding: 8px 4px 9px; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--hair); color: var(--ink-2); font-size: 12.5px; transition: box-shadow .25s var(--ease), background-color .25s var(--ease), color .25s var(--ease), transform .2s var(--out); }
+.tpls svg { width: 46px; height: 25px; }
+.tpls button[aria-checked="true"] { background: var(--ink); color: var(--paper); box-shadow: none; }
+.tpls button[aria-checked="true"] svg g { --hole: var(--ink); }
+.tpls button:active { transform: scale(.96); }
+@media (hover: hover) { .tpls button:hover { box-shadow: inset 0 0 0 1px var(--ink); color: var(--ink); } .tpls button[aria-checked="true"]:hover { color: var(--paper); } }
+.ded-prev.plate { aspect-ratio: auto; padding: clamp(18px, 3vw, 30px) 0; }
+.ded-prev.plate .cv { position: relative; width: min(270px, 66%); aspect-ratio: 300 / 380; margin: 0 auto; border-radius: 6px 12px 12px 6px; overflow: hidden; box-shadow: 0 24px 40px -22px rgba(30,20,10,.55), -6px 0 0 -1px rgba(0,0,0,.08); transition: background .5s var(--ease); }
+.ded-prev.plate .cv::before { content: ""; position: absolute; inset: 7%; border-radius: 4px; pointer-events: none; }
+.ded-prev.plate.leather .cv { background: radial-gradient(120% 90% at 30% 15%, #5a2f25 0%, #321a14 55%, #1d0f0b 100%); --hole: #321a14; }
+.ded-prev.plate.leather .cv::before { box-shadow: inset 0 0 0 1.5px rgba(214,178,110,.35), inset 0 0 0 5px rgba(0,0,0,.18), inset 0 0 0 6.5px rgba(214,178,110,.2); }
+.ded-prev.plate.white .cv { background: radial-gradient(120% 90% at 30% 15%, #ffffff 0%, #f3f0ea 60%, #e6e1d7 100%); --hole: #f3f0ea; }
+.ded-prev.plate.white .cv::before { box-shadow: inset 0 0 0 1.5px rgba(40,36,30,.45), inset 0 0 0 5px rgba(255,255,255,.6), inset 0 0 0 6.5px rgba(40,36,30,.25); }
+.ded-prev.plate svg { position: relative; display: block; width: 100%; height: 100%; }
+.ded-prev.plate text { font-family: "Frank Ruhl Libre", serif; font-weight: 900; }
+.ded-prev.plate g [fill="var(--hole)"] { fill: var(--hole); }
+.dfl { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.dfl .fld input { width: 100%; }
+.dprice { display: flex; align-items: baseline; gap: 10px; padding: 12px 16px; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--hair); }
+.dprice b { font: 600 20px/1 var(--sans); } .dprice span { font-size: 13.5px; color: var(--ink-2); }
+.ded .sw.ink { background: #1B1917; }
+.tpls [fill="var(--hole)"] { fill: var(--hole); }
+@media (max-width: 860px) { .tpls { grid-template-columns: repeat(3, 1fr); } .tpls button { min-height: 52px; } }
 </style>
 
 <div class="app" dir="rtl" lang="he" id="app">
@@ -1340,20 +1366,62 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
     });
   }
 
-  /* ---------- personal dedication (every product) ---------- */
-  let ded = { mode: 'none', t: '', names: '', c: 'gold', f: 'classic' };
-  const LETTER = { classic: ['קלאסי', '"Frank Ruhl Libre", serif', 700], modern: ['מודרני', '"IBM Plex Sans Hebrew", sans-serif', 600], fine: ['מעודן', 'Bellefair, serif', 400] };
-  const OCC = [['בר מצווה', 'לכבוד בר המצווה של '], ['חתונה', 'מזל טוב ל'], ['לעילוי נשמת', 'לעילוי נשמת '], ['מתנה', 'באהבה, ']];
-  const fontAttr = () => 'font-family:' + LETTER[ded.f][1].replace(/"/g, "'") + ';font-weight:' + LETTER[ded.f][2];
+  /* ---------- personal dedication: the store's stamping templates, an emblem per occasion ---------- */
+  let ded = { mode: 'none', tpl: 'neshama', f: {}, names: '', c: 'gold' };
+  const DED_ONE = 130, DED_NAME = 10;
   const FOIL = { gold: ['#8a6420', '#f3dc9a', '#b8892f', '#fff1c4', '#a87a2a', '#e9cf88'], silver: ['#6d7076', '#f4f5f7', '#9a9da3', '#ffffff', '#8b8e94', '#dfe1e4'] };
-  const foilFill = id => ded.c === 'blind' ? 'rgba(0,0,0,.5)' : 'url(#fg-' + id + '-' + ded.c + ')';
-  const grads = id => '<defs><filter id="st-' + id + '" x="-5%" y="-30%" width="110%" height="160%"><feDropShadow dx="0" dy="-.6" stdDeviation=".3" flood-color="#000" flood-opacity=".55"/><feDropShadow dx="0" dy=".8" stdDeviation=".35" flood-color="#fff" flood-opacity=".18"/></filter>' + Object.keys(FOIL).map(k => '<linearGradient id="fg-' + id + '-' + k + '" x1="0" x2="1" y1="0" y2=".3">' + FOIL[k].map((c, i) => '<stop offset="' + (i / 5) + '" stop-color="' + c + '"/>').join('') + '</linearGradient>').join('') + '</defs>';
-  const txA = id => ' style="' + fontAttr() + '" filter="url(#st-' + id + ')"';
-  const dedText = () => (ded.mode === 'names' ? (ded.names.split('\n').map(s => s.trim()).filter(Boolean)[0] || 'שם לכל עותק') : ded.t) || 'ההקדשה שלכם כאן';
-  const leatherFill = id => ded.c === 'blind' ? 'rgba(0,0,0,.55)' : 'url(#fg-' + id + '-' + ded.c + ')';
-  function dedPreview(id, onCover) {
-    if (onCover) return '<div class="ded-prev cover"><span class="tag2">הדמיה על סידור רויאל</span><div class="bk"><img src="img/2614.jpg" alt="הדמיית הקדשה על כריכת הסידור"><svg class="foil" viewBox="0 0 610 64" aria-hidden="true" data-foilsvg="' + id + '">' + grads(id) + '<text x="305" y="45" font-size="40" text-anchor="middle" direction="rtl" fill="' + foilFill(id) + '"' + txA(id) + ' data-foil>' + esc(dedText()) + '</text></svg></div></div>';
-    return '<div class="ded-prev"><span class="tag2">כך תיראה ההקדשה</span><div class="leather"><svg viewBox="0 0 800 500" aria-hidden="true" data-foilsvg="' + id + '" data-leather>' + grads(id) + '<text x="400" y="230" font-size="22" text-anchor="middle" direction="rtl" fill="' + leatherFill(id) + '" opacity=".85"' + txA(id) + '>' + (ded.mode === 'names' ? 'שם אישי' : 'לזכרון ולברכה') + '</text><text x="400" y="290" font-size="52" text-anchor="middle" direction="rtl" fill="' + leatherFill(id) + '"' + txA(id) + ' data-foil>' + esc(dedText()) + '</text></svg></div></div>';
+  /* emblems on a 120x64 grid, drawn after the store's own stamps */
+  const EMB = {
+    neshama: '<path d="M60 9c6 8 8.5 14 5 20.5-1.6 3-3.4 4.2-5 4.2s-3.4-1.2-5-4.2C51.5 23 54 17 60 9Z"/><path d="M60 21c2 3 2.4 5.6 1 8-.5.8-.9 1-1 1s-.5-.2-1-1c-1.4-2.4-1-5 1-8Z" fill="var(--hole)"/><path d="M36 37h48c-2 8-11 13-24 13S38 45 36 37Z"/><path d="M53 51h14v4H53z"/><path d="M33 40c-7-2-12 3-9 7 2.5 3 7 1 5.5-2" fill="none" stroke-width="2.4"/><path d="M87 40c7-2 12 3 9 7-2.5 3-7 1-5.5-2" fill="none" stroke-width="2.4"/><path d="M14 47h9M97 47h9" fill="none" stroke-width="2"/>',
+    barmitzva: '<path d="M44 8h32v28H44z" fill="none" stroke-width="2.6"/><path d="M76 8l5-4v28l-5 4" fill="none" stroke-width="2.2"/><text x="60" y="30" font-size="20" text-anchor="middle" stroke="none">ש</text><path d="M36 36h48v7H36z" fill="none" stroke-width="2.4"/><path d="M84 40c12 2 16 10 6 14-12 5-32-2-48 2-6 1.5-10 4-12 7" fill="none" stroke-width="3.2"/>',
+    wedding: '<circle cx="51" cy="40" r="13" fill="none" stroke-width="3"/><circle cx="69" cy="40" r="13" fill="none" stroke-width="3"/><path d="M69 26l-6-7 6-8 6 8Z"/><path d="M28 48h10M82 48h10" fill="none" stroke-width="2"/>',
+    chatan: '<path d="M45 10h30c0 17-6 27-15 27S45 27 45 10Z" fill="none" stroke-width="2.8"/><path d="M48 16h24" fill="none" stroke-width="1.6"/><path d="M60 37v10" fill="none" stroke-width="3"/><path d="M47 55c1.5-5 7-8 13-8s11.5 3 13 8Z"/><path d="M30 30c-6 0-9 5-5 8M90 30c6 0 9 5 5 8" fill="none" stroke-width="2.2"/>',
+    henna: '<circle cx="60" cy="32" r="5"/><g fill="none" stroke-width="2.4"><ellipse cx="60" cy="18" rx="6" ry="9"/><ellipse cx="60" cy="46" rx="6" ry="9"/><ellipse cx="46" cy="32" rx="9" ry="6"/><ellipse cx="74" cy="32" rx="9" ry="6"/></g><path d="M36 50c-8 2-14-2-16-8 6 0 12 2 16 8ZM84 50c8 2 14-2 16-8-6 0-12 2-16 8Z"/>',
+    gift: '<path d="M60 22l5 6-5 6-5-6Z"/><g fill="none" stroke-width="2.4"><path d="M53 28c-6-8-18-9-20-1-1.6 6 6 8 9 4 2-3-1-6-3-4"/><path d="M67 28c6-8 18-9 20-1 1.6 6-6 8-9 4-2-3 1-6 3-4"/><path d="M22 40c10 4 26 4 38-2 12 6 28 6 38 2"/></g>'
+  };
+  /* line kinds: s small header, E emblem, L large name, M medium fixed, m small detail */
+  const TPL = {
+    neshama: { name: 'לעילוי נשמת', fields: [['n', 'שם הנפטר/ת', 'רוז (אליס) אקנין'], ['p', 'בן/בת', 'בת אליס ופרדי ז״ל'], ['d', 'תאריך הפטירה', 'כ״ט תשרי תשפ״ז']], lines: f => [['s', 'מוקדש לעילוי נשמת'], ['E'], ['L', f.n], ['m', f.p], ['m', f.d], ['m', 'ת.נ.צ.ב.ה.']] },
+    barmitzva: { name: 'בר מצווה', fields: [['n', 'שם החוגג', 'לירוי אהרון'], ['d', 'תאריך', 'י״ד בטבת תשפ״ז']], lines: f => [['E'], ['L', f.n], ['M', 'חוגג בר מצווה'], ['M', f.d]] },
+    wedding: { name: 'חתונה', fields: [['n', 'החתן והכלה', 'יוסף ושרה'], ['d', 'תאריך', 'כ״ה באדר תשפ״ז']], lines: f => [['s', 'מזכרת משמחת נישואי'], ['E'], ['L', f.n], ['m', f.d]] },
+    chatan: { name: 'שבת חתן', fields: [['n', 'שם החתן', 'יוסף כהן'], ['d', 'השבת', 'שבת פרשת וישב תשפ״ז']], lines: f => [['s', 'מזכרת משבת חתן'], ['E'], ['L', f.n], ['m', f.d]] },
+    henna: { name: 'חינה', fields: [['n', 'החתן והכלה', 'יוסף ושרה'], ['d', 'תאריך', 'כ״ג באדר תשפ״ז']], lines: f => [['s', 'מזכרת מטקס החינה'], ['E'], ['L', f.n], ['m', f.d]] },
+    gift: { name: 'מתנה', fields: [['n', 'שורה ראשית', 'למשפחת לוי היקרה'], ['d', 'שורה שנייה', 'באהבה, משפחת כהן']], lines: f => [['E'], ['L', f.n], ['m', f.d]] }
+  };
+  const SZ = { s: 17, L: 34, M: 25, m: 18 };
+  const dedNames = () => ded.names.split('\n').map(x => x.trim()).filter(Boolean);
+  const dedFee = q => ded.mode === 'one' ? DED_ONE : ded.mode === 'names' ? DED_NAME * Math.max(dedNames().length, q || 0) : 0;
+  const paint = id => ded.c === 'ink' ? '#1B1917' : 'url(#fg-' + id + '-' + ded.c + ')';
+  function plateInner(id) {
+    const t = TPL[ded.tpl]; const ph = {}; t.fields.forEach(([k, , x]) => { ph[k] = x; });
+    const val = k => (k === 'n' && ded.mode === 'names') ? (dedNames()[0] || '') : (ded.f[k] || '');
+    const f = {}; t.fields.forEach(([k]) => { f[k] = val(k) || ph[k]; });
+    const empty = {}; t.fields.forEach(([k]) => { empty[f[k]] = !val(k); });
+    const ls = t.lines(f); const gap = 9;
+    const h = ls.reduce((a, l) => a + (l[0] === 'E' ? 54 : SZ[l[0]] * 1.12) + gap, -gap);
+    let y = 190 - h / 2; let out = '';
+    ls.forEach(l => {
+      if (l[0] === 'E') { out += '<g transform="translate(90 ' + (y - 4).toFixed(1) + ') scale(1)" fill="' + paint(id) + '" stroke="' + paint(id) + '" stroke-linecap="round" stroke-linejoin="round">' + EMB[ded.tpl] + '</g>'; y += 54 + gap; return; }
+      const fs = SZ[l[0]]; y += fs * .95;
+      out += '<text x="150" y="' + y.toFixed(1) + '" font-size="' + fs + '" text-anchor="middle" direction="rtl" fill="' + paint(id) + '"' + (empty[l[1]] ? ' opacity=".5"' : '') + ' data-fit>' + esc(l[1]) + '</text>';
+      y += fs * .17 + gap;
+    });
+    return out;
+  }
+  function fitPlate(svg) { svg.querySelectorAll('[data-fit]').forEach(t => { try { const w = t.getComputedTextLength(); if (w > 236) t.setAttribute('font-size', (parseFloat(t.getAttribute('font-size')) * 236 / w).toFixed(1)); } catch (e) {} }); }
+  function dedPreview(id) {
+    const defs = '<defs>' + Object.keys(FOIL).map(k => '<linearGradient id="fg-' + id + '-' + k + '" x1="0" x2="1" y1="0" y2=".35">' + FOIL[k].map((c, n) => '<stop offset="' + (n / 5) + '" stop-color="' + c + '"/>').join('') + '</linearGradient>').join('') + '</defs>';
+    return '<div class="ded-prev plate ' + (ded.c === 'ink' ? 'white' : 'leather') + '" data-plate-wrap><span class="tag2">כך תיראה ההקדשה</span><div class="cv"><svg viewBox="0 0 300 380" role="img" aria-label="הדמיית ההקדשה על הכריכה" data-plate="' + id + '">' + defs + '<g data-plate-in>' + plateInner(id) + '</g></svg></div></div>';
+  }
+  function refreshFoil() {
+    document.querySelectorAll('[data-plate]').forEach(sv => { const id = sv.dataset.plate; sv.querySelector('[data-plate-in]').innerHTML = plateInner(id); fitPlate(sv); const w = sv.closest('[data-plate-wrap]'); if (w) { w.classList.toggle('white', ded.c === 'ink'); w.classList.toggle('leather', ded.c !== 'ink'); } });
+    document.querySelectorAll('[data-ded-price]').forEach(el => { el.innerHTML = priceLine(); });
+    if (typeof syncQty === 'function' && $('#tot-line')) syncQty();
+  }
+  function priceLine() {
+    if (ded.mode === 'one') return '<b>₪' + DED_ONE + '</b><span>להזמנה כולה, אותה הקדשה על כל העותקים</span>';
+    const n = dedNames().length;
+    return '<b>₪' + DED_NAME + '</b><span>לכל עותק עם שם' + (n ? ' · ' + n + ' שמות = ₪' + (n * DED_NAME) : '') + '</span>';
   }
   function nusShow(k, focus) {
     document.querySelectorAll('[data-nt]').forEach(b => { const on = b.dataset.nt === k; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; if (on && focus) b.focus(); });
@@ -1363,35 +1431,31 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
   document.addEventListener('mouseover', e => { const b = e.target.closest && e.target.closest('[data-nt]'); if (b && matchMedia('(hover: hover)').matches && b.getAttribute('aria-selected') !== 'true') nusShow(b.dataset.nt); });
   function dedBlock(id, p) {
     if (id === 'ded-home' && ded.mode === 'none') ded.mode = 'one';
-    const onCover = p && (p.id === 2614 || p.id === 2608 || p.id === 2582);
+    const t = TPL[ded.tpl];
     return '<div class="ded" data-ded="' + id + '">' +
       '<div class="seg" role="group" aria-label="סוג ההקדשה">' + (id === 'ded-home' ? [['one', 'הקדשה לכל הכמות'], ['names', 'שם לכל עותק']] : [['none', 'בלי הקדשה'], ['one', 'הקדשה לכל הכמות'], ['names', 'שם לכל עותק']]).map(m => '<button type="button" data-ded-mode="' + m[0] + '" aria-pressed="' + (ded.mode === m[0]) + '">' + m[1] + '</button>').join('') + '</div>' +
-      (ded.mode === 'none' ? '<div class="note">' + ic('quill') + '<span>אפשר להוסיף הקדשה או חריטה על הכריכה בתוספת תשלום: מזכרת מאירוע, או הנצחה לעילוי נשמה. לפני העבודה תקבלו סקיצה לאישור.</span></div>' :
-        dedPreview(id, onCover) +
-        (ded.mode === 'one'
-          ? '<div class="occ" role="group" aria-label="התחלה מהירה לפי אירוע">' + OCC.map(o => '<button type="button" data-ded-occ="' + esc(o[1]) + '">' + esc(o[0]) + '</button>').join('') + '</div>' +
-            '<div class="fld"><label for="' + id + '-t">נוסח ההקדשה <span class="cnt" data-ded-cnt aria-live="polite">' + ded.t.length + '/40</span></label><input id="' + id + '-t" data-ded-t maxlength="40" placeholder="לדוגמה: בר המצווה של יוסף, תשפ״ז" value="' + esc(ded.t) + '" autocomplete="off"><small>אותה הקדשה תוטבע על כל העותקים בהזמנה.</small></div>'
-          : '<div class="fld"><label for="' + id + '-n">שם לכל עותק, שם בכל שורה</label><textarea class="names" id="' + id + '-n" data-ded-n placeholder="משפחת כהן&#10;משפחת לוי&#10;משפחת מזרחי">' + esc(ded.names) + '</textarea><small id="' + id + '-nc" aria-live="polite">' + namesInfo() + '</small></div>') +
-        '<div class="ded-two">' +
-        '<div><span class="ol2">הטבעה</span><div class="seg" role="group" aria-label="צבע ההטבעה">' + [['gold', 'זהב'], ['silver', 'כסף']].map(c => '<button type="button" data-ded-c="' + c[0] + '" aria-pressed="' + (ded.c === c[0]) + '"><i class="sw ' + c[0] + '" aria-hidden="true"></i>' + c[1] + '</button>').join('') + '</div></div></div>' +
-        '<div class="note">' + ic('tag') + '<span>הקדשה בתוספת תשלום, והנחה לכמות. הסקיצה והמחיר הסופי נשלחים לאישור לפני העבודה.</span></div>') +
+      (ded.mode === 'none' ? '<div class="note">' + ic('quill') + '<span>אפשר להוסיף הטבעה על הכריכה: הקדשה אחידה לכל הכמות ב-₪' + DED_ONE + ' להזמנה, או שם אישי לכל עותק ב-₪' + DED_NAME + '. לפני העבודה תקבלו סקיצה לאישור.</span></div>' :
+        '<div class="tpls" role="radiogroup" aria-label="סוג האירוע">' + Object.keys(TPL).map(k => '<button type="button" role="radio" data-ded-tpl="' + k + '" aria-checked="' + (ded.tpl === k) + '"><svg viewBox="0 0 120 64" aria-hidden="true"><g fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="--hole:var(--paper)">' + EMB[k] + '</g></svg><span>' + TPL[k].name + '</span></button>').join('') + '</div>' +
+        dedPreview(id) +
+        '<div class="dfl">' + t.fields.filter(([k]) => !(k === 'n' && ded.mode === 'names')).map(([k, label, ph]) => '<div class="fld"><label for="' + id + '-' + k + '">' + label + '</label><input id="' + id + '-' + k + '" data-ded-fld="' + k + '" maxlength="40" placeholder="' + esc(ph) + '" value="' + esc(ded.f[k] || '') + '" autocomplete="off"></div>').join('') + '</div>' +
+        (ded.mode === 'names' ? '<div class="fld"><label for="' + id + '-n">שם לכל עותק, שם בכל שורה</label><textarea class="names" id="' + id + '-n" data-ded-n placeholder="משפחת כהן&#10;משפחת לוי&#10;משפחת מזרחי">' + esc(ded.names) + '</textarea><small id="' + id + '-nc" aria-live="polite">' + namesInfo() + '</small></div>' : '') +
+        '<div class="ded-two"><div><span class="ol2">צבע ההטבעה</span><div class="seg" role="group" aria-label="צבע ההטבעה">' + [['gold', 'זהב'], ['silver', 'כסף'], ['ink', 'שחור']].map(c => '<button type="button" data-ded-c="' + c[0] + '" aria-pressed="' + (ded.c === c[0]) + '"><i class="sw ' + c[0] + '" aria-hidden="true"></i>' + c[1] + '</button>').join('') + '</div></div></div>' +
+        '<div class="dprice" data-ded-price aria-live="polite">' + priceLine() + '</div>' +
+        '<div class="note">' + ic('tag') + '<span>לפני העבודה נשלחת סקיצה לאישור בוואטסאפ, ורק אחרי אישור מטביעים.</span></div>') +
     '</div>';
   }
-  function namesInfo() { const n = ded.names.split('\n').map(s => s.trim()).filter(Boolean).length; return n ? n + ' שמות, ' + n + ' עותקים. הכמות בהזמנה תתעדכן בהתאם.' : 'כל שורה היא עותק אחד עם שם משלו.'; }
-  function refreshFoil() {
-    document.querySelectorAll('[data-foilsvg]').forEach(sv => { const id = sv.dataset.foilsvg; const leather = sv.hasAttribute('data-leather'); sv.querySelectorAll('text').forEach(t => t.setAttribute('fill', leather ? leatherFill(id) : foilFill(id))); sv.querySelectorAll('text').forEach(t => t.setAttribute('style', fontAttr())); const f = sv.querySelector('[data-foil]'); if (f) f.textContent = dedText(); });
-    document.querySelectorAll('[data-ded-cnt]').forEach(c => { c.textContent = ded.t.length + '/40'; });
-  }
+  function namesInfo() { const n = dedNames().length; return n ? n + ' שמות, ' + n + ' עותקים. הכמות בהזמנה תתעדכן בהתאם.' : 'כל שורה היא עותק אחד עם שם משלו.'; }
   document.addEventListener('input', e => {
     const t = e.target;
-    if (t.matches('[data-ded-t]')) { ded.t = t.value; refreshFoil(); }
+    if (t.matches('[data-ded-fld]')) { ded.f[t.dataset.dedFld] = t.value; document.querySelectorAll('[data-ded-fld="' + t.dataset.dedFld + '"]').forEach(x => { if (x !== t) x.value = t.value; }); refreshFoil(); }
     if (t.matches('[data-ded-n]')) {
-      ded.names = t.value; refreshFoil(); const c = document.getElementById(t.id + 'c'); if (c) c.textContent = namesInfo();
-      const n = ded.names.split('\n').map(s => s.trim()).filter(Boolean).length; const q = $('#qty-in'); if (q && n) { pstate.qty = n; q.value = n; syncQty(); }
+      ded.names = t.value; const c = document.getElementById(t.id + 'c'); if (c) c.textContent = namesInfo();
+      const n = dedNames().length; const q = $('#qty-in'); if (q && n) { pstate.qty = n; q.value = n; }
+      refreshFoil();
     }
     if (t.id === 'qty-in') { pstate.qty = Math.max(1, Math.min(999, parseInt(t.value, 10) || 1)); syncQty(true); }
   });
-  function redrawDed() { document.querySelectorAll('[data-ded]').forEach(el => { const id = el.dataset.ded; const p = id === 'ded-p' ? curProduct : byId[2614]; const tmp = document.createElement('div'); tmp.innerHTML = dedBlock(id, p); el.replaceWith(tmp.firstChild); }); }
+  function redrawDed() { document.querySelectorAll('[data-ded]').forEach(el => { const id = el.dataset.ded; const p = id === 'ded-p' ? curProduct : byId[2614]; const tmp = document.createElement('div'); tmp.innerHTML = dedBlock(id, p); const nw = tmp.firstChild; el.replaceWith(nw); nw.querySelectorAll('[data-plate]').forEach(fitPlate); }); }
 
   /* ---------- views ---------- */
   const INDEX = ['siddur', 'machzor', 'tehilim', 'chumash', 'limud', 'birkon', 'zmirot', 'hagada', 'mazkeret'];
@@ -1445,8 +1509,8 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
     '</section>' +
 
     '<section class="sec" id="engrave" aria-labelledby="eng-h"><div class="wrap"><div class="split">' +
-      '<div class="tx rv">' + kick('', 'הקדשה אישית') + '<h2 class="h2" id="eng-h">שם על הכריכה. זיכרון לשנים.</h2><p class="lead">לכל מוצר באתר אפשר להוסיף הקדשה או חריטה, בתוספת תשלום. הקלידו כאן ותראו איך זה ייראה.</p>' +
-        '<ol class="steps"><li><span>1</span><div><b>הקדשה אחידה לכל הכמות</b><p>מזכרת מאירוע: אותה הקדשה על כל העותקים, עם הנחה לכמות.</p></div></li><li><span>2</span><div><b>שם אישי לכל עותק</b><p>שם משפחה או שם פרטי על כל ספר, לכל אורח או לכל בן משפחה.</p></div></li><li><span>3</span><div><b>סקיצה לאישור</b><p>לפני העבודה נשלחת סקיצה בוואטסאפ, ורק אחרי אישור מתחילים.</p></div></li></ol>' +
+      '<div class="tx rv">' + kick('', 'הקדשה אישית') + '<h2 class="h2" id="eng-h">שם על הכריכה. זיכרון לשנים.</h2><p class="lead">לכל מוצר באתר אפשר להוסיף הקדשה או חריטה, בתוספת תשלום. בוחרים אירוע, ממלאים פרטים ורואים איך זה ייראה.</p>' +
+        '<ol class="steps"><li><span>1</span><div><b>הקדשה אחידה לכל הכמות</b><p>אותה הקדשה על כל העותקים: ₪130 להזמנה, לא משנה כמה עותקים.</p></div></li><li><span>2</span><div><b>שם אישי לכל עותק</b><p>שם משפחה או שם פרטי על כל ספר: ₪10 לעותק.</p></div></li><li><span>3</span><div><b>סקיצה לאישור</b><p>לפני העבודה נשלחת סקיצה בוואטסאפ, ורק אחרי אישור מתחילים.</p></div></li></ol>' +
         '<div class="ctas" style="margin-top:32px"><a class="btn solid mag" href="#c-mazkeret">למזכרות לאירועים' + BI + '</a></div></div>' +
       '<div class="rv">' + dedBlock('ded-home', byId[2614] || { id: 2614 }) + '</div>' +
     '</div></div></section>' +
@@ -1508,7 +1572,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
   function syncQty(fromInput) {
     const q = $('#qty-in'); if (q && !fromInput) q.value = pstate.qty;
     document.querySelectorAll('[data-qc]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.qc === pstate.qty)));
-    const tot = $('#tot-line'); if (tot && curProduct) tot.textContent = 'סה״כ ' + money(+(curProduct.price * pstate.qty).toFixed(2));
+    const tot = $('#tot-line'); if (tot && curProduct) tot.textContent = 'סה״כ ' + money(+(curProduct.price * pstate.qty + dedFee(pstate.qty)).toFixed(2)) + (ded.mode !== 'none' ? ' כולל הקדשה' : '');
   }
   function viewProduct(id) {
     const hv = HERO.findIndex(h => String(h.id) === String(id));
@@ -1608,7 +1672,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
       '<form class="form track rv" data-track novalidate style="margin-bottom:clamp(80px,10vw,140px)"><div class="fld"><label for="t-o">מספר הזמנה</label><input id="t-o" inputmode="numeric" dir="ltr" placeholder="לדוגמה 18452" required></div><div class="fld"><label for="t-p">טלפון</label><input id="t-p" type="tel" inputmode="tel" dir="ltr" autocomplete="tel" required></div><button class="btn solid" type="submit">בדיקת סטטוס' + BI + '</button><div id="t-res" aria-live="polite"></div></form></div>';
   }
   function viewCheckout() {
-    const total = cart.reduce((s, c) => s + c.q * itemOf(c.id).price, 0);
+    const total = cart.reduce((s, c) => s + c.q * itemOf(c.id).price + (c.fee || 0), 0);
     const ship = total >= FREE || !total ? 0 : 30;
     return '<div class="wrap">' + pageHead('תשלום', 'סיום הזמנה', '') +
       '<div class="co"><form class="form" data-form novalidate><div class="steps-bar"><span aria-current="step">1 · פרטים</span><span>2 · משלוח</span><span>3 · תשלום</span></div>' +
@@ -1618,7 +1682,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
         '<fieldset style="border:0;padding:0;margin:0" class="fld"><legend style="font-size:14px;font-weight:500;margin-bottom:6px">אופן משלוח</legend><div class="choice"><label><input type="radio" name="sh" checked><b>משלוח עד הבית</b><span>' + (ship ? money(ship) : 'חינם') + '</span></label><label><input type="radio" name="sh"><b>איסוף עצמי בירושלים</b><span>חינם</span></label></div></fieldset>' +
         '<button class="btn solid" type="submit">המשך לתשלום' + BI + '</button></form>' +
       '<aside class="sum" aria-label="סיכום הזמנה"><h2>הסל שלך</h2>' +
-        (cart.length ? cart.map(c => { const p = itemOf(c.id); return '<div class="ci2"><div class="t">' + pic(p) + '</div><div><div class="n">' + esc(base(p)) + '</div>' + (c.col ? '<div style="font-size:13px;color:var(--ink-3)">צבע: ' + esc(c.col) + '</div>' : '') + (c.e ? '<div style="font-size:13px;color:var(--gold)">הקדשה: ' + esc(c.e) + '</div>' : '') + '<span style="font-size:13px;color:var(--ink-3)">כמות ' + c.q + '</span></div><div class="p">' + money(+(p.price * c.q).toFixed(2)) + '</div></div>'; }).join('') : '<p class="lead" style="margin:0">הסל עדיין ריק. <a href="#c-siddur" style="text-decoration:underline">לסידורים</a></p>') +
+        (cart.length ? cart.map(c => { const p = itemOf(c.id); return '<div class="ci2"><div class="t">' + pic(p) + '</div><div><div class="n">' + esc(base(p)) + '</div>' + (c.col ? '<div style="font-size:13px;color:var(--ink-3)">צבע: ' + esc(c.col) + '</div>' : '') + (c.e ? '<div style="font-size:13px;color:var(--gold)">הקדשה: ' + esc(c.e) + (c.fee ? ' · ₪' + c.fee : '') + '</div>' : '') + '<span style="font-size:13px;color:var(--ink-3)">כמות ' + c.q + '</span></div><div class="p">' + money(+(p.price * c.q).toFixed(2)) + '</div></div>'; }).join('') : '<p class="lead" style="margin:0">הסל עדיין ריק. <a href="#c-siddur" style="text-decoration:underline">לסידורים</a></p>') +
         '<div class="ln"><span>סכום ביניים</span><span>' + money(+total.toFixed(2)) + '</span></div><div class="ln"><span>משלוח</span><span>' + (ship ? money(ship) : 'חינם') + '</span></div><div class="ln t"><span>סך הכל</span><span>' + money(+(total + ship).toFixed(2)) + '</span></div>' +
         '<div class="safe">' + ic('shield') + 'תשלום מאובטח. בקונספט הזה התשלום לא פעיל.</div></aside></div></div>';
   }
@@ -1743,14 +1807,14 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
     cart = cart.filter(c => itemOf(c.id));
     const n = cart.reduce((s, c) => s + c.q, 0);
     document.querySelectorAll('[data-count]').forEach(el => { const was = el.textContent; el.textContent = n; el.hidden = !n; if (n && String(n) !== was) { el.classList.remove('cart-bump'); void el.offsetWidth; el.classList.add('cart-bump'); } });
-    const total = cart.reduce((s, c) => s + c.q * itemOf(c.id).price, 0);
+    const total = cart.reduce((s, c) => s + c.q * itemOf(c.id).price + (c.fee || 0), 0);
     if (!cart.length) { $('#cart-items').innerHTML = '<div class="cempty">' + ic('bag') + '<p>הסל עדיין ריק.</p><a class="btn solid" href="#c-siddur" data-close>לסידורים</a></div>'; $('#cart-foot').innerHTML = ''; return; }
     const left = Math.max(0, FREE - total);
     $('#cart-items').innerHTML = '<div class="ship">' + (left ? 'עוד <b>' + money(+left.toFixed(2)) + '</b> ויש לכם משלוח חינם' : '<b>יש לכם משלוח חינם</b>') + '<div class="bar"><i style="width:' + Math.min(100, Math.round(total / FREE * 100)) + '%"></i></div></div>' +
-      cart.map((c, i) => { const p = itemOf(c.id); return '<div class="ci2"><div class="t">' + pic(p) + '</div><div><div class="n">' + esc(base(p)) + '</div>' + (c.col ? '<div style="font-size:13px;color:var(--ink-3)">צבע: ' + esc(c.col) + '</div>' : '') + (c.e ? '<div style="font-size:13px;color:var(--gold)">הקדשה: ' + esc(c.e) + '</div>' : '') + '<div class="sq"><button type="button" data-cq="' + i + '" data-d="1" aria-label="להוסיף אחד">' + ic('plus') + '</button><span>' + c.q + '</span><button type="button" data-cq="' + i + '" data-d="-1" aria-label="להוריד אחד">' + ic('minus') + '</button></div></div><div class="p">' + money(+(p.price * c.q).toFixed(2)) + '</div></div>'; }).join('');
+      cart.map((c, i) => { const p = itemOf(c.id); return '<div class="ci2"><div class="t">' + pic(p) + '</div><div><div class="n">' + esc(base(p)) + '</div>' + (c.col ? '<div style="font-size:13px;color:var(--ink-3)">צבע: ' + esc(c.col) + '</div>' : '') + (c.e ? '<div style="font-size:13px;color:var(--gold)">הקדשה: ' + esc(c.e) + (c.fee ? ' · ₪' + c.fee : '') + '</div>' : '') + '<div class="sq"><button type="button" data-cq="' + i + '" data-d="1" aria-label="להוסיף אחד">' + ic('plus') + '</button><span>' + c.q + '</span><button type="button" data-cq="' + i + '" data-d="-1" aria-label="להוריד אחד">' + ic('minus') + '</button></div></div><div class="p">' + money(+(p.price * c.q).toFixed(2)) + '</div></div>'; }).join('');
     $('#cart-foot').innerHTML = '<div class="tot"><span>סך הכל</span><span>' + money(+total.toFixed(2)) + '</span></div><button class="btn solid" type="button" data-checkout>למעבר לתשלום' + BI + '</button>';
   }
-  function addToCart(id, q, e, col) { const c = cart.find(x => String(x.id) === String(id) && (x.e || '') === (e || '') && (x.col || '') === (col || '')); if (c) c.q += q; else cart.push({ id: isNaN(id) ? id : Number(id), q, e: e || '', col: col || '' }); saveCart(); toast(e ? 'נוסף לסל, עם הקדשה' : 'נוסף לסל', 'check'); }
+  function addToCart(id, q, e, col, fee) { const c = cart.find(x => String(x.id) === String(id) && (x.e || '') === (e || '') && (x.col || '') === (col || '')); if (c) c.q += q; else cart.push({ id: isNaN(id) ? id : Number(id), q, e: e || '', col: col || '', fee: fee || 0 }); saveCart(); toast(e ? 'נוסף לסל, עם הקדשה' : 'נוסף לסל', 'check'); }
   let toastT = null;
   function toast(t, icon) { const el = $('#toast'); el.innerHTML = (icon ? ic(icon) : '') + esc(t); el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), 2000); }
 
@@ -1820,6 +1884,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
     if (d.nt) { nusShow(d.nt); return; }
     if (d.pick) { setNus(d.pick, true); location.hash = '#c-siddur-' + d.pick; return; }
     if (d.dedMode) { ded.mode = d.dedMode; redrawDed(); const b = document.querySelector('[data-ded-mode="' + ded.mode + '"]'); if (b) b.focus(); return; }
+    if (d.dedTpl) { ded.tpl = d.dedTpl; redrawDed(); const b = document.querySelector('[data-ded-tpl="' + ded.tpl + '"]'); if (b) b.focus(); return; }
     if (d.dedF) { ded.f = d.dedF; refreshFoil(); document.querySelectorAll('[data-ded-f]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.dedF === ded.f))); return; }
     if (d.dedOcc != null) { ded.t = d.dedOcc; const box = e.target.closest('[data-ded]'); const inp = box && box.querySelector('[data-ded-t]'); if (inp) { inp.value = ded.t; inp.focus(); inp.setSelectionRange(ded.t.length, ded.t.length); } refreshFoil(); return; }
     if (d.dedC) { ded.c = d.dedC; refreshFoil(); document.querySelectorAll('[data-ded-c]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.dedC === ded.c))); return; }
@@ -1839,9 +1904,10 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
       const onP = location.hash.startsWith('#p-') && !t.classList.contains('qa');
       let note = '';
       const col = onP ? (pstate.col || '') : '';
-      if (onP && ded.mode === 'one' && ded.t.trim()) note = ded.t.trim() + ' (' + (ded.c === 'gold' ? 'זהב' : ded.c === 'silver' ? 'כסף' : 'עיוורת') + ')';
-      if (onP && ded.mode === 'names') { const ns = ded.names.split('\n').map(s => s.trim()).filter(Boolean); if (ns.length) note = ns.length + ' שמות: ' + ns.slice(0, 3).join(', ') + (ns.length > 3 ? '…' : ''); }
-      addToCart(d.add, onP ? pstate.qty : 1, note, col); return;
+      let fee = 0;
+      if (onP && ded.mode === 'one') { const f = ded.f; note = TPL[ded.tpl].name + ': ' + [f.n, f.p, f.d].filter(Boolean).join(', ').slice(0, 60) + ' (' + ({ gold: 'זהב', silver: 'כסף', ink: 'שחור' })[ded.c] + ')'; fee = DED_ONE; }
+      if (onP && ded.mode === 'names') { const ns = dedNames(); if (ns.length) note = TPL[ded.tpl].name + ', ' + ns.length + ' שמות: ' + ns.slice(0, 3).join(', ') + (ns.length > 3 ? '…' : ''); fee = DED_NAME * Math.max(ns.length, pstate.qty); }
+      addToCart(d.add, onP ? pstate.qty : 1, note, col, fee); return;
     }
     if (d.cq !== undefined) { const c = cart[+d.cq]; c.q += +d.d; if (c.q <= 0) cart.splice(+d.cq, 1); return saveCart(); }
     if (d.checkout !== undefined) { closeAll(); location.hash = '#checkout'; return; }
