@@ -1,0 +1,1813 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex"></head><body><title>מרכז הסידורים · קונספט</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&family=Frank+Ruhl+Libre:wght@500;700&family=Bellefair&display=swap">
+<style>
+/* v5 "Sefer": luxury Judaica house. Bellefair for display, Noto Sans Hebrew for UI (Apple-like).
+   One object per frame, studio photography, hand-drawn line icons, quiet motion. */
+:root {
+  --bg: #F6F3EE; --paper: #FBFAF7; --stone: #EEE9E1; --stone-2: #E4DDD1; --white: #fff;
+  --ink: #191613; --ink-2: #5C554C; --ink-3: #6E665B; --hair: rgba(25,22,19,.12); --hair-2: rgba(25,22,19,.07);
+  --onyx: #0F0D0B; --onyx-2: #191613; --on: #F3EEE6; --on-2: #A69D91; --on-hair: rgba(243,238,230,.14);
+  --navy: #14244A; --navy-h: #0C1834; --gold: #7E6331; --gold-l: #CDB27D;
+  --focus: #2F5BD3;
+  --disp: "IBM Plex Sans Hebrew", -apple-system, "SF Hebrew", Arial, sans-serif;
+  --sans: "IBM Plex Sans Hebrew", -apple-system, "SF Hebrew", "Arial Hebrew", Arial, sans-serif;
+  --ease: cubic-bezier(.32,.72,0,1); --out: cubic-bezier(.16,1,.3,1); --io: cubic-bezier(.76,0,.24,1);
+  --max: 1220px; --gut: clamp(16px, 4vw, 48px); --ut: 36px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { overflow-x: clip; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 15px/1.65 var(--sans); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+body.locked { overflow: hidden; }
+.app { direction: rtl; text-align: right; }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+img { display: block; max-width: 100%; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
+.skip { position: absolute; inset-inline-start: 12px; top: -60px; background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 8px; z-index: 200; }
+.skip:focus { top: 12px; }
+.wrap { max-width: var(--max); margin-inline: auto; padding-inline: var(--gut); }
+
+/* ---------- icons: hand-drawn line set, draw on reveal ---------- */
+.ic { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.ic .dot { stroke-width: 2.2; }
+.draw .ic path, .draw .ic circle, .draw .ic rect { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.6s var(--out); }
+.draw.on .ic path, .draw.on .ic circle, .draw.on .ic rect { stroke-dashoffset: 0; }
+.draw.on li:nth-child(2) .ic * { transition-delay: .06s } .draw.on li:nth-child(3) .ic * { transition-delay: .12s } .draw.on li:nth-child(4) .ic * { transition-delay: .18s } .draw.on li:nth-child(5) .ic * { transition-delay: .24s } .draw.on li:nth-child(n+6) .ic * { transition-delay: .3s }
+@media (hover: hover) { .redraw:hover .ic path, .strip a:hover .ic path, .strip a:hover .ic rect, .strip a:hover .ic circle { animation: redraw 1.1s var(--out); } }
+@keyframes redraw { 0% { stroke-dasharray: 1; stroke-dashoffset: 1; } 100% { stroke-dasharray: 1; stroke-dashoffset: 0; } }
+
+/* ---------- loader ---------- */
+.ld { position: fixed; inset: 0; z-index: 300; background: var(--onyx); color: var(--on); display: grid; place-items: center; clip-path: inset(0 0 0 0); transition: clip-path 1.1s var(--io); }
+.ld.out { clip-path: inset(0 0 100% 0); }
+.ld .in { display: grid; justify-items: center; gap: 22px; transition: opacity .5s var(--ease), transform .9s var(--io); }
+.ld.out .in { opacity: 0; transform: translateY(-40px); }
+.ld .mark { width: 76px; height: 76px; color: var(--gold-l); }
+.ld .mark path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ldraw 1.3s var(--out) forwards; }
+.ld .mark path:nth-child(2) { animation-delay: .15s } .ld .mark path:nth-child(3) { animation-delay: .3s } .ld .mark path:nth-child(n+4) { animation-delay: .55s }
+@keyframes ldraw { to { stroke-dashoffset: 0; } }
+.ld .wm { font: 600 clamp(36px, 5vw, 56px)/1 var(--disp); display: flex; gap: .26em; overflow: hidden; padding-bottom: 6px; }
+.ld .wm span { display: inline-block; transform: translateY(110%); animation: lrise 1s var(--out) .2s forwards; }
+.ld .wm span:nth-child(2) { animation-delay: .32s; }
+@keyframes lrise { to { transform: none; } }
+.ld .tag { font-size: 13px; letter-spacing: .06em; color: var(--on-2); opacity: 0; animation: lfade .8s var(--ease) .6s forwards; }
+@keyframes lfade { to { opacity: 1; } }
+.ld .bar { width: 160px; height: 1px; background: var(--on-hair); overflow: hidden; }
+.ld .bar i { display: block; height: 100%; background: var(--gold-l); transform: scaleX(0); transform-origin: right; animation: lbar 1.5s var(--io) .2s forwards; }
+@keyframes lbar { to { transform: scaleX(1); } }
+
+/* ---------- type ---------- */
+.h2, .h3, h1, .pc .nm, .ix-name b { letter-spacing: -.025em; }
+.kick { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 12px; font: 500 12.5px/1 var(--sans); color: var(--gold); }
+.kick b { font: 600 17px/1 var(--disp); color: var(--ink-3); }
+.dark .kick { color: var(--gold-l); } .dark .kick b { color: var(--on-2); }
+.h2 { font: 600 clamp(28px, 3.3vw, 46px)/1.08 var(--disp); margin: 0; text-wrap: balance; }
+.h3 { font: 600 clamp(22px, 2vw, 28px)/1.12 var(--disp); margin: 0; }
+.lead { margin: 14px 0 0; max-width: 52ch; font-size: clamp(15px, 1.05vw, 16.5px); line-height: 1.7; color: var(--ink-2); text-wrap: pretty; }
+.dark .lead { color: var(--on-2); }
+.h2 .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .12em; margin-bottom: -.12em; }
+.h2 .w > i { display: inline-block; font-style: normal; transform: translateY(110%); transition: transform 1.05s var(--out); }
+.h2.words-in .w > i { transform: none; }
+.h2.words-in .w:nth-child(2) > i { transition-delay: .05s } .h2.words-in .w:nth-child(3) > i { transition-delay: .1s }
+.h2.words-in .w:nth-child(4) > i { transition-delay: .15s } .h2.words-in .w:nth-child(5) > i { transition-delay: .2s } .h2.words-in .w:nth-child(n+6) > i { transition-delay: .25s }
+
+/* ---------- buttons ---------- */
+.btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 46px; padding: 0 22px; border-radius: 999px; font: 500 14.5px/1 var(--sans); white-space: nowrap; overflow: hidden; isolation: isolate; transition: color .45s var(--ease), transform .5s var(--out), box-shadow .35s var(--ease); }
+.btn::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; transform: translateY(101%); transition: transform .55s var(--io); }
+@media (hover: hover) { .btn:hover::before { transform: none; } }
+.btn:active { transform: scale(.98); }
+.btn .bi { width: 28px; height: 28px; margin-inline-end: -14px; border-radius: 50%; display: grid; place-items: center; transition: transform .55s var(--out); }
+.btn .bi .ic { width: 16px; height: 16px; }
+@media (hover: hover) { .btn:hover .bi { transform: translateX(-4px); } }
+.btn.solid { background: var(--navy); color: #fff; } .btn.solid .bi { background: rgba(255,255,255,.12); } .btn.solid::before { background: var(--ink); }
+.btn.light { background: var(--on); color: var(--ink); } .btn.light .bi { background: rgba(25,22,19,.07); } .btn.light::before { background: #fff; }
+.btn.line { box-shadow: inset 0 0 0 1px var(--hair); color: var(--ink); } .btn.line::before { background: var(--ink); }
+@media (hover: hover) { .btn.line:hover { color: var(--on); } }
+.dark .btn.line { box-shadow: inset 0 0 0 1px var(--on-hair); color: var(--on); } .dark .btn.line::before { background: var(--on); }
+@media (hover: hover) { .dark .btn.line:hover { color: var(--ink); } }
+.tlink { display: inline-flex; align-items: center; gap: 10px; font: 500 15px/1 var(--sans); padding-block: 8px; background: linear-gradient(currentColor, currentColor) 100% 100% / 0 1px no-repeat; transition: background-size .55s var(--out); }
+@media (hover: hover) { .tlink:hover { background-size: 100% 1px; } }
+.tlink .ic { width: 16px; height: 16px; transition: transform .55s var(--out); }
+@media (hover: hover) { .tlink:hover .ic { transform: translateX(-5px); } }
+
+/* ---------- utility strip ---------- */
+.util { height: var(--ut); background: var(--onyx); color: var(--on-2); font-size: 12.5px; position: relative; z-index: 45; }
+.util .wrap { height: 100%; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; }
+.util .bsd { font: 600 16px/1 var(--disp); color: var(--on); }
+.util .uf { overflow: hidden; height: 18px; }
+.util .uf ul { list-style: none; margin: 0; padding: 0; animation: utick 12s var(--io) infinite; }
+.util .uf li { height: 18px; line-height: 18px; text-align: center; }
+@keyframes utick { 0%, 28% { transform: none; } 33%, 61% { transform: translateY(-18px); } 66%, 94% { transform: translateY(-36px); } 100% { transform: translateY(-54px); } }
+.util .ph { justify-self: end; color: var(--on); display: inline-flex; gap: 8px; align-items: center; } .util .ph .ic { width: 15px; height: 15px; }
+@media (max-width: 860px) { .util .ph { display: none; } .util .wrap { grid-template-columns: auto 1fr auto; } .util .wrap::after { content: ""; width: 30px; } }
+
+/* ---------- header ---------- */
+.hdr { position: fixed; inset-inline: 0; top: calc(var(--ut) + 12px); z-index: 40; padding-inline: var(--gut); pointer-events: none; transition: top .5s var(--ease), transform .6s var(--out); }
+.hdr.stuck { top: 12px; }
+.hdr.hide { transform: translateY(-130%); }
+.hdr .bar { pointer-events: auto; max-width: calc(var(--max) - 2 * var(--gut) + 24px); margin-inline: auto; height: 58px; padding-inline: 18px 8px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; border-radius: 999px; background: rgba(251,250,247,.78); backdrop-filter: saturate(160%) blur(22px); -webkit-backdrop-filter: saturate(160%) blur(22px); box-shadow: 0 0 0 1px rgba(25,22,19,.06), 0 10px 30px -14px rgba(25,22,19,.22); transition: background-color .4s var(--ease); }
+.hdr.solid .bar, .hdr.stuck .bar { background: rgba(251,250,247,.93); }
+.nav { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; }
+.nav .nl { height: 38px; padding: 0 12px; border-radius: 999px; display: inline-flex; align-items: center; gap: 5px; font: 500 14px/1 var(--sans); transition: background-color .25s var(--ease); }
+.nav .nl .ic { width: 11px; height: 11px; opacity: .55; transition: transform .4s var(--out); }
+.nav .nl[aria-expanded="true"] { background: rgba(25,22,19,.06); } .nav .nl[aria-expanded="true"] .ic { transform: rotate(180deg); }
+@media (hover: hover) { .nav .nl:hover { background: rgba(25,22,19,.05); } }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand .mk { width: 24px; height: 24px; color: var(--gold); }
+.brand { order: -1; justify-self: start; } .hdr .navwrap { justify-self: center; } .hdr .tools { justify-self: end; }
+.brand .tx { display: grid; gap: 3px; }
+.brand b { font: 600 19px/1 var(--disp); letter-spacing: -.02em; }
+.brand .tx span { font: 400 10.5px/1 var(--sans); letter-spacing: .05em; color: var(--ink-3); }
+.acc-ib { display: none !important; }
+.tools { position: relative; display: flex; gap: 2px; justify-content: flex-end; align-items: center; }
+.ib { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; position: relative; transition: background-color .25s var(--ease); }
+.ib .ic { width: 22px; height: 22px; }
+@media (hover: hover) { .ib:hover { background: rgba(25,22,19,.06); } }
+.count { position: absolute; top: 4px; inset-inline-start: 4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--navy); color: #fff; font: 600 11px/18px var(--sans); text-align: center; }
+.cart-bump { animation: bump .5s var(--out); } @keyframes bump { 40% { transform: scale(1.35); } }
+.nus-pill { height: 40px; padding-inline: 12px 14px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--hair); display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; margin-inline-end: 4px; transition: box-shadow .25s; white-space: nowrap; }
+.nus-pill .ic { width: 18px; height: 18px; color: var(--gold); } .nus-pill b { font-weight: 500; }
+@media (hover: hover) { .nus-pill:hover { box-shadow: inset 0 0 0 1px var(--ink); } }
+.wa { margin-inline-start: 6px; height: 42px; padding-inline: 18px 7px; border-radius: 999px; background: var(--navy); color: #fff; display: inline-flex; align-items: center; gap: 10px; font: 500 14.5px/1 var(--sans); transition: background-color .3s var(--ease); }
+.wa .bi { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,.12); display: grid; place-items: center; } .wa .ic { width: 17px; height: 17px; }
+@media (hover: hover) { .wa:hover { background: var(--ink); } }
+.menu-btn { display: none; }
+.mega { pointer-events: auto; max-width: calc(var(--max) - 2 * var(--gut) + 24px); margin: 10px auto 0; border-radius: 28px; background: rgba(251,250,247,.97); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); box-shadow: 0 0 0 1px rgba(25,22,19,.06), 0 30px 60px -20px rgba(25,22,19,.3); opacity: 0; visibility: hidden; transform: translateY(-8px) scale(.99); transform-origin: top center; transition: opacity .35s var(--ease), transform .55s var(--out), visibility 0s .35s; }
+.mega.open { opacity: 1; visibility: visible; transform: none; transition: opacity .35s var(--ease), transform .55s var(--out), visibility 0s; }
+.mg-in { display: grid; grid-template-columns: 1fr 320px; gap: 28px; padding: 28px; }
+.mg-list .t { display: flex; align-items: center; gap: 12px; font: 600 34px/1 var(--disp); margin: 4px 4px 20px; } .mg-list .t .ic { width: 30px; height: 30px; color: var(--gold); }
+.mg-items { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 16px; }
+.mg-it { display: flex; align-items: center; gap: 14px; padding: 8px; border-radius: 14px; transition: background-color .25s var(--ease); }
+@media (hover: hover) { .mg-it:hover { background: var(--stone); } }
+.mg-it .th { width: 52px; height: 52px; flex: none; border-radius: 10px; background: var(--stone); display: grid; place-items: center; overflow: hidden; }
+.mg-it .th img { width: 78%; height: 78%; object-fit: contain; mix-blend-mode: multiply; }
+.mg-it b { display: block; font-weight: 500; font-size: 15px; } .mg-it span span { display: block; font-size: 13px; color: var(--ink-3); }
+.mg-chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 22px 4px 0; padding-top: 20px; border-top: 1px solid var(--hair-2); }
+.mg-chips a { height: 36px; padding: 0 16px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--hair); display: inline-flex; align-items: center; font-size: 14px; }
+@media (hover: hover) { .mg-chips a:hover { box-shadow: inset 0 0 0 1px var(--ink); } }
+.mg-card { position: relative; border-radius: 20px; overflow: hidden; min-height: 320px; background: var(--onyx); }
+.mg-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s var(--out); }
+@media (hover: hover) { .mg-card:hover img { transform: scale(1.05); } }
+.mg-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,13,11,.7), transparent 55%); }
+.mg-card .cp2 { position: absolute; inset-inline: 22px; bottom: 20px; z-index: 1; color: #fff; }
+.mg-card .cp2 b { display: block; font: 600 32px/1.05 var(--disp); } .mg-card .cp2 span { font-size: 14px; color: rgba(255,255,255,.78); }
+.pop { position: absolute; z-index: 5; top: 58px; inset-inline-end: 0; width: 290px; padding: 10px; border-radius: 20px; background: var(--paper); box-shadow: 0 0 0 1px var(--hair-2), 0 24px 50px -18px rgba(25,22,19,.35); pointer-events: auto; opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .3s var(--ease), transform .45s var(--out), visibility 0s .3s; }
+.pop.open { opacity: 1; visibility: visible; transform: none; transition: opacity .3s var(--ease), transform .45s var(--out), visibility 0s; }
+.pop p { margin: 8px 12px 10px; font-size: 13px; color: var(--ink-3); }
+.pop button { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 12px; font-size: 15px; text-align: start; }
+.pop button[aria-pressed="true"] { background: var(--stone); font-weight: 500; }
+.pop button .ic { width: 16px; height: 16px; color: var(--gold); opacity: 0; } .pop button[aria-pressed="true"] .ic { opacity: 1; }
+@media (hover: hover) { .pop button:hover { background: var(--stone); } }
+
+/* ---------- hero: contained cinematic slider, straight crossfade ---------- */
+.hc { position: relative; padding-top: calc(var(--ut) + 86px); padding-bottom: 8px; }
+.hc-vp { position: relative; max-width: var(--max); margin-inline: auto; padding-inline: var(--gut); }
+.hc-track { position: relative; height: clamp(420px, 64svh, 620px); border-radius: 26px; overflow: hidden; background: var(--onyx); isolation: isolate; }
+.hc-card { position: absolute; inset: 0; color: var(--on); opacity: 0; visibility: hidden; transition: opacity 1s var(--ease), visibility 0s 1s; }
+.hc-card.on { opacity: 1; visibility: visible; transition: opacity 1s var(--ease), visibility 0s; z-index: 1; }
+.hc-card .pz { position: absolute; inset: 0; }
+.hc-card img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.05); transition: transform 7.5s cubic-bezier(.2,.6,.2,1); }
+.hc-card.on img { transform: none; }
+.hc-card::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to left, rgba(10,9,8,.66) 0%, rgba(10,9,8,.22) 44%, transparent 66%); }
+.hc-card.light { color: var(--ink); } .hc-card.light::after { background: linear-gradient(to left, rgba(246,243,238,.86) 0%, rgba(246,243,238,.4) 42%, transparent 64%); }
+.hc-card .cp { position: absolute; z-index: 2; inset-block: 0; inset-inline-start: 0; width: min(500px, 48%); display: flex; flex-direction: column; justify-content: center; padding: clamp(28px, 4vw, 60px); }
+.hc-card .kick { color: var(--gold-l); } .hc-card.light .kick { color: var(--gold); }
+.hc-card h1, .hc-card h2 { margin: 0; font: 600 clamp(34px, 3.9vw, 56px)/1.04 var(--disp); letter-spacing: -.03em; }
+.hc-card em { font-style: normal; color: var(--gold-l); } .hc-card.light em { color: var(--gold); }
+.hc-card .sub { margin: 14px 0 0; max-width: 40ch; font-size: clamp(14.5px, 1.05vw, 16px); line-height: 1.6; color: rgba(243,238,230,.82); }
+.hc-card.light .sub { color: var(--ink-2); }
+.hc-card .ctas { display: flex; gap: 10px 18px; flex-wrap: wrap; align-items: center; margin-top: 24px; }
+.hc-card .ctas .tlink { color: inherit; }
+.hc-card .cp > * { opacity: 0; transform: translateY(14px); transition: opacity .8s var(--ease) .15s, transform 1s var(--out) .15s; }
+.hc-card.on .cp > * { opacity: 1; transform: none; }
+.hc-card.on .cp > :nth-child(2) { transition-delay: .23s } .hc-card.on .cp > :nth-child(3) { transition-delay: .31s } .hc-card.on .cp > :nth-child(4) { transition-delay: .39s }
+.hc-card .tag3 { position: absolute; z-index: 2; bottom: 20px; inset-inline-end: 20px; height: 30px; padding: 0 13px; border-radius: 999px; background: rgba(15,13,11,.38); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #fff; font-size: 12.5px; display: inline-flex; align-items: center; gap: 8px; }
+.hc-card .tag3 .ic { width: 16px; height: 16px; }
+.hc-card.light .tag3 { background: rgba(255,255,255,.6); color: var(--ink); }
+.hc-nav { position: absolute; z-index: 3; bottom: 18px; inset-inline-start: calc(var(--gut) + 22px); display: flex; align-items: center; gap: 6px; }
+.hc-dots { display: flex; padding: 0 6px; border-radius: 999px; background: rgba(15,13,11,.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.hc-dots button { display: grid; place-items: center; min-width: 28px; height: 42px; padding: 0 4px; }
+.hc-dots button .b { position: relative; display: block; width: 7px; height: 7px; border-radius: 4px; background: rgba(255,255,255,.45); overflow: hidden; transition: width .6s var(--io); }
+.hc-dots button[aria-current="true"] .b { width: 36px; background: rgba(255,255,255,.3); }
+.hc-dots button i { position: absolute; inset: 0; background: #fff; transform: scaleX(0); transform-origin: right; }
+.hc-dots button[aria-current="true"] i { transform: scaleX(1); }
+.hc.play .hc-dots button[aria-current="true"] i { transform: scaleX(0); animation: prog var(--dur, 7000ms) linear forwards; }
+@keyframes prog { to { transform: scaleX(1); } }
+.hc-nav .rb { width: 42px; height: 42px; border-radius: 50%; background: rgba(15,13,11,.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #fff; display: grid; place-items: center; transition: background-color .3s; }
+.hc-nav .rb .ic { width: 15px; height: 15px; }
+@media (hover: hover) { .hc-nav .rb:hover { background: rgba(15,13,11,.6); } }
+.hc-side { display: none; }
+@media (max-width: 860px) {
+  .hc { padding-top: calc(var(--ut) + 76px); }
+  .hc-track { height: min(70svh, 560px); border-radius: 22px; }
+  .hc-card::after, .hc-card.light::after { background: linear-gradient(to top, rgba(10,9,8,.8) 0%, rgba(10,9,8,.35) 48%, transparent 72%) !important; }
+  .hc-card.light { color: var(--on); } .hc-card.light .kick { color: var(--gold-l); } .hc-card.light .sub { color: rgba(243,238,230,.85); } .hc-card.light em { color: var(--gold-l); }
+  .hc-card.light .btn.solid { background: var(--on); color: var(--ink); }
+  .hc-card .cp { width: 100%; justify-content: flex-end; padding: 22px 20px 74px; }
+  .hc-card h1, .hc-card h2 { font-size: clamp(30px, 8.6vw, 38px); }
+  .hc-card .sub { font-size: 14.5px; margin-top: 10px; } .hc-card .ctas { margin-top: 16px; }
+  .hc-card .tag3 { top: 14px; bottom: auto; inset-inline-end: 14px; }
+  .hc-nav { inset-inline-start: calc(var(--gut) + 14px); bottom: 14px; }
+}
+
+/* ---------- apple-store style category strip ---------- */
+.strip { padding-block: clamp(36px, 5vw, 60px) 0; }
+.strip ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 6px; justify-content: space-between; overflow-x: auto; scrollbar-width: none; }
+.strip ul::-webkit-scrollbar { display: none; }
+.strip a { display: grid; justify-items: center; gap: 10px; min-width: 104px; padding: 16px 8px 12px; border-radius: 18px; font-size: 14px; color: var(--ink-2); transition: background-color .3s var(--ease), color .3s; }
+.strip a .ic { width: 40px; height: 40px; stroke-width: 1.05; color: var(--ink); transition: transform .6s var(--out), color .3s; }
+@media (hover: hover) { .strip a:hover { background: var(--stone); color: var(--ink); } .strip a:hover .ic { transform: translateY(-3px); color: var(--gold); } }
+@media (max-width: 860px) { .strip ul { margin-inline: calc(var(--gut) * -1); padding-inline: var(--gut); justify-content: flex-start; } .strip a { min-width: 86px; } }
+
+/* ---------- sections ---------- */
+.sec { padding-block: clamp(60px, 7.5vw, 104px); }
+.sec.tight { padding-block: clamp(44px, 5.5vw, 72px); }
+.dark { background: var(--onyx); color: var(--on); }
+.stone { background: var(--stone); } .paper { background: var(--paper); }
+.sh { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px 40px; margin-bottom: clamp(26px, 3.4vw, 44px); flex-wrap: wrap; }
+.sh .tx { max-width: 760px; }
+
+/* shop by category: photo cards that scroll sideways */
+.cat-row { display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 4 * 16px) / 5); gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 4px; }
+.cat-row::-webkit-scrollbar { display: none; }
+.cat-row.drag { cursor: grabbing; scroll-snap-type: none; }
+.cc2 { scroll-snap-align: start; display: block; }
+.cc2 .ph { position: relative; aspect-ratio: 4 / 5; border-radius: 18px; overflow: hidden; background: var(--stone); }
+.cc2 .ph img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--out); }
+@media (hover: hover) { .cc2:hover .ph img { transform: scale(1.05); } }
+.cc2 .cap { display: flex; align-items: center; gap: 10px; padding: 12px 2px 0; }
+.cc2 .cap .ic { width: 22px; height: 22px; stroke-width: 1.2; color: var(--gold); }
+.cc2 .cap b { font: 600 16px/1.2 var(--disp); letter-spacing: -.01em; }
+.cc2 .cap span { margin-inline-start: auto; font-size: 13px; color: var(--ink-3); }
+@media (max-width: 1100px) { .cat-row { grid-auto-columns: calc((100% - 2 * 14px) / 3.2); } }
+@media (max-width: 640px) { .cat-row { grid-auto-columns: 58%; gap: 12px; margin-inline: calc(var(--gut) * -1); padding-inline: var(--gut); } }
+/* category index: big list, sticky image that swaps on hover */
+.ix { display: grid; grid-template-columns: minmax(300px, 1fr) 1.15fr; gap: clamp(32px, 6vw, 96px); align-items: start; }
+.ix-frame { position: sticky; top: 100px; aspect-ratio: 4 / 5; border-radius: 22px; overflow: hidden; background: var(--stone); }
+.ix-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.06); transition: opacity .7s var(--ease), transform 1.4s var(--out); }
+.ix-frame img.on { opacity: 1; transform: none; }
+.ix-frame .cap { position: absolute; z-index: 1; inset-inline: 18px; bottom: 18px; display: flex; flex-wrap: wrap; gap: 6px; }
+.ix-frame .cap span { height: 30px; padding: 0 12px; border-radius: 999px; background: rgba(251,250,247,.86); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-size: 13px; display: inline-flex; align-items: center; }
+.ix-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--hair); }
+.ix-list li { border-bottom: 1px solid var(--hair); }
+.ix-name { display: grid; grid-template-columns: 52px 1fr auto 40px; align-items: center; gap: 14px; padding: clamp(16px, 1.6vw, 22px) 0; transition: color .35s var(--ease); }
+.ix-name .no { font: 500 13px/1 var(--sans); color: var(--ink-3); }
+.ix-name .ic { width: 34px; height: 34px; stroke-width: 1.1; color: var(--gold); }
+.ix-name b { font: 600 clamp(32px, 3.6vw, 54px)/1 var(--disp); transition: transform .7s var(--out); }
+.ix-name .ct { font-size: 14px; color: var(--ink-3); white-space: nowrap; }
+.ix-name .go { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; box-shadow: inset 0 0 0 1px var(--hair); transition: background-color .35s, color .35s, transform .6s var(--out); }
+.ix-name .go .ic { width: 16px; height: 16px; color: currentColor; stroke-width: 1.4; }
+.ix-list:hover .ix-name, .ix-list:focus-within .ix-name { color: var(--ink-3); }
+.ix-list .ix-name[aria-current="true"] { color: var(--ink); }
+.ix-list .ix-name[aria-current="true"] b { transform: translateX(-10px); }
+.ix-list .ix-name[aria-current="true"] .go { background: var(--ink); color: var(--on); transform: rotate(-45deg); box-shadow: none; }
+.ix-mobile { display: none; }
+@media (max-width: 860px) {
+  .ix { grid-template-columns: 1fr; } .ix-frame, .ix-list { display: none; }
+  .ix-mobile { display: grid; grid-auto-flow: column; grid-auto-columns: 66vw; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: calc(var(--gut) * -1); padding-inline: var(--gut); }
+  .ix-mobile::-webkit-scrollbar { display: none; }
+  .ix-mobile a { scroll-snap-align: start; position: relative; aspect-ratio: 4 / 5; border-radius: 20px; overflow: hidden; background: var(--stone); }
+  .ix-mobile img { width: 100%; height: 100%; object-fit: cover; }
+  .ix-mobile a::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,13,11,.7), transparent 50%); }
+  .ix-mobile span { position: absolute; z-index: 1; inset-inline: 16px; bottom: 14px; color: #fff; }
+  .ix-mobile b { display: block; font: 600 26px/1.05 var(--disp); letter-spacing: -.02em; } .ix-mobile small { font-size: 13px; opacity: .8; }
+}
+/* nusach chooser */
+.nus-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--on-hair); }
+.nus-opt { position: relative; text-align: start; padding: clamp(22px, 2.8vw, 36px) clamp(16px, 2vw, 28px) clamp(22px, 2.6vw, 32px); border-inline-start: 1px solid var(--on-hair); display: grid; gap: 12px; color: var(--on); }
+.nus-opt:first-child { border-inline-start: 0; padding-inline-start: 0; }
+.nus-opt .nn { font: 600 clamp(34px, 3.8vw, 56px)/1 var(--disp); transition: transform .8s var(--out), color .4s var(--ease); }
+.nus-opt .nc { font-size: 14.5px; color: var(--on-2); }
+.nus-opt .go { display: inline-flex; align-items: center; gap: 10px; margin-top: 16px; font-size: 15px; }
+.nus-opt .go .ic { width: 16px; height: 16px; transition: transform .55s var(--out); }
+.nus-opt::after { content: ""; position: absolute; inset-inline-start: 0; top: -1px; height: 1px; width: 100%; background: var(--gold-l); transform: scaleX(0); transform-origin: right; transition: transform .9s var(--out); }
+.nus-opt[aria-pressed="true"]::after { transform: scaleX(1); } .nus-opt[aria-pressed="true"] .nn { color: var(--gold-l); }
+@media (hover: hover) { .nus-opt:hover::after { transform: scaleX(1); } .nus-opt:hover .nn { color: var(--gold-l); transform: translateX(-8px); } .nus-opt:hover .go .ic { transform: translateX(-5px); } }
+.nus-note { margin-top: 28px; font-size: 14px; color: var(--on-2); display: flex; align-items: center; gap: 10px; } .nus-note .ic { width: 18px; height: 18px; color: var(--gold-l); }
+@media (max-width: 860px) { .nus-grid { grid-template-columns: 1fr; } .nus-opt, .nus-opt:first-child { border-inline-start: 0; border-bottom: 1px solid var(--on-hair); padding-inline: 0; } .nus-opt .go { margin-top: 2px; } }
+
+/* full-bleed feature with parallax */
+.feat { position: relative; min-height: clamp(460px, 66vh, 660px); display: flex; overflow: hidden; }
+.feat .pz { position: absolute; inset: -8% 0; }
+.feat .pz img { width: 100%; height: 100%; object-fit: cover; }
+.feat .wrap { position: relative; z-index: 1; width: 100%; display: flex; justify-content: flex-end; align-items: center; padding-block: clamp(56px, 8vw, 110px); }
+.feat .tx { max-width: 480px; }
+.feat .ctas { display: flex; gap: 10px 24px; flex-wrap: wrap; align-items: center; margin-top: 32px; }
+@media (max-width: 860px) { .feat { min-height: 0; flex-direction: column; } .feat .pz { position: relative; inset: auto; height: 64vw; min-height: 300px; order: 2; transform: none !important; } .feat .wrap { padding-block: 64px 36px; } }
+
+/* image reveal */
+.rvimg { clip-path: inset(9% 5% 9% 5% round 8px); transition: clip-path 1.4s var(--io); }
+.rvimg img { transform: scale(1.12); transition: transform 1.9s var(--out); }
+.rvimg.on { clip-path: inset(0 0 0 0 round 8px); } .rvimg.on img { transform: none; }
+
+/* product rail */
+.rail-row { display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 4 * 20px) / 5); gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 6px; cursor: grab; }
+.rail-row.drag { cursor: grabbing; scroll-snap-type: none; }
+.rail-row::-webkit-scrollbar { display: none; }
+.rail-row > * { scroll-snap-align: start; }
+.rbtns { display: flex; gap: 8px; }
+.rbtns button { width: 48px; height: 48px; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--hair); display: grid; place-items: center; transition: box-shadow .3s var(--ease), opacity .3s; }
+.rbtns button .ic { width: 17px; height: 17px; }
+.rbtns button:disabled { opacity: .3; cursor: default; }
+@media (hover: hover) { .rbtns button:not(:disabled):hover { box-shadow: inset 0 0 0 1px var(--ink); } }
+@media (max-width: 1100px) { .rail-row { grid-auto-columns: calc((100% - 2 * 18px) / 2.6); gap: 18px; } }
+@media (max-width: 640px) { .rail-row { grid-auto-columns: 70%; gap: 14px; } .rbtns { display: none; } }
+
+/* product card */
+.pc { position: relative; display: block; }
+.pc .pl { position: relative; aspect-ratio: 4 / 5; border-radius: 8px; background: var(--stone); display: grid; place-items: center; overflow: hidden; }
+.pc .pl::after { content: ""; position: absolute; inset: auto 20% 10% 20%; height: 12px; border-radius: 50%; background: radial-gradient(closest-side, rgba(25,22,19,.16), transparent); transition: transform 1s var(--out), opacity 1s; }
+.pc .pl img { position: relative; z-index: 1; width: 72%; height: 72%; object-fit: contain; mix-blend-mode: multiply; transition: transform 1.1s var(--out); }
+@media (hover: hover) { .pc:hover .pl img { transform: translateY(-8px) scale(1.04); } .pc:hover .pl::after { transform: scaleX(.8); opacity: .6; } }
+.pc .badge { position: absolute; z-index: 2; top: 14px; inset-inline-start: 14px; height: 26px; padding: 0 11px; border-radius: 999px; background: var(--paper); font-size: 12px; display: inline-flex; align-items: center; gap: 6px; color: var(--ink); }
+.pc .badge.me { background: var(--navy); color: #fff; } .pc .badge .ic { width: 13px; height: 13px; }
+.pc .meta { padding: 12px 2px 0; display: grid; gap: 4px; }
+.pc .nm { font: 600 16.5px/1.3 var(--disp); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.pc .nu { font-size: 13px; color: var(--ink-3); margin-top: -2px; }
+.dark .pc .nu { color: var(--on-2); }
+.pc .pr { font-size: 14px; color: var(--ink-2); display: flex; gap: 10px; align-items: baseline; }
+.pc .pr s { color: var(--ink-3); font-size: 13px; } .pc .pr .k { color: var(--ink-3); font-size: 12.5px; }
+.pc .qa { position: absolute; top: 12px; inset-inline-end: 12px; z-index: 3; width: 42px; height: 42px; border-radius: 50%; background: var(--paper); display: grid; place-items: center; box-shadow: 0 4px 14px -6px rgba(25,22,19,.3); opacity: 0; transform: translateY(-6px) scale(.9); transition: opacity .35s var(--ease), transform .55s var(--out), background-color .3s, color .3s; }
+.pc .qa .ic { width: 18px; height: 18px; }
+.pc:hover .qa, .pc:focus-within .qa { opacity: 1; transform: none; }
+@media (hover: hover) { .pc .qa:hover { background: var(--navy); color: #fff; } }
+@media (hover: none) { .pc .qa { opacity: 1; transform: none; } }
+.dark .pc .pl { background: #EAE3D8; } .dark .pc .pr { color: var(--on-2); }
+
+/* library */
+.lib-ph { border-radius: 8px; overflow: hidden; aspect-ratio: 21 / 9; margin-bottom: clamp(32px, 4vw, 56px); }
+.lib-ph img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; }
+@media (max-width: 860px) { .lib-ph { aspect-ratio: 4 / 3; } }
+.sets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+@media (max-width: 860px) { .sets { grid-template-columns: 1fr; gap: 28px; } }
+.sets .pc .pl { aspect-ratio: 16 / 11; } .sets .pc .pl img { width: 86%; }
+
+/* reviews: Google style */
+.rev-top { display: grid; grid-template-columns: auto 1fr auto; gap: 24px 56px; align-items: end; margin-bottom: clamp(36px, 5vw, 56px); }
+.gbadge { display: grid; gap: 10px; padding: 22px 26px; border-radius: 22px; background: var(--paper); box-shadow: 0 0 0 1px var(--hair-2), 0 18px 40px -26px rgba(25,22,19,.35); }
+.gbadge .gl { display: flex; align-items: center; gap: 10px; font: 500 15px/1 var(--sans); color: var(--ink-2); }
+.gbadge .gl svg { width: 26px; height: 26px; }
+.gbadge .sc { display: flex; align-items: center; gap: 12px; }
+.gbadge .big { font: 700 44px/1 var(--sans); letter-spacing: -.03em; }
+.gbadge small { font-size: 13.5px; color: var(--ink-3); }
+.gstars { display: inline-flex; gap: 2px; color: #FBBC04; } .gstars .ic { width: 18px; height: 18px; stroke-width: 1; } .gstars .ic.f { fill: currentColor; } .gstars .ic:not(.f) { color: #D9D4CC; fill: currentColor; }
+.stars { display: inline-flex; gap: 3px; color: #FBBC04; } .stars .ic { width: 16px; height: 16px; stroke-width: 1; } .stars .ic.f { fill: currentColor; } .stars .ic:not(.f) { color: #D9D4CC; fill: currentColor; }
+.mq { overflow: hidden; direction: ltr; -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); padding-block: 6px; }
+.mq + .mq { margin-top: 14px; }
+.mq .row { display: flex; gap: 16px; width: max-content; animation: mq 80s linear infinite; }
+.mq.rev .row { animation-direction: reverse; animation-duration: 92s; }
+.mq:hover .row, .mq:focus-within .row { animation-play-state: paused; }
+@keyframes mq { to { transform: translateX(-50%); } }
+.rc { direction: rtl; width: 330px; flex: none; margin: 0; padding: 22px 22px 20px; border-radius: 18px; background: #fff; box-shadow: 0 0 0 1px rgba(25,22,19,.06), 0 10px 26px -18px rgba(25,22,19,.35); display: grid; gap: 12px; align-content: start; }
+.rc .hd { display: flex; align-items: center; gap: 12px; }
+.rc .av { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font: 600 17px/1 var(--sans); color: #fff; flex: none; }
+.rc .who { flex: 1; min-width: 0; } .rc .who b { display: block; font-weight: 600; font-size: 15px; } .rc .who span { font-size: 12.5px; color: var(--ink-3); }
+.rc .g { width: 22px; height: 22px; flex: none; }
+.rc .rt { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-3); }
+.rc p { margin: 0; font: 400 15.5px/1.6 var(--sans); color: var(--ink); }
+.rev-cta { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: clamp(28px, 4vw, 44px); }
+@media (max-width: 860px) { .rev-top { grid-template-columns: 1fr; } .rc { width: 290px; } }
+/* engraving split */
+.split { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(36px, 6vw, 96px); align-items: center; }
+.split .ph { border-radius: 8px; overflow: hidden; aspect-ratio: 4 / 3.3; }
+.split .ph img { width: 100%; height: 100%; object-fit: cover; }
+.steps { list-style: none; margin: 40px 0 0; padding: 0; border-top: 1px solid var(--hair); }
+.steps li { display: grid; grid-template-columns: 56px 1fr; gap: 8px; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--hair); }
+.steps li > span { font: 600 22px/1 var(--disp); color: var(--gold); }
+.steps li b { display: block; font-weight: 500; font-size: 16.5px; } .steps li p { margin: 4px 0 0; color: var(--ink-2); font-size: 15px; }
+@media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
+
+/* gifts */
+.gifts { display: grid; grid-template-columns: 1fr 1.25fr; gap: clamp(24px, 3vw, 40px); align-items: stretch; }
+.gifts .ph { position: relative; border-radius: 8px; overflow: hidden; min-height: 540px; }
+.gifts .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.gifts .grid4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px 20px; align-content: start; }
+.gifts .grid4 .pc .pl { aspect-ratio: 1 / 1; }
+@media (max-width: 860px) { .gifts { grid-template-columns: 1fr; } .gifts .ph { min-height: 0; aspect-ratio: 4 / 5; } }
+
+/* promises */
+.prom { display: grid; grid-template-columns: repeat(4, 1fr); border-block: 1px solid var(--hair); }
+.prom > div { padding: 36px 28px 36px 0; display: grid; gap: 10px; align-content: start; }
+.prom > div + div { border-inline-start: 1px solid var(--hair); padding-inline-start: 28px; }
+.prom .ic { width: 30px; height: 30px; stroke-width: 1.05; color: var(--gold); margin-bottom: 6px; }
+.prom b { font: 600 18px/1.2 var(--disp); }
+.prom p { margin: 0; font-size: 14.5px; color: var(--ink-2); }
+@media (max-width: 860px) { .prom { grid-template-columns: 1fr 1fr; } .prom > div:nth-child(3) { border-inline-start: 0; padding-inline-start: 0; } .prom > div:nth-child(n+3) { border-top: 1px solid var(--hair); } .prom > div { padding: 26px 14px 26px 0; } .prom > div + div { padding-inline-start: 14px; } }
+
+/* closing */
+.closing { text-align: center; }
+.closing .h2 { font-size: clamp(44px, 5.8vw, 88px); }
+.closing .lead { margin-inline: auto; }
+.closing .ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 36px; }
+.closing .mk { width: 56px; height: 56px; stroke-width: 1; color: var(--gold); margin: 0 auto 24px; }
+
+/* ---------- footer (Fuzailov pattern) ---------- */
+.ft { background: var(--onyx); color: var(--on); padding-top: clamp(72px, 9vw, 120px); overflow: hidden; }
+.ft-cta { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: end; padding-bottom: clamp(56px, 7vw, 88px); border-bottom: 1px solid var(--on-hair); }
+.ft-cta .h2 em { font-style: normal; color: var(--gold-l); }
+.ft-acts { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.ft-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.1fr; gap: 40px; padding-block: 56px 40px; }
+.ft-grid h4 { margin: 0 0 16px; font: 600 13.5px/1 var(--sans); color: var(--on); }
+.ft-grid ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 11px; }
+.ft-grid a { color: var(--on-2); transition: color .25s; font-size: 14.5px; display: inline-flex; gap: 10px; align-items: center; }
+.ft-grid a .ic { width: 17px; height: 17px; color: var(--gold-l); }
+@media (hover: hover) { .ft-grid a:hover { color: var(--on); } }
+.ft-brand p { margin: 0 0 20px; color: var(--on-2); font-size: 14.5px; max-width: 34ch; line-height: 1.6; }
+.ft-soc { display: flex; gap: 8px; }
+.ft-soc a { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.06); color: var(--on); transition: background-color .25s, transform .2s var(--out); }
+.ft-soc a:active { transform: scale(.92); } @media (hover: hover) { .ft-soc a:hover { background: rgba(255,255,255,.14); } }
+.ft-soc .ic { width: 19px; height: 19px; }
+.ft-mark { margin-inline: calc(50% - 50vw); padding-inline: 2vw; user-select: none; }
+.ft-mark svg { display: block; width: 100%; height: auto; }
+.ft-t { font: 700 140px var(--disp); letter-spacing: -5px; }
+.ft-t.base { fill: rgba(255,255,255,.045); }
+.ft-t.draw { fill: url(#ftg); opacity: 0; clip-path: inset(0 0 0 100%); transition: clip-path 2.4s var(--io), opacity 1.2s var(--ease); }
+.ft-mark.in .ft-t.draw { clip-path: inset(0 0 0 0); opacity: .2; }
+.ft-t.glow { fill: url(#ftg); opacity: 0; transition: opacity .4s var(--ease); }
+.ft-mark.hot .ft-t.glow { opacity: 1; }
+.ft-legal { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 20px 0 26px; border-top: 1px solid var(--on-hair); font-size: 13px; color: var(--on-2); }
+@media (max-width: 860px) { .ft-cta { grid-template-columns: 1fr; } .ft-acts { justify-content: flex-start; } .ft-grid { grid-template-columns: 1fr 1fr; } .ft-brand { grid-column: 1 / -1; } .ft { padding-bottom: 76px; } .ft-t.draw { clip-path: none; opacity: .2; transition: none; } }
+@media (prefers-reduced-motion: reduce) { .ft-t.draw { clip-path: none; opacity: .2; } }
+/* ---------- category ---------- */
+.chead { padding-top: calc(var(--ut) + 104px); padding-bottom: clamp(22px, 3vw, 34px); display: grid; grid-template-columns: 1fr minmax(220px, 300px); gap: clamp(28px, 5vw, 80px); align-items: end; }
+.crumbs { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13.5px; color: var(--ink-3); margin-bottom: 22px; }
+.crumbs a { color: var(--ink-2); } @media (hover: hover) { .crumbs a:hover { color: var(--ink); } }
+.chead h1 { margin: 0; display: flex; align-items: center; gap: 14px; font: 600 clamp(38px, 4.4vw, 62px)/1 var(--disp); }
+.chead h1 .ic { width: clamp(32px, 3vw, 44px); height: clamp(32px, 3vw, 44px); stroke-width: .95; color: var(--gold); }
+.chead p { margin: 12px 0 0; max-width: 48ch; color: var(--ink-2); font-size: 15.5px; }
+.chead .ph { border-radius: 16px; overflow: hidden; aspect-ratio: 4 / 3; max-height: 260px; }
+.chead .ph img { width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 860px) { .chead { grid-template-columns: 1fr; padding-top: calc(var(--ut) + 96px); } .chead .ph { aspect-ratio: 16 / 11; } }
+.smart { display: grid; gap: 14px; padding: 22px 0; border-block: 1px solid var(--hair-2); }
+.smart .row { display: flex; gap: 14px 18px; align-items: center; flex-wrap: wrap; }
+.smart .lbl { font-size: 13px; color: var(--ink-3); min-width: 104px; }
+.seg { display: inline-flex; gap: 2px; padding: 4px; border-radius: 999px; background: var(--stone); }
+.seg button, .seg a { height: 40px; padding: 0 18px; border-radius: 999px; font-size: 14.5px; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; transition: background-color .3s var(--ease); }
+.seg .k { font-size: 12px; color: var(--ink-3); }
+.seg [aria-pressed="true"], .seg [aria-current="page"] { background: var(--paper); box-shadow: 0 1px 4px rgba(25,22,19,.12); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { height: 38px; padding: 0 15px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--hair); font-size: 14px; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; transition: box-shadow .25s, background-color .25s, color .25s; }
+.chip .ic { width: 18px; height: 18px; color: var(--gold); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--on); box-shadow: none; }
+@media (hover: hover) { .chip:hover { box-shadow: inset 0 0 0 1px var(--ink); } }
+.sort { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink-2); margin-inline-start: auto; }
+.sort select { height: 40px; padding: 0 14px; border-radius: 999px; border: 0; box-shadow: inset 0 0 0 1px var(--hair); background: transparent; }
+.count-line { margin: 18px 0 26px; color: var(--ink-3); font-size: 14px; }
+.grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 36px 20px; padding-bottom: 90px; }
+@media (max-width: 1200px) { .grid { grid-template-columns: repeat(4, 1fr); } } @media (max-width: 1000px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); gap: 32px 12px; } .pc .nm { font-size: 19px; } }
+@media (max-width: 860px) { .smart .row { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: calc(var(--gut) * -1); padding-inline: var(--gut); } .smart .row::-webkit-scrollbar { display: none; } .smart .lbl { min-width: auto; flex: none; } .smart .chips { flex-wrap: nowrap; } .sort { margin-inline-start: 0; flex: none; } }
+.empty { text-align: center; padding: 80px 0 120px; color: var(--ink-2); }
+
+/* ---------- product ---------- */
+.pp { padding-top: calc(var(--ut) + 96px); display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(28px, 4.5vw, 72px); align-items: start; padding-bottom: clamp(64px, 8vw, 110px); }
+.pp > * { min-width: 0; }
+.gal { position: sticky; top: 92px; display: grid; grid-template-columns: 72px 1fr; gap: 12px; }
+.gal.single { grid-template-columns: 1fr; }
+.gal .main { position: relative; width: 100%; max-height: 620px; border-radius: 20px; background: var(--stone); aspect-ratio: 1 / 1; display: grid; place-items: center; overflow: hidden; cursor: zoom-in; }
+.gal .main.zoom { cursor: zoom-out; }
+.gal .main .pic { width: 74%; height: 74%; transition: transform .6s var(--out); }
+.gal .main.zoom .pic { transform: scale(1.8); }
+.gal .main .tag2 { position: absolute; z-index: 1; top: 16px; inset-inline-start: 16px; height: 28px; padding: 0 12px; border-radius: 999px; background: var(--paper); font-size: 12.5px; display: inline-flex; align-items: center; gap: 6px; }
+.thumbs { display: flex; flex-direction: column; gap: 10px; order: -1; }
+.thumbs button { width: 72px; aspect-ratio: 1; border-radius: 12px; background: var(--stone); display: grid; place-items: center; box-shadow: inset 0 0 0 1px transparent; transition: box-shadow .25s; }
+.thumbs button .pic { width: 78%; height: 78%; }
+.thumbs button[aria-current="true"] { box-shadow: inset 0 0 0 1.5px var(--ink); }
+.info { display: grid; gap: 0; }
+.info .chips2 { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.info .chips2 span { height: 28px; padding: 0 12px; border-radius: 999px; background: var(--stone); font-size: 12.5px; display: inline-flex; align-items: center; gap: 6px; } .info .chips2 .ic { width: 14px; height: 14px; color: var(--gold); }
+.info h1 { margin: 0; font: 600 clamp(24px, 2.2vw, 32px)/1.15 var(--disp); }
+.info .rate { display: flex; align-items: center; gap: 10px; margin-top: 12px; font-size: 13.5px; color: var(--ink-3); } .info .rate svg.g { width: 18px; height: 18px; }
+.info .prow { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-top: 18px; }
+.info .price { font: 600 26px/1 var(--sans); letter-spacing: -.02em; }
+.info .prow s { color: var(--ink-3); } .info .prow .qd { font-size: 13.5px; color: var(--gold); display: inline-flex; gap: 6px; align-items: center; } .info .prow .qd .ic { width: 16px; height: 16px; }
+.info .desc { margin: 16px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; color: var(--ink-2); font-size: 15px; }
+.info .desc li { display: flex; gap: 10px; } .info .desc li::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--gold); margin-top: 10px; flex: none; }
+.blk { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--hair-2); }
+.blk .ol { display: flex; justify-content: space-between; font-size: 14px; color: var(--ink-3); margin-bottom: 10px; } .blk .ol span { color: var(--ink); font-weight: 500; }
+.buy { display: flex; gap: 10px; margin-top: 22px; }
+.buy .btn { flex: 1; min-height: 52px; font-size: 15px; }
+.qty { display: inline-flex; align-items: center; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--hair); height: 52px; }
+.qty button { width: 42px; height: 52px; display: grid; place-items: center; } .qty .ic { width: 16px; height: 16px; }
+.qty input { width: 46px; border: 0; background: none; text-align: center; font-size: 16px; -moz-appearance: textfield; } .qty input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.qchips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; } .qchips button { height: 32px; padding: 0 12px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--hair); font-size: 13px; } .qchips button[aria-pressed="true"] { background: var(--ink); color: var(--on); box-shadow: none; }
+.wa-q { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; height: 50px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--hair); font-size: 15px; font-weight: 500; transition: box-shadow .25s; } .wa-q .ic { width: 19px; height: 19px; color: #1DA851; }
+@media (hover: hover) { .wa-q:hover { box-shadow: inset 0 0 0 1px var(--ink); } }
+.trust { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 18px; }
+.trust div { display: grid; justify-items: center; text-align: center; gap: 6px; padding: 14px 8px; border-radius: 14px; background: var(--stone); font-size: 12.5px; color: var(--ink-2); line-height: 1.35; }
+.trust .ic { width: 24px; height: 24px; color: var(--gold); stroke-width: 1.2; }
+.acc { border-bottom: 1px solid var(--hair); }
+.acc summary { list-style: none; cursor: pointer; padding: 18px 0; display: flex; justify-content: space-between; align-items: center; font-weight: 500; }
+.acc summary::-webkit-details-marker { display: none; }
+.acc summary .ic { width: 18px; height: 18px; transition: transform .45s var(--out); } .acc[open] summary .ic { transform: rotate(45deg); }
+.acc .ab { padding: 0 0 20px; color: var(--ink-2); font-size: 15px; }
+.info .accs { margin-top: 20px; border-top: 1px solid var(--hair); }
+/* floating add-to-cart on phones (CK pattern) */
+.fbuy { position: fixed; z-index: 52; inset-inline: 10px; bottom: calc(74px + env(safe-area-inset-bottom)); display: none; align-items: center; gap: 12px; padding: 8px; padding-inline-start: 10px; border-radius: 22px; background: rgba(251,250,247,.9); backdrop-filter: saturate(160%) blur(20px); -webkit-backdrop-filter: saturate(160%) blur(20px); box-shadow: 0 0 0 1px var(--hair-2), 0 18px 40px -16px rgba(25,22,19,.4); transform: translateY(140%); opacity: 0; transition: transform .6s var(--out), opacity .4s var(--ease); }
+.fbuy.on { transform: none; opacity: 1; }
+.fbuy .t { width: 46px; height: 46px; border-radius: 12px; background: var(--stone); display: grid; place-items: center; flex: none; } .fbuy .t .pic { width: 80%; height: 80%; }
+.fbuy .x { flex: 1; min-width: 0; } .fbuy .x b { display: block; font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .fbuy .x span { font-size: 14px; color: var(--ink-2); }
+.fbuy .btn { min-height: 46px; padding: 0 20px; }
+@media (max-width: 860px) {
+  .pp { grid-template-columns: 1fr; padding-top: calc(var(--ut) + 90px); }
+  .gal { position: static; grid-template-columns: 1fr; } .thumbs { flex-direction: row; order: 1; overflow-x: auto; scrollbar-width: none; } .thumbs button { width: 72px; flex: none; }
+  .fbuy { display: flex; }
+  .trust { grid-template-columns: repeat(3, 1fr); }
+}
+/* atlas picture: one sprite cell per product */
+.pic { display: block; mix-blend-mode: multiply; }
+img.pic { object-fit: contain; filter: brightness(1.035) contrast(1.02); }
+span.pic { background-repeat: no-repeat; background-size: 700% 700%; }
+
+/* ---------- overlays ---------- */
+.scrim { position: fixed; inset: 0; z-index: 60; background: rgba(15,13,11,.38); opacity: 0; transition: opacity .45s var(--ease); }
+.scrim.on { opacity: 1; }
+.drawer { position: fixed; z-index: 61; top: 10px; bottom: 10px; inset-inline-start: 10px; width: min(440px, calc(100vw - 20px)); border-radius: 24px; background: var(--paper); display: flex; flex-direction: column; transform: translateX(110%); transition: transform .6s var(--io); box-shadow: 0 30px 80px -20px rgba(15,13,11,.4); }
+.drawer.open { transform: none; }
+.dh { display: flex; justify-content: space-between; align-items: center; padding: 18px 18px 14px; padding-inline-start: 24px; }
+.dh h2 { margin: 0; font: 600 34px/1 var(--disp); }
+.citems { flex: 1; overflow: auto; padding: 0 24px; }
+.ship { padding: 14px 16px; border-radius: 14px; background: var(--stone); font-size: 14px; margin-bottom: 10px; }
+.ship .bar { height: 3px; border-radius: 3px; background: rgba(25,22,19,.1); margin-top: 10px; overflow: hidden; }
+.ship .bar i { display: block; height: 100%; background: var(--navy); border-radius: 3px; transition: width .6s var(--out); }
+.ci2 { display: grid; grid-template-columns: 72px 1fr auto; gap: 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--hair-2); }
+.ci2 .t { width: 72px; height: 72px; border-radius: 8px; background: var(--stone); display: grid; place-items: center; }
+.ci2 .t img { width: 80%; height: 80%; object-fit: contain; mix-blend-mode: multiply; }
+.ci2 .n { font: 600 19px/1.22 var(--disp); }
+.sq { display: inline-flex; align-items: center; gap: 12px; margin-top: 8px; font-size: 14px; }
+.sq button { width: 28px; height: 28px; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--hair); display: grid; place-items: center; } .sq .ic { width: 13px; height: 13px; }
+.df { padding: 18px 24px 24px; border-top: 1px solid var(--hair-2); }
+.df .tot { display: flex; justify-content: space-between; font: 600 26px/1 var(--disp); margin-bottom: 16px; }
+.df .btn { width: 100%; }
+.cempty { text-align: center; padding: 64px 0; color: var(--ink-2); display: grid; justify-items: center; gap: 16px; } .cempty .ic { width: 50px; height: 50px; stroke-width: 1; color: var(--gold); }
+.search { position: fixed; z-index: 61; inset: 0; background: rgba(246,243,238,.97); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); opacity: 0; transition: opacity .4s var(--ease); overflow: auto; }
+.search.open { opacity: 1; }
+.search .wrap { padding-top: 32px; max-width: 1100px; }
+.sbox { display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--ink); padding-bottom: 14px; }
+.sbox > .ic { width: 28px; height: 28px; }
+.sbox input { flex: 1; border: 0; background: transparent; font: 600 clamp(32px, 4vw, 54px)/1.2 var(--disp); outline: none; min-width: 0; }
+.sugg { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 22px; }
+.sres { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px 20px; margin-top: 32px; padding-bottom: 60px; }
+@media (max-width: 760px) { .sres { grid-template-columns: repeat(2, 1fr); } }
+.sheet { position: fixed; z-index: 61; inset-inline: 0; bottom: 0; max-height: 88vh; overflow: auto; border-radius: 24px 24px 0 0; background: var(--paper); padding: 10px 22px 40px; transform: translateY(100%); transition: transform .6s var(--io); }
+.sheet.open { transform: none; }
+.sheet .grab { width: 40px; height: 4px; border-radius: 2px; background: var(--hair); margin: 4px auto 14px; }
+.sheet h2 { margin: 0 0 12px; font: 600 36px/1 var(--disp); }
+.sheet .snus { margin-bottom: 10px; } .sheet .snus p { margin: 0 0 8px; font-size: 13px; color: var(--ink-3); } .sheet .snus .seg { display: flex; flex-wrap: wrap; border-radius: 22px; }
+.sheet details { border-bottom: 1px solid var(--hair-2); }
+.sheet summary { list-style: none; padding: 14px 0; display: flex; gap: 14px; align-items: center; font: 600 26px/1.2 var(--disp); cursor: pointer; }
+.sheet summary .ic { width: 28px; height: 28px; stroke-width: 1.1; color: var(--gold); } .sheet summary .ic.pl { margin-inline-start: auto; width: 18px; height: 18px; color: var(--ink); transition: transform .45s var(--out); }
+.sheet details[open] summary .ic.pl { transform: rotate(45deg); }
+.sheet summary::-webkit-details-marker { display: none; }
+.sheet ul { list-style: none; margin: 0; padding: 0 0 14px; padding-inline-start: 42px; display: grid; gap: 2px; }
+.sheet li a { display: block; padding: 9px 0; color: var(--ink-2); }
+.toast { position: fixed; z-index: 70; left: 50%; bottom: 28px; transform: translate(-50%, 20px); opacity: 0; padding: 12px 22px; border-radius: 999px; background: var(--ink); color: var(--on); font-size: 14.5px; display: flex; gap: 10px; align-items: center; transition: opacity .35s var(--ease), transform .55s var(--out); pointer-events: none; white-space: nowrap; }
+.toast .ic { width: 18px; height: 18px; color: var(--gold-l); }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+/* accessibility */
+.a11y-btn { position: fixed; z-index: 55; top: 58%; inset-inline-end: 0; width: 44px; height: 50px; border-radius: 0 14px 14px 0; background: var(--navy); color: #fff; display: grid; place-items: center; box-shadow: 0 10px 26px -10px rgba(15,13,11,.5); transition: transform .5s var(--out), background-color .3s; }
+.a11y-btn .ic { width: 27px; height: 27px; }
+@media (hover: hover) { .a11y-btn:hover { width: 50px; background: var(--ink); } }
+.a11y-btn { transition: width .4s var(--out), background-color .3s; }
+.a11y { position: fixed; z-index: 62; bottom: 86px; inset-inline-end: 22px; width: min(340px, calc(100vw - 24px)); padding: 18px; border-radius: 22px; background: var(--paper); box-shadow: 0 0 0 1px var(--hair-2), 0 30px 70px -20px rgba(15,13,11,.45); opacity: 0; transform: translateY(10px) scale(.98); transform-origin: bottom left; transition: opacity .3s var(--ease), transform .5s var(--out); }
+.a11y.open { opacity: 1; transform: none; }
+.a11y h2 { margin: 0 0 4px; font: 600 28px/1.1 var(--disp); } .a11y > p { margin: 0 0 14px; font-size: 13px; color: var(--ink-3); }
+.a11y .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.a11y .opts button { display: grid; justify-items: start; gap: 8px; padding: 14px; border-radius: 14px; background: var(--stone); font-size: 14px; text-align: start; box-shadow: inset 0 0 0 1.5px transparent; transition: box-shadow .25s, background-color .25s; }
+.a11y .opts button .ic { width: 24px; height: 24px; color: var(--navy); }
+.a11y .opts button[aria-pressed="true"] { background: #fff; box-shadow: inset 0 0 0 1.5px var(--navy); }
+.a11y .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 13.5px; }
+.a11y .foot button, .a11y .foot a { text-decoration: underline; text-underline-offset: 3px; color: var(--ink-2); }
+html.a-t1 .app { zoom: 1.12; } html.a-t2 .app { zoom: 1.25; }
+html.a-contrast { --ink-2: #2E2924; --ink-3: #4C453C; --hair: rgba(25,22,19,.4); --on-2: #DDD5C8; --gold: #6E5426; --gold-l: #E5CD9B; }
+html.a-contrast .hero .sl::after { background: rgba(10,9,8,.55) !important; } html.a-contrast .hero .sl.t-light::after { background: rgba(246,243,238,.78) !important; }
+html.a-links .app a:not(.btn):not(.cc):not(.pc a):not(.brand) { text-decoration: underline; text-underline-offset: 3px; }
+html.a-read { --disp: Arial, sans-serif; --sans: Arial, sans-serif; }
+html.a-still *, html.a-still *::before, html.a-still *::after { animation: none !important; transition: none !important; }
+
+@media (max-width: 1180px) and (min-width: 861px) { .nus-pill > span { display: none; } .nus-pill { padding-inline: 11px; } .brand .tx span { display: none; } .nav .nl { padding: 0 9px; } .wa { padding-inline: 7px; } .wa > :not(.bi) { display: none; } .hdr .bar { gap: 8px; } }
+
+/* tap targets, empty states, toast placement (QA 14.10) */
+.tlink { min-height: 44px; }
+.sres .count-line { grid-column: 1 / -1; font-size: 16px; }
+body.locked .toast { bottom: auto; top: 24px; }
+@media (max-width: 860px) { .hero .tab { padding-top: 42px; margin-top: -42px; } .brand { padding-block: 10px; } }
+
+/* ---------- inner pages: about, contact, shipping, tracking, checkout ---------- */
+.ph-head { padding-top: calc(var(--ut) + 128px); padding-bottom: clamp(40px, 6vw, 72px); }
+.ph-head h1 { margin: 0; font: 600 clamp(36px, 4.4vw, 60px)/1 var(--disp); }
+.ph-head .lead { font-size: clamp(17px, 1.4vw, 20px); max-width: 56ch; }
+.about-split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: center; }
+.about-split .ph { border-radius: 8px; overflow: hidden; aspect-ratio: 4 / 5; }
+.about-split .ph img { width: 100%; height: 100%; object-fit: cover; }
+.pull { margin: 0; font: 600 clamp(30px, 3.4vw, 48px)/1.25 var(--disp); text-wrap: balance; }
+.pull cite { display: block; margin-top: 18px; font: 400 14px/1.4 var(--sans); font-style: normal; color: var(--ink-3); }
+.vals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-block: 1px solid var(--hair); }
+.vals > div { padding: 40px 32px 40px 0; display: grid; gap: 10px; align-content: start; }
+.vals > div + div { border-inline-start: 1px solid var(--hair); padding-inline-start: 32px; }
+.vals .ic { width: 40px; height: 40px; stroke-width: 1.05; color: var(--gold); margin-bottom: 8px; }
+.vals b { font: 600 30px/1.1 var(--disp); } .vals p { margin: 0; color: var(--ink-2); }
+.cgrid { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(28px, 5vw, 72px); align-items: start; }
+.ccards { display: grid; gap: 14px; }
+.ccard { display: flex; align-items: center; gap: 18px; padding: 24px 26px; border-radius: 18px; background: var(--paper); box-shadow: 0 0 0 1px var(--hair-2); transition: box-shadow .3s var(--ease), transform .6s var(--out); }
+@media (hover: hover) { .ccard:hover { box-shadow: 0 0 0 1px var(--ink); transform: translateY(-2px); } }
+.ccard .ic { width: 34px; height: 34px; stroke-width: 1.1; color: var(--gold); }
+.ccard b { display: block; font: 600 26px/1.1 var(--disp); } .ccard span { color: var(--ink-2); font-size: 14.5px; }
+.ccard.main { background: var(--navy); color: #fff; box-shadow: none; } .ccard.main .ic { color: var(--gold-l); } .ccard.main span { color: rgba(255,255,255,.75); }
+.form { display: grid; gap: 16px; padding: clamp(24px, 3vw, 36px); border-radius: 22px; background: var(--paper); box-shadow: 0 0 0 1px var(--hair-2); }
+.form h2 { margin: 0 0 6px; font: 600 34px/1.1 var(--disp); }
+.fld { display: grid; gap: 6px; } .fld label { font-size: 14px; font-weight: 500; }
+.fld input, .fld textarea, .fld select { width: 100%; min-height: 52px; padding: 12px 16px; border-radius: 14px; border: 0; background: var(--bg); box-shadow: inset 0 0 0 1px var(--hair); font-size: 16px; transition: box-shadow .25s; }
+.fld textarea { min-height: 120px; resize: vertical; }
+.fld [aria-invalid="true"] { box-shadow: inset 0 0 0 1.5px #A3242B; }
+.fld input:focus, .fld textarea:focus, .fld select:focus { outline: none; box-shadow: inset 0 0 0 1.5px var(--navy); }
+.fld small { color: var(--ink-3); font-size: 13px; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.tl { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+.tl::before { content: ""; position: absolute; top: 31px; inset-inline: 12%; height: 1px; background: var(--hair); }
+.tl li { position: relative; display: grid; justify-items: center; text-align: center; gap: 12px; padding: 0 14px; }
+.tl .dotc { width: 64px; height: 64px; border-radius: 50%; background: var(--paper); box-shadow: 0 0 0 1px var(--hair); display: grid; place-items: center; position: relative; z-index: 1; }
+.tl .dotc .ic { width: 28px; height: 28px; stroke-width: 1.15; color: var(--gold); }
+.tl b { font: 600 25px/1.15 var(--disp); } .tl p { margin: 0; font-size: 14.5px; color: var(--ink-2); max-width: 24ch; }
+.faq { max-width: 860px; }
+.faq .acc summary { font: 600 24px/1.3 var(--disp); padding: 22px 0; }
+.faq .acc .ab { font-size: 16px; max-width: 64ch; }
+.co { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(28px, 4vw, 64px); align-items: start; padding-bottom: clamp(80px, 10vw, 140px); }
+.steps-bar { display: flex; gap: 8px; margin-bottom: 26px; flex-wrap: wrap; }
+.steps-bar span { height: 36px; padding: 0 16px; border-radius: 999px; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; box-shadow: inset 0 0 0 1px var(--hair); color: var(--ink-3); }
+.steps-bar span[aria-current="step"] { background: var(--ink); color: var(--on); box-shadow: none; }
+.choice { display: grid; gap: 10px; }
+.choice label { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border-radius: 16px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--hair); cursor: pointer; transition: box-shadow .25s; }
+.choice label:has(input:checked) { box-shadow: inset 0 0 0 1.5px var(--navy); background: #fff; }
+.choice input { accent-color: var(--navy); width: 18px; height: 18px; min-height: 0; padding: 0; box-shadow: none; background: none; flex: none; }
+.choice b { font-weight: 500; } .choice span { margin-inline-start: auto; color: var(--ink-2); font-size: 14.5px; }
+.sum { position: sticky; top: 104px; padding: 28px; border-radius: 22px; background: var(--paper); box-shadow: 0 0 0 1px var(--hair-2); }
+.sum h2 { margin: 0 0 14px; font: 600 32px/1 var(--disp); }
+.sum .ln { display: flex; justify-content: space-between; padding: 10px 0; font-size: 15px; color: var(--ink-2); }
+.sum .ln.t { border-top: 1px solid var(--hair); margin-top: 8px; padding-top: 16px; font: 600 28px/1 var(--disp); color: var(--ink); }
+.sum .safe { display: flex; gap: 10px; align-items: center; margin-top: 16px; font-size: 13.5px; color: var(--ink-3); } .sum .safe .ic { width: 20px; height: 20px; color: var(--gold); }
+.track { max-width: 640px; }
+@media (max-width: 860px) {
+  .about-split, .cgrid, .co { grid-template-columns: 1fr; } .vals { grid-template-columns: 1fr; } .vals > div + div { border-inline-start: 0; padding-inline-start: 0; border-top: 1px solid var(--hair); }
+  .tl { grid-template-columns: 1fr 1fr; gap: 32px 0; } .tl::before { display: none; } .row2 { grid-template-columns: 1fr; } .sum { position: static; }
+  .ph-head { padding-top: calc(var(--ut) + 100px); }
+}
+
+/* personal dedication: live preview on the cover, or on a leather swatch */
+.ded { display: grid; gap: 14px; }
+.ded-prev { position: relative; border-radius: 16px; overflow: hidden; background: var(--stone); aspect-ratio: 16 / 8; display: grid; place-items: center; }
+.ded-prev.cover { aspect-ratio: 1 / 1; max-height: 460px; }
+.blk .ded-prev.cover { aspect-ratio: 16 / 10; } .blk .ded-prev .bk { width: 46%; }
+.ded-prev .bk { position: relative; width: 74%; aspect-ratio: 1 / 1; container-type: inline-size; }
+.ded-prev .bk img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+.ded-prev .leather { position: absolute; inset: 0; background: radial-gradient(120% 90% at 30% 20%, #4a2a22 0%, #2b1712 55%, #1a0e0b 100%); }
+.ded-prev .leather::after { content: ""; position: absolute; inset: 7%; border-radius: 10px; box-shadow: inset 0 0 0 1.5px rgba(214,178,110,.35), inset 0 0 0 5px rgba(0,0,0,.18), inset 0 0 0 6.5px rgba(214,178,110,.2); }
+.ded-prev .leather svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.foil { position: absolute; top: 84.7%; left: 16.5%; width: 61%; height: auto; transform: translateY(-50%); overflow: visible; }
+.foil text, .leather text { font-family: var(--disp); font-weight: 600; }
+.ded-prev .tag2 { position: absolute; z-index: 2; top: 12px; inset-inline-start: 12px; height: 26px; padding: 0 11px; border-radius: 999px; background: rgba(251,250,247,.9); font-size: 12px; display: inline-flex; align-items: center; }
+.ded .seg { display: flex; flex-wrap: wrap; border-radius: 22px; }
+.ded .seg button { flex: 1; justify-content: center; }
+.ded .names { min-height: 96px; }
+.ded .note { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; background: var(--stone); font-size: 13.5px; color: var(--ink-2); } .ded .note .ic { width: 18px; height: 18px; color: var(--gold); flex: none; margin-top: 2px; }
+
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.mg-card .mg-art { position: absolute; inset: 0; }
+.mg-card .mg-art > * { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; animation: mgin .5s var(--ease); }
+.mg-card .mg-prod { background: var(--stone); display: grid; place-items: center; }
+.mg-card .mg-prod .pic { position: static; width: 68%; height: 68%; animation: none; }
+@keyframes mgin { from { opacity: 0; transform: scale(1.03); } }
+.mg-card .cp2 b { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 24px; }
+.mg-card:has(.mg-prod)::after { background: linear-gradient(to top, rgba(15,13,11,.55), transparent 40%); }
+.pc .pl .pic { position: relative; z-index: 1; width: 72%; height: 72%; transition: transform 1.1s var(--out); }
+@media (hover: hover) { .pc:hover .pl .pic { transform: translateY(-8px) scale(1.04); } }
+.mg-it .th .pic, .ci2 .t .pic { width: 80%; height: 80%; }
+.rev-cta .btn svg.g { width: 20px; height: 20px; }
+/* mobile tab bar */
+.tabbar { display: none; }
+@media (max-width: 860px) {
+  .nav, .wa, .nus-pill { display: none; }
+  .menu-btn { display: grid; }
+  .hdr .bar { height: 58px; padding-inline: 6px; grid-template-columns: 88px 1fr 88px; }
+  .tools { gap: 0; }
+  .brand { justify-content: center; } .brand .mk { width: 24px; height: 24px; } .brand b { font-size: 25px; } .brand .tx span { display: none; }
+  .mega, .pop { display: none; }
+  .tabbar { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; z-index: 50; inset-inline: 0; bottom: 0; padding: 6px 4px calc(6px + env(safe-area-inset-bottom)); background: rgba(251,250,247,.94); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-top: 1px solid var(--hair-2); }
+  .tabbar > * { display: grid; justify-items: center; gap: 2px; font-size: 11px; color: var(--ink-3); padding: 6px 0; position: relative; min-height: 48px; }
+  .tabbar .ic { width: 24px; height: 24px; }
+  .tabbar [aria-current="page"] { color: var(--ink); }
+  .tabbar .count { top: 2px; inset-inline-start: calc(50% + 4px); }
+  .toast { bottom: 96px; }
+  .a11y-btn { bottom: auto; top: 58%; inset-inline-end: 0; width: 40px; height: 46px; border-radius: 0 14px 14px 0; } .a11y-btn .ic { width: 23px; height: 23px; } .a11y { bottom: 84px; inset-inline-end: 12px; }
+  .brand { order: 0; justify-self: center; } .hdr .navwrap { justify-self: start; }
+  .brand b { white-space: nowrap; font-size: 19px; } .brand { gap: 6px; min-width: 0; } .brand .mk { width: 22px; height: 22px; } .hdr .bar { grid-template-columns: 92px minmax(0, 1fr) 92px; }
+}
+
+/* reveal */
+.rv { transition: opacity 1s var(--ease), transform 1.15s var(--out), filter 1s var(--ease); }
+.rv.pend { opacity: 0; transform: translateY(40px); filter: blur(6px); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; animation: none !important; }
+  .hero h1 .ln > span, .hero .sub, .hero .ctas { transform: none; opacity: 1; }
+  .h2 .w > i { transform: none; } .rvimg { clip-path: none; } .rvimg img { transform: none; }
+  .draw .ic path, .draw .ic circle, .draw .ic rect { stroke-dashoffset: 0; }
+}
+
+/* ---------- v8 ---------- */
+/* the client's original mark */
+.brand { gap: 11px; }
+.brand .mk { width: 50px; height: auto; color: var(--ink); flex: none; }
+.brand b { font: 500 21px/1 var(--disp); letter-spacing: -.012em; }
+.ft-logo { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 18px; color: var(--on); }
+.ft-logo svg { width: 58px; height: auto; }
+.ft-logo b { font: 500 23px/1 var(--disp); letter-spacing: -.012em; }
+.ld .mark { width: 128px; height: auto; color: var(--on); }
+.ld .mark .bk { fill-opacity: 0; animation: ldraw 1.1s var(--out) .35s forwards, lfill .7s var(--ease) 1s forwards; }
+@keyframes lfill { to { fill-opacity: 1; } }
+/* atlas skeletons */
+span.pic[data-a] { position: relative; }
+span.pic[data-a]::before { content: ""; position: absolute; inset: 9% 21%; border-radius: 8px; background: linear-gradient(100deg, rgba(25,22,19,.045) 38%, rgba(25,22,19,.1) 50%, rgba(25,22,19,.045) 62%) 0 0 / 300% 100%; animation: skel 1.5s linear infinite; transition: opacity .4s var(--ease); }
+@keyframes skel { from { background-position: 100% 0; } to { background-position: -50% 0; } }
+@keyframes picIn { from { opacity: 0; } }
+html.al-0 span.pic[data-a="0"],html.al-1 span.pic[data-a="1"],html.al-2 span.pic[data-a="2"],html.al-3 span.pic[data-a="3"],html.al-4 span.pic[data-a="4"],html.al-5 span.pic[data-a="5"],html.al-6 span.pic[data-a="6"],html.al-7 span.pic[data-a="7"],html.al-8 span.pic[data-a="8"],html.al-9 span.pic[data-a="9"],html.al-10 span.pic[data-a="10"],html.al-11 span.pic[data-a="11"],html.al-12 span.pic[data-a="12"],html.al-13 span.pic[data-a="13"],html.al-14 span.pic[data-a="14"],html.al-15 span.pic[data-a="15"],html.al-16 span.pic[data-a="16"],html.al-17 span.pic[data-a="17"],html.al-18 span.pic[data-a="18"],html.al-19 span.pic[data-a="19"],html.al-20 span.pic[data-a="20"],html.al-21 span.pic[data-a="21"],html.al-22 span.pic[data-a="22"],html.al-23 span.pic[data-a="23"] { background-image: var(--bg); background-position: var(--bp); animation: picIn .7s var(--ease); }
+html.al-0 span.pic[data-a="0"]::before,html.al-1 span.pic[data-a="1"]::before,html.al-2 span.pic[data-a="2"]::before,html.al-3 span.pic[data-a="3"]::before,html.al-4 span.pic[data-a="4"]::before,html.al-5 span.pic[data-a="5"]::before,html.al-6 span.pic[data-a="6"]::before,html.al-7 span.pic[data-a="7"]::before,html.al-8 span.pic[data-a="8"]::before,html.al-9 span.pic[data-a="9"]::before,html.al-10 span.pic[data-a="10"]::before,html.al-11 span.pic[data-a="11"]::before,html.al-12 span.pic[data-a="12"]::before,html.al-13 span.pic[data-a="13"]::before,html.al-14 span.pic[data-a="14"]::before,html.al-15 span.pic[data-a="15"]::before,html.al-16 span.pic[data-a="16"]::before,html.al-17 span.pic[data-a="17"]::before,html.al-18 span.pic[data-a="18"]::before,html.al-19 span.pic[data-a="19"]::before,html.al-20 span.pic[data-a="20"]::before,html.al-21 span.pic[data-a="21"]::before,html.al-22 span.pic[data-a="22"]::before,html.al-23 span.pic[data-a="23"]::before { opacity: 0; animation: none; }
+/* product page */
+.pp { grid-template-columns: 1.24fr 1fr; }
+.gal .main { max-height: 700px; border-radius: 24px; }
+.gal .main .pic { width: 80%; height: 80%; }
+.info { max-width: 520px; }
+.info h1 { font-size: clamp(28px, 2.7vw, 40px); line-height: 1.08; letter-spacing: -.03em; }
+.info .price { font-size: 30px; }
+.info .pnote { margin: 8px 0 0; font-size: 13px; color: var(--ink-3); }
+.share { display: flex; align-items: center; gap: 6px; margin-top: 16px; }
+.share > span { font-size: 13px; color: var(--ink-3); margin-inline-end: 6px; }
+.share a, .share button { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; box-shadow: inset 0 0 0 1px var(--hair); transition: box-shadow .25s var(--ease), transform .2s var(--out); }
+.share .ic { width: 18px; height: 18px; }
+.share a:active, .share button:active { transform: scale(.94); }
+@media (hover: hover) { .share a:hover, .share button:hover { box-shadow: inset 0 0 0 1px var(--ink); } }
+@media (max-width: 1180px) and (min-width: 861px) { .brand .mk { width: 44px; } .brand b { font-size: 19px; } }
+@media (max-width: 860px) {
+  .brand .mk { width: 40px; height: auto; } .brand b { font-size: 18px; } .brand { gap: 8px; }
+  .pp { grid-template-columns: 1fr; }
+  .info { max-width: none; }
+  /* hero: picture on top, words below it, never on top of the book */
+  .hc-track { height: min(84svh, 680px); min-height: 590px; }
+  .hc-card .pz { bottom: 43%; -webkit-mask-image: linear-gradient(to bottom, #000 74%, transparent); mask-image: linear-gradient(to bottom, #000 74%, transparent); }
+  .hc-card::after, .hc-card.light::after { background: none !important; }
+  .hc-card .cp { padding: 0 20px 74px; }
+}
+@media (prefers-reduced-motion: reduce) { span.pic[data-a]::before { animation: none; } .ld .mark .bk { fill-opacity: 1; } }
+
+/* v8b */
+.nus-opt .nth { display: flex; height: 92px; margin-bottom: 6px; }
+.nus-opt .nth > span { width: 70px; height: 92px; border-radius: 12px; background: var(--stone); display: grid; place-items: center; box-shadow: 0 10px 24px -14px rgba(0,0,0,.6); transition: transform .8s var(--out); }
+.nus-opt .nth > span + span { margin-inline-start: -22px; }
+.nus-opt .nth > span:nth-child(1) { transform: rotate(7deg) translateY(3px); z-index: 3; } .nus-opt .nth > span:nth-child(2) { transform: translateY(-3px); z-index: 2; } .nus-opt .nth > span:nth-child(3) { transform: rotate(-7deg) translateY(3px); z-index: 1; }
+.nus-opt .nth .pic { width: 80%; height: 80%; }
+@media (hover: hover) { .nus-opt:hover .nth > span:nth-child(1) { transform: rotate(11deg) translate(10px, 5px); } .nus-opt:hover .nth > span:nth-child(3) { transform: rotate(-11deg) translate(-10px, 5px); } }
+.feat .tx { max-width: 430px; }
+.feat::before { content: ""; position: absolute; inset-block: 0; left: 0; width: 58%; z-index: 1; pointer-events: none; background: linear-gradient(to right, rgba(246,243,238,.82), rgba(246,243,238,.5) 55%, transparent); }
+.feat .wrap { z-index: 2; }
+@media (max-width: 860px) {
+  .feat::before { display: none; }
+  .nus-opt .nth { height: 76px; } .nus-opt .nth > span { width: 58px; height: 76px; }
+  .a11y-btn { width: 30px; height: 44px; } .a11y-btn .ic { width: 20px; height: 20px; }
+}
+@media (prefers-reduced-motion: reduce) { .nus-opt .nth > span { transition: none; } }
+
+/* v8c: sets in the dark section read as a quiet list, not light boxes */
+.dark .sets { gap: 0 36px; border-top: 1px solid var(--on-hair); }
+.dark .sets .pc { border-bottom: 1px solid var(--on-hair); }
+.dark .sets .pc > a { display: grid; grid-template-columns: 104px 1fr; gap: 18px; align-items: center; padding: 18px 0; padding-inline-end: 52px; }
+.dark .sets .pc .pl { aspect-ratio: 1; border-radius: 14px; }
+.dark .sets .pc .pl::after { display: none; }
+.dark .sets .pc .meta { padding: 0; }
+.dark .sets .pc .nm { color: var(--on); }
+.dark .sets .pc .pr, .dark .sets .pc .nu { color: var(--on-2); }
+.dark .sets .pc .qa { top: 50%; bottom: auto; inset-inline-end: 0; inset-inline-start: auto; transform: translateY(-50%); }
+@media (max-width: 860px) { .dark .sets .pc > a { grid-template-columns: 84px 1fr; padding-block: 14px; } }
+
+/* ---------- v9 ---------- */
+/* the client's logo */
+.brand { gap: 10px; align-items: center; }
+.brand .lg-i { width: 50px; height: auto; flex: none; }
+.brand .lg-w { width: 168px; height: auto; }
+.ft-logo { display: inline-block; margin-bottom: 18px; }
+.ft-logo img { width: 230px; height: auto; display: block; }
+.ld .ld-logo { width: min(440px, 76vw); height: auto; clip-path: inset(0 50% 0 50%); opacity: 0; animation: ldReveal 1.25s var(--io) .1s forwards; }
+@keyframes ldReveal { 40% { opacity: 1; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
+@media (max-width: 1180px) and (min-width: 861px) { .brand .lg-i { width: 42px; } .brand .lg-w { width: 140px; } }
+/* wider, taller hero: almost edge to edge, words still on the page grid */
+.hc-vp { max-width: 1720px; padding-inline: clamp(12px, 1.4vw, 24px); }
+.hc-track { height: clamp(520px, 76svh, 780px); border-radius: 30px; }
+.hc-card .cp { width: min(600px, 50%); padding-inline-start: max(clamp(28px, 4vw, 64px), calc((min(100vw, 1720px) - var(--max)) / 2 + var(--gut) - clamp(12px, 1.4vw, 24px))); }
+.hc-card h1, .hc-card h2 { font-size: clamp(38px, 4.4vw, 68px); }
+.hc-nav { inset-inline-start: max(calc(var(--gut) + 22px), calc((min(100vw, 1720px) - var(--max)) / 2 + var(--gut))); bottom: 22px; }
+/* nusach: each column is a lit vitrine with three real siddurim */
+.nus-opt .nth { position: relative; display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; margin-bottom: 18px; border-radius: 18px; overflow: hidden; background: radial-gradient(120% 95% at 50% 10%, #FBF8F2 0%, #EEE7DB 60%, #E2D9CA 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,.5), 0 22px 40px -26px rgba(0,0,0,.8); }
+.nus-opt .nth::after { content: ""; position: absolute; inset: auto 12% 7% 12%; height: 9%; border-radius: 50%; background: radial-gradient(closest-side, rgba(40,30,18,.28), transparent); }
+.nus-opt .nth > span { position: absolute; bottom: 9%; display: block; width: 36%; height: 62%; margin: 0 !important; border-radius: 0; background: none; box-shadow: none; transition: transform 1s var(--out); z-index: 1; }
+.nus-opt .nth > span .pic { width: 100%; height: 100%; }
+.nus-opt .nth > span:nth-child(1) { left: 32%; height: 80%; z-index: 3; transform: none; }
+.nus-opt .nth > span:nth-child(2) { left: 6%; transform: rotate(-3deg); }
+.nus-opt .nth > span:nth-child(3) { left: 58%; transform: rotate(3deg); }
+@media (hover: hover) {
+  .nus-opt:hover .nth > span:nth-child(1) { transform: translateY(-6px) scale(1.03); }
+  .nus-opt:hover .nth > span:nth-child(2) { transform: translateX(-10px) rotate(-6deg); }
+  .nus-opt:hover .nth > span:nth-child(3) { transform: translateX(10px) rotate(6deg); }
+}
+.nus-opt:first-child { padding-inline-start: clamp(16px, 2vw, 28px); }
+.nus-opt { padding-inline: clamp(16px, 2vw, 28px); }
+/* dedication studio */
+.ded { gap: 16px; }
+.ded-prev { border-radius: 20px; background: radial-gradient(110% 90% at 50% 18%, #FBF8F2 0%, #EFE8DC 62%, #E4DBCC 100%); box-shadow: inset 0 0 0 1px rgba(25,22,19,.05); }
+.ded-prev.cover .bk { width: 70%; }
+.ded-prev.cover::after { content: ""; position: absolute; inset: auto 22% 6% 22%; height: 6%; border-radius: 50%; background: radial-gradient(closest-side, rgba(40,30,18,.22), transparent); }
+.occ { display: flex; flex-wrap: wrap; gap: 6px; }
+.occ button { height: 34px; padding: 0 14px; border-radius: 999px; font-size: 13.5px; box-shadow: inset 0 0 0 1px var(--hair); transition: box-shadow .25s var(--ease), background-color .25s var(--ease), transform .2s var(--out); }
+.occ button:active { transform: scale(.96); }
+@media (hover: hover) { .occ button:hover { box-shadow: inset 0 0 0 1px var(--ink); } }
+.ded .fld label { display: flex; justify-content: space-between; align-items: baseline; }
+.ded .cnt { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; font-weight: 400; }
+.ded-two { display: grid; grid-template-columns: 1.15fr 1fr; gap: 12px; }
+.ded-two .ol2 { display: block; font-size: 12.5px; color: var(--ink-3); margin: 0 4px 6px; }
+.ded-two .seg button { font-size: 14px; gap: 7px; padding-inline: 8px; }
+.ded .sw { width: 12px; height: 12px; border-radius: 50%; flex: none; }
+.ded .sw.gold { background: linear-gradient(135deg, #8a6420, #f3dc9a 45%, #b8892f); }
+.ded .sw.silver { background: linear-gradient(135deg, #6d7076, #f4f5f7 45%, #9a9da3); }
+.ded .sw.blind { background: #3a2a22; box-shadow: inset 0 1px 1px rgba(0,0,0,.5); }
+@media (max-width: 860px) {
+  .brand .lg-i { width: 38px; } .brand .lg-w { width: 128px; } .brand { gap: 7px; }
+  .ft-logo img { width: 200px; }
+  .hc-vp { padding-inline: 10px; }
+  .hc-track { height: min(84svh, 680px); border-radius: 24px; }
+  .hc-card .cp { width: 100%; padding-inline-start: 20px; }
+  .hc-nav { inset-inline-start: 24px; bottom: 14px; }
+  .nus-opt, .nus-opt:first-child { padding-inline: 0; }
+  .nus-opt .nth { aspect-ratio: 16 / 9; }
+  .ded-two { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { .ld .ld-logo { animation: none; clip-path: none; opacity: 1; } .nus-opt .nth > span { transition: none; } }
+
+/* v9 fixes: the vitrine books blend into the stage, the fine lettering button reads at size */
+.nus-opt .nth > span { mix-blend-mode: multiply; }
+.ded-two .seg [data-ded-f="fine"] { font-size: 18px; }
+.blk .ded-prev.cover .bk { width: 42%; }
+@media (max-width: 860px) { .occ button { height: 40px; padding: 0 15px; } }
+
+/* ---------- v10 ---------- */
+/* text never breaks into odd lines */
+h1, h2, h3, .h2, .hc-card h1, .hc-card h2 { text-wrap: balance; }
+p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
+/* logo lockup: book, wordmark, gold rule, tagline */
+.brand .lg-t { display: grid; justify-items: center; gap: 4px; }
+.brand .lg-s { display: flex; align-items: center; gap: 7px; font: 500 10.5px/1 var(--sans); letter-spacing: .04em; color: #0E2148; white-space: nowrap; }
+.brand .lg-s::before, .brand .lg-s::after { content: ""; width: 14px; height: 1px; background: linear-gradient(90deg, transparent, #C9A04E, transparent); }
+.brand .lg-i { width: 54px; }
+.brand .lg-w { width: 176px; }
+/* header as wide as the hero */
+.hdr { padding-inline: clamp(12px, 1.4vw, 24px); }
+.hdr .bar { max-width: 1672px; height: 64px; padding-inline: 22px 10px; }
+/* hero: words sit low and steady, a product to open on every slide */
+.hc-card .cp { justify-content: flex-end; padding-block: 0 clamp(92px, 9vh, 120px); }
+.hc-card h1, .hc-card h2 { max-width: 15ch; }
+.hc-card .cp { width: min(780px, 58%); }
+.hc-card .sub { max-width: 44ch; }
+.hc-card .tag3 { display: none; }
+.hc-prod { position: absolute; z-index: 3; bottom: 22px; inset-inline-end: 22px; display: flex; align-items: center; gap: 12px; padding: 7px 16px 7px 7px; border-radius: 20px; background: rgba(251,250,247,.82); backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2); color: var(--ink); box-shadow: 0 10px 30px -14px rgba(0,0,0,.45); transition: transform .5s var(--out), background-color .3s var(--ease); }
+.hc-prod .t { width: 52px; height: 52px; border-radius: 14px; background: var(--stone); display: grid; place-items: center; flex: none; }
+.hc-prod .t .pic { width: 84%; height: 84%; }
+.hc-prod .x { display: grid; gap: 3px; } .hc-prod b { font: 600 14px/1.2 var(--disp); max-width: 22ch; } .hc-prod .x span { font-size: 13px; color: var(--ink-2); }
+.hc-prod .ic { width: 15px; height: 15px; transition: transform .5s var(--out); }
+@media (hover: hover) { .hc-prod:hover { transform: translateY(-3px); background: rgba(255,255,255,.94); } .hc-prod:hover .ic { transform: translateX(-4px); } }
+.hc-card:not(.on) .hc-prod { pointer-events: none; }
+.hc-no { position: absolute; z-index: 3; top: 24px; inset-inline-start: max(clamp(28px, 4vw, 64px), calc((min(100vw, 1720px) - var(--max)) / 2 + var(--gut) - clamp(12px, 1.4vw, 24px))); font: 500 12.5px/1 var(--sans); letter-spacing: .14em; color: rgba(243,238,230,.72); font-variant-numeric: tabular-nums; }
+.hc-card.light .hc-no { color: var(--ink-3); }
+.ded-two { grid-template-columns: 1fr; }
+/* nusach shelf */
+.nsw { display: grid; grid-template-columns: minmax(220px, .7fr) 2fr; gap: clamp(28px, 4vw, 64px); align-items: center; margin-top: clamp(8px, 2vw, 24px); }
+.nsw-tabs { display: grid; gap: 4px; }
+.nsw-tabs button { position: relative; text-align: start; padding: 10px 0 14px; color: var(--on-2); transition: color .4s var(--ease); }
+.nsw-tabs .nn { font: 600 clamp(34px, 3.6vw, 54px)/1.05 var(--disp); letter-spacing: -.02em; display: inline-block; transition: transform .8s var(--out); }
+.nsw-tabs .ln { position: absolute; inset-inline-start: 0; bottom: 4px; height: 1px; width: 100%; background: var(--on-hair); }
+.nsw-tabs .ln::after { content: ""; position: absolute; inset: 0; background: var(--gold-l); transform: scaleX(0); transform-origin: right; transition: transform .9s var(--out); }
+.nsw-tabs [aria-selected="true"] { color: var(--on); } .nsw-tabs [aria-selected="true"] .ln::after { transform: scaleX(1); }
+.nsw-tabs [aria-selected="true"] .nn { color: var(--gold-l); }
+@media (hover: hover) { .nsw-tabs button:hover { color: var(--on); } .nsw-tabs button:hover .nn { transform: translateX(-6px); } }
+.nsw-stage { position: relative; }
+.nsw-panel { opacity: 0; transform: translateY(10px); transition: opacity .6s var(--ease), transform .8s var(--out); }
+.nsw-panel.on { opacity: 1; transform: none; }
+.shelf { display: grid; grid-template-columns: repeat(5, 1fr); gap: clamp(8px, 1.2vw, 18px); padding: clamp(18px, 2.4vw, 34px) clamp(16px, 2.2vw, 30px) clamp(16px, 2vw, 26px); border-radius: 24px; background: radial-gradient(120% 100% at 50% 0%, #FBF8F2 0%, #EEE7DB 64%, #E3DACB 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,.5), 0 30px 60px -36px rgba(0,0,0,.9); }
+.sh-it { display: grid; gap: 10px; justify-items: center; text-align: center; color: var(--ink); }
+.sh-it .ph { position: relative; width: 100%; aspect-ratio: 3 / 4; display: grid; place-items: center; mix-blend-mode: multiply; transition: transform .8s var(--out); }
+.sh-it .ph::after { content: ""; position: absolute; inset: auto 16% 2% 16%; height: 6%; border-radius: 50%; background: radial-gradient(closest-side, rgba(40,30,18,.25), transparent); }
+.sh-it .ph .pic { width: 92%; height: 92%; }
+.sh-it b { font: 500 13px/1.35 var(--disp); color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+@media (hover: hover) { .sh-it:hover .ph { transform: translateY(-8px); } .sh-it:hover b { color: var(--ink); } }
+.nsw-acts { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 22px; }
+.nsw-acts .tlink { color: var(--on); }
+@media (max-width: 1180px) and (min-width: 861px) { .brand .lg-s { display: none; } .brand .lg-w { width: 150px; } .shelf { grid-template-columns: repeat(4, 1fr); } .shelf .sh-it:nth-child(5) { display: none; } }
+@media (max-width: 860px) {
+  .brand .lg-s { display: none; } .brand .lg-i { width: 40px; } .brand .lg-w { width: 132px; }
+  .hdr { padding-inline: 10px; } .hdr .bar { height: 58px; padding-inline: 6px; }
+  .hc-card .cp { padding-bottom: 74px; }
+  .hc-prod { bottom: auto; top: 14px; inset-inline-end: 14px; padding: 5px 12px 5px 5px; border-radius: 16px; } .hc-prod .t { width: 40px; height: 40px; border-radius: 11px; } .hc-prod b { font-size: 12.5px; max-width: 16ch; } .hc-prod .x span { font-size: 12px; } .hc-prod .ic { display: none; }
+  .hc-no { display: none; }
+  .nsw { grid-template-columns: 1fr; gap: 18px; }
+  .nsw-tabs { grid-auto-flow: column; grid-auto-columns: max-content; gap: 22px; overflow-x: auto; scrollbar-width: none; }
+  .nsw-tabs .nn { font-size: 26px; }
+  .shelf { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 40%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .sh-it { scroll-snap-align: start; }
+}
+@media (prefers-reduced-motion: reduce) { .nsw-panel, .nsw-tabs .nn, .sh-it .ph, .hc-prod { transition: none; } }
+@media (max-width: 860px) { .hc-card .cp { width: 100%; } .hc-card h1, .hc-card h2 { max-width: none; } }
+</style>
+
+<div class="app" dir="rtl" lang="he" id="app">
+  <a class="skip" href="#main">דילוג לתוכן</a>
+  <div class="ld" id="ld" aria-hidden="true"><div class="in">
+    <img class="ld-logo" src="brand/full-light.png" alt="" width="900" height="354">
+    <div class="bar"><i></i></div>
+  </div></div>
+
+  <div class="util"><div class="wrap">
+    <span class="bsd">בס״ד</span>
+    <div class="uf"><ul><li>משלוח חינם בקנייה מעל 350 ₪</li><li>הטבעה אישית על הכריכה</li><li>4.3 בגוגל, 65 ביקורות</li><li>משלוח חינם בקנייה מעל 350 ₪</li></ul></div>
+    <a class="ph" href="tel:+972526845740" dir="ltr"><i data-ic="phone"></i>052-6845740</a>
+  </div></div>
+
+  <header class="hdr" id="hdr">
+    <div class="bar">
+      <div class="navwrap" style="display:flex;align-items:center">
+        <button class="ib menu-btn" type="button" data-open="sheet" aria-label="תפריט"><i data-ic="menu"></i></button>
+        <ul class="nav" id="nav"></ul>
+      </div>
+      <a class="brand" href="#home" aria-label="מרכז הסידורים, לדף הבית"><img class="lg-i" src="brand/icon.png" alt="" width="240" height="142"><span class="lg-t"><img class="lg-w" src="brand/word.png" alt="" width="640" height="77"><span class="lg-s">כל ספרי הקודש במקום אחד</span></span></a>
+      <div class="tools">
+        <button class="nus-pill" type="button" id="nus-pill" aria-haspopup="true" aria-expanded="false" aria-controls="nus-pop"><i data-ic="nusach"></i><span>נוסח: <b id="nus-cur">כל הנוסחים</b></span></button>
+        <button class="ib redraw" type="button" data-open="search" aria-label="חיפוש"><i data-ic="search"></i></button>
+        <a class="ib acc-ib redraw" href="#account" aria-label="החשבון שלי"><i data-ic="user"></i></a>
+        <button class="ib redraw" type="button" data-open="cart" aria-label="סל הקניות"><i data-ic="bag"></i><span class="count" data-count hidden>0</span></button>
+        <a class="wa" href="https://wa.me/972526845740?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%94%D7%92%D7%A2%D7%AA%D7%99%20%D7%9E%D7%94%D7%90%D7%AA%D7%A8" target="_blank" rel="noopener" aria-label="וואטסאפ, נפתח בחלון חדש"><span class="wl">וואטסאפ</span><span class="bi"><i data-ic="wa"></i></span></a>
+        <div class="pop" id="nus-pop" role="dialog" aria-label="בחירת הנוסח שלי"><p>בוחרים פעם אחת, והאתר מציג את הנוסח הזה בכל הקטגוריות.</p><div id="nus-pop-in"></div></div>
+      </div>
+    </div>
+    <div class="mega" id="mega" role="region" aria-label="תפריט קטגוריה"><div class="mg-in" id="mega-in"></div></div>
+  </header>
+
+  <main id="main" tabindex="-1"></main>
+
+  <footer class="ft dark" id="contact">
+    <div class="wrap">
+      <div class="ft-cta">
+        <div class="rv"><p class="kick">שירות אישי</p><h2 class="h2">צריכים עזרה בבחירה?<br><em>עונים לכם אישית.</em></h2>
+          <p class="lead">כתבו לנו איזה ספר, באיזה נוסח ובאיזו כריכה, ונעזור לבחור. גם הקדשה אישית ומזכרות בכמות לאירוע מתאמים כאן.</p></div>
+        <div class="ft-acts rv">
+          <a class="btn light" href="https://wa.me/972526845740?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%94%D7%92%D7%A2%D7%AA%D7%99%20%D7%9E%D7%94%D7%90%D7%AA%D7%A8" target="_blank" rel="noopener">וואטסאפ ישיר<span class="bi"><i data-ic="wa"></i></span></a>
+          <a class="btn line" href="tel:+972526845740"><span dir="ltr">052-6845740</span></a>
+        </div>
+      </div>
+      <div class="ft-grid">
+        <div class="ft-brand"><a class="ft-logo" href="#home" aria-label="מרכז הסידורים, לדף הבית"><img src="brand/full-light.png" alt="" width="900" height="354" loading="lazy"></a><p>סידורים, מחזורים, תהילים, חומשים, ברכונים ומזכרות לאירועים, בכל הנוסחים. הקדשה אישית, הנחה לכמות ומשלוחים לכל הארץ.</p>
+          <div class="ft-soc"><a href="https://wa.me/972526845740?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%94%D7%92%D7%A2%D7%AA%D7%99%20%D7%9E%D7%94%D7%90%D7%AA%D7%A8" target="_blank" rel="noopener" aria-label="וואטסאפ"><i data-ic="wa"></i></a><a href="https://telegram.me/share/url?url=https%3A%2F%2Fsiddurs-center.co.il%2F&amp;text=%D7%9E%D7%A8%D7%9B%D7%96%20%D7%94%D7%A1%D7%99%D7%93%D7%95%D7%A8%D7%99%D7%9D" target="_blank" rel="noopener" aria-label="טלגרם"><i data-ic="tg"></i></a><a href="tel:+972526845740" aria-label="טלפון"><i data-ic="phone"></i></a><a href="mailto:sidurscenter@gmail.com" aria-label="מייל"><i data-ic="mail"></i></a></div></div>
+        <div><h4>קטגוריות</h4><ul id="foot-cats"></ul></div>
+        <div><h4>מידע</h4><ul><li><a href="#about">אודות</a></li><li><a href="#contact-us">יצירת קשר</a></li><li><a href="#shipping">משלוחים והחזרות</a></li><li><a href="#track">מעקב הזמנה</a></li><li><a href="https://siddurs-center.co.il/terms/" target="_blank" rel="noopener">תקנון האתר</a></li><li><a href="#a11y">הצהרת נגישות</a></li><li><a href="#account">החשבון שלי</a></li></ul></div>
+        <div><h4>יצירת קשר</h4><ul><li><a href="tel:+972526845740" dir="ltr"><i data-ic="phone"></i>052-6845740</a></li><li><a href="mailto:sidurscenter@gmail.com"><i data-ic="mail"></i>sidurscenter@gmail.com</a></li><li><a href="https://wa.me/972526845740?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%94%D7%92%D7%A2%D7%AA%D7%99%20%D7%9E%D7%94%D7%90%D7%AA%D7%A8" target="_blank" rel="noopener"><i data-ic="wa"></i>WhatsApp</a></li><li><a href="https://telegram.me/share/url?url=https%3A%2F%2Fsiddurs-center.co.il%2F&amp;text=%D7%9E%D7%A8%D7%9B%D7%96%20%D7%94%D7%A1%D7%99%D7%93%D7%95%D7%A8%D7%99%D7%9D" target="_blank" rel="noopener"><i data-ic="tg"></i>Telegram</a></li><li><a href="#contact-us"><i data-ic="pin"></i>ירושלים, משלוחים לכל הארץ</a></li></ul></div>
+      </div>
+    </div>
+    <div class="ft-mark" id="ft-mark" aria-hidden="true"><svg viewBox="0 0 1000 170" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="ftg" x1="0" x2="1"><stop offset="0" stop-color="#CDB27D"/><stop offset=".5" stop-color="#F5EBDD"/><stop offset="1" stop-color="#8A7356"/></linearGradient><radialGradient id="ftr" gradientUnits="userSpaceOnUse" r="200" cx="500" cy="85"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient><mask id="ftm"><rect width="1000" height="170" fill="url(#ftr)"/></mask></defs>
+      <text class="ft-t base" x="500" y="132" text-anchor="middle" direction="rtl">מרכז הסידורים</text>
+      <text class="ft-t draw" x="500" y="132" text-anchor="middle" direction="rtl">מרכז הסידורים</text>
+      <text class="ft-t glow" x="500" y="132" text-anchor="middle" direction="rtl" mask="url(#ftm)">מרכז הסידורים</text></svg></div>
+    <div class="wrap"><div class="ft-legal"><span>© 2026 מרכז הסידורים. כל הזכויות שמורות.</span><span>תשלום מאובטח · Visa · Mastercard</span></div></div>
+  </footer>
+  <div class="fbuy" id="fbuy" aria-hidden="true"></div>
+
+  <nav class="tabbar" aria-label="ניווט ראשי">
+    <a href="#home" data-tab="home"><i data-ic="home"></i>בית</a>
+    <button type="button" data-open="sheet" data-tab="cats"><i data-ic="grid"></i>קטגוריות</button>
+    <button type="button" data-open="search"><i data-ic="search"></i>חיפוש</button>
+    <a href="https://wa.me/972526845740?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%94%D7%92%D7%A2%D7%AA%D7%99%20%D7%9E%D7%94%D7%90%D7%AA%D7%A8" target="_blank" rel="noopener"><i data-ic="wa"></i>וואטסאפ</a>
+    <button type="button" data-open="cart"><i data-ic="bag"></i>הסל<span class="count" data-count hidden>0</span></button>
+  </nav>
+
+  <button class="a11y-btn" type="button" id="a11y-btn" aria-label="תפריט נגישות" aria-expanded="false" aria-controls="a11y"><i data-ic="access"></i></button>
+  <div class="a11y" id="a11y" role="dialog" aria-label="התאמות נגישות" hidden>
+    <h2>נגישות</h2><p>ההתאמות נשמרות לביקור הבא.</p>
+    <div class="opts" id="a11y-opts"></div>
+    <div class="foot"><button type="button" data-a11y-reset>איפוס</button><a href="#a11y">הצהרת נגישות</a></div>
+  </div>
+
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="drawer" id="cart" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden>
+    <div class="dh"><h2 id="cart-title">הסל שלך</h2><button class="ib" type="button" data-close aria-label="סגירה"><i data-ic="close"></i></button></div>
+    <div class="citems" id="cart-items"></div>
+    <div class="df" id="cart-foot"></div>
+  </aside>
+  <div class="search" id="search" role="dialog" aria-modal="true" aria-label="חיפוש באתר" hidden>
+    <div class="wrap">
+      <div class="sbox"><i data-ic="search"></i><input id="q" type="search" placeholder="מה מחפשים? סידור, מחזור, תהילים…" aria-label="חיפוש מוצרים" autocomplete="off"><button class="ib" type="button" data-close aria-label="סגירת החיפוש"><i data-ic="close"></i></button></div>
+      <div class="sugg" id="sugg"></div>
+      <div class="sres" id="sres" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden><div class="grab" aria-hidden="true"></div><h2 id="sheet-title">קטגוריות</h2><div id="sheet-in"></div></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+
+<script src="catalog.js"></script>
+<script src="catalog-all.js"></script>
+<script src="urls.js"></script>
+<script>
+(function () {
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const money = n => '₪' + (Number.isInteger(n) ? n.toLocaleString('he-IL') : n.toLocaleString('he-IL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+  const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('a-still');
+  const fine = () => matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const store = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* private mode */ } } };
+
+  /* ---------- custom icon set: drawn for this brand on a 24 grid ---------- */
+  const P = {
+    search: '<circle pathLength="1" cx="10.5" cy="10.5" r="6.5"/><path pathLength="1" d="m15.4 15.4 4.6 4.6"/><path pathLength="1" d="M7.6 9.2a3.3 3.3 0 0 1 2.3-2"/>',
+    bag: '<path pathLength="1" d="M5.4 8.6h13.2l-1 10.9a1.6 1.6 0 0 1-1.6 1.4H8a1.6 1.6 0 0 1-1.6-1.4Z"/><path pathLength="1" d="M9 8.6V7.2a3 3 0 0 1 6 0v1.4"/><path pathLength="1" d="M9.2 12.2c.6 1.3 1.6 2 2.8 2s2.2-.7 2.8-2"/>',
+    user: '<circle pathLength="1" cx="12" cy="8.3" r="3.6"/><path pathLength="1" d="M4.8 20.2a7.2 7.2 0 0 1 14.4 0"/>',
+    tg: '<path pathLength="1" d="M20.4 4.3 3.9 10.6c-.9.4-.9 1.6.1 1.9l4.1 1.3 1.6 5c.3.8 1.3 1 1.9.4l2.3-2.2 4.2 3.1c.7.5 1.7.1 1.9-.8l2.6-13.4c.2-1-.8-1.9-1.7-1.6Z"/><path pathLength="1" d="m8.1 13.8 9.3-6.1-6.6 7.5"/>',
+    wa: '<path pathLength="1" d="M12 3.6a8.4 8.4 0 0 0-7.3 12.6l-1.1 4.2 4.3-1.1A8.4 8.4 0 1 0 12 3.6Z"/><path pathLength="1" d="M9.3 8.4c.3-.4.7-.4 1-.1l.9 1.4c.2.3.1.6-.1.8l-.5.5a5.4 5.4 0 0 0 2.6 2.6l.5-.5c.2-.2.5-.3.8-.1l1.4.9c.3.2.3.7-.1 1-.6.6-1.5.9-2.4.6a8 8 0 0 1-4.6-4.6c-.3-.9 0-1.8.5-2.5Z"/>',
+    phone: '<path pathLength="1" d="M6.6 3.8h2.6l1.4 3.8-1.9 1.3a10.6 10.6 0 0 0 5.6 5.6l1.3-1.9 3.8 1.4v2.6a1.9 1.9 0 0 1-2 1.9A15.4 15.4 0 0 1 4.7 5.8a1.9 1.9 0 0 1 1.9-2Z"/>',
+    mail: '<rect pathLength="1" x="3.5" y="5.5" width="17" height="13" rx="2"/><path pathLength="1" d="m4 7 8 6 8-6"/>',
+    pin: '<path pathLength="1" d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"/><circle pathLength="1" cx="12" cy="10" r="2.3"/>',
+    truck: '<path pathLength="1" d="M2.8 6.8h11v9.4h-11Z"/><path pathLength="1" d="M13.8 9.8h3.9l3 3.3v3.1h-6.9"/><circle pathLength="1" cx="7" cy="17.4" r="1.7"/><circle pathLength="1" cx="17" cy="17.4" r="1.7"/><path pathLength="1" d="M5.5 10h4"/>',
+    quill: '<path pathLength="1" d="M19.8 4.2C13.6 4.6 9 9 7.6 15.6"/><path pathLength="1" d="M19.8 4.2c.5 5.6-3.6 10.1-9.8 11.2"/><path pathLength="1" d="M13.2 9.6 9.4 13"/><path pathLength="1" d="M7.6 15.6 5 19.6"/><path pathLength="1" d="M4.2 20.6h8.6"/>',
+    nusach: '<path pathLength="1" d="M12 6.6c-2.1-1.6-4.8-2-7.6-1.6v12.7c2.8-.4 5.5 0 7.6 1.6 2.1-1.6 4.8-2 7.6-1.6V5c-2.8-.4-5.5 0-7.6 1.6Z"/><path pathLength="1" d="M12 6.6v12.7"/><path pathLength="1" d="M15.5 4.6v5.2l1.4-1 1.4 1V5"/>',
+    shield: '<path pathLength="1" d="M12 3.4 5.2 6v5.4c0 4.3 2.9 7.8 6.8 9.2 3.9-1.4 6.8-4.9 6.8-9.2V6Z"/><path pathLength="1" d="m9.2 12 2 2 3.7-3.8"/>',
+    star: '<path d="m12 3.6 2.5 5.3 5.7.7-4.2 4 1.1 5.7L12 16.5l-5.1 2.8 1.1-5.7-4.2-4 5.7-.7Z"/>',
+    access: '<circle pathLength="1" cx="12" cy="4.9" r="1.7"/><path pathLength="1" d="M4.8 8.4c2.4.8 4.8 1.2 7.2 1.2s4.8-.4 7.2-1.2"/><path pathLength="1" d="M12 9.6v4.6"/><path pathLength="1" d="m8.8 20.4 3.2-6.2 3.2 6.2"/>',
+    menu: '<path pathLength="1" d="M4 9h16M4 15h11"/>',
+    close: '<path pathLength="1" d="m6 6 12 12M18 6 6 18"/>',
+    arrow: '<path pathLength="1" d="M19 12H5m6-6-6 6 6 6"/>',
+    next: '<path pathLength="1" d="m15 6-6 6 6 6"/>', prev: '<path pathLength="1" d="m9 6 6 6-6 6"/>',
+    chev: '<path pathLength="1" d="m6 9 6 6 6-6"/>',
+    plus: '<path pathLength="1" d="M12 5v14M5 12h14"/>', minus: '<path pathLength="1" d="M5 12h14"/>', check: '<path pathLength="1" d="m5 12.5 4.2 4.2L19 7"/>',
+    home: '<path pathLength="1" d="M4 10.6 12 4l8 6.6V20h-5.4v-5.6H9.4V20H4Z"/>',
+    grid: '<rect pathLength="1" x="4" y="4" width="6.6" height="6.6" rx="1.6"/><rect pathLength="1" x="13.4" y="4" width="6.6" height="6.6" rx="1.6"/><rect pathLength="1" x="4" y="13.4" width="6.6" height="6.6" rx="1.6"/><rect pathLength="1" x="13.4" y="13.4" width="6.6" height="6.6" rx="1.6"/>',
+    text: '<path pathLength="1" d="M4 18 8.5 6h1L14 18M5.6 14h6.8"/><path pathLength="1" d="m15 18 2.6-7h.8L21 18M15.9 15.6h4.2"/>',
+    contrast: '<circle pathLength="1" cx="12" cy="12" r="8"/><path pathLength="1" d="M12 4v16"/><path pathLength="1" d="M12 7.5a4.5 4.5 0 0 1 0 9"/>',
+    link: '<path pathLength="1" d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path pathLength="1" d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+    pause: '<circle pathLength="1" cx="12" cy="12" r="8"/><path pathLength="1" d="M10 9v6M14 9v6"/>',
+    play: '<circle pathLength="1" cx="12" cy="12" r="8"/><path pathLength="1" d="m10.4 8.8 4.6 3.2-4.6 3.2Z"/>',
+    font: '<path pathLength="1" d="M5 19V6h7M5 12h5.5"/><path pathLength="1" d="M14 19h5M16.5 19v-8"/>',
+    zoom: '<circle pathLength="1" cx="10.5" cy="10.5" r="6.5"/><path pathLength="1" d="m15.4 15.4 4.6 4.6M10.5 8v5M8 10.5h5"/>',
+    tag: '<path pathLength="1" d="M3.8 12.4V4.6a.8.8 0 0 1 .8-.8h7.8l8 8-8.6 8.6Z"/><circle pathLength="1" cx="8.4" cy="8.4" r="1.4"/>',
+    users: '<circle pathLength="1" cx="9" cy="8.6" r="3.2"/><path pathLength="1" d="M3.4 19.4a5.6 5.6 0 0 1 11.2 0"/><path pathLength="1" d="M15.4 5.6a3.2 3.2 0 0 1 0 6.2M17.4 14.2a5.6 5.6 0 0 1 3.2 5.2"/>',
+    siddur: '<path pathLength="1" d="M6.2 4.4h10.6a1.4 1.4 0 0 1 1.4 1.4v14H7.6a1.4 1.4 0 0 1-1.4-1.4Z"/><path pathLength="1" d="M6.2 18.4A1.4 1.4 0 0 1 7.6 17h10.6"/><path pathLength="1" d="M9.6 7.4h5.2v6.2H9.6Z"/><path pathLength="1" d="M12.2 9v3"/>',
+    machzor: '<path pathLength="1" d="M4 6.2h4v13.6H4Z"/><path pathLength="1" d="M8.6 4.2h4.2v15.6H8.6Z"/><path pathLength="1" d="m14.2 7.2 3.7-.9 3 13-3.7.9Z"/><path pathLength="1" d="M4 9h4M8.6 7.2h4.2M4 17h4M8.6 17h4.2"/>',
+    tehilim: '<path pathLength="1" d="M6.5 20.2V5.2c5.3 0 9.6 4.1 11.6 9.4l.8 5.6Z"/><path pathLength="1" d="M9.6 8.2v12M12.6 10.2v10M15.6 13.4v6.8"/><path pathLength="1" d="M5.2 20.2h14.6"/>',
+    chumash: '<path pathLength="1" d="M7.4 5.6h9.2v12.8H7.4Z"/><path pathLength="1" d="M5.6 3.6v16.8M18.4 3.6v16.8"/><path pathLength="1" d="M9.6 9h4.8M9.6 12h4.8M9.6 15h3.2"/>',
+    limud: '<path pathLength="1" d="M3.6 19.2h16.8"/><path pathLength="1" d="M5 15.6h14v3.6H5Z"/><path pathLength="1" d="M6.4 12h11.2v3.6H6.4Z"/><path pathLength="1" d="M8 8.4h8V12H8Z"/><path pathLength="1" d="M12 3.8v2.4M9.6 4.6l.8 1.4M14.4 4.6l-.8 1.4"/>',
+    birkon: '<path pathLength="1" d="M7.6 4h8.8l-.7 5.2a3.7 3.7 0 0 1-7.4 0Z"/><path pathLength="1" d="M12 12.9v5.5"/><path pathLength="1" d="M8.4 20.2h7.2"/><path pathLength="1" d="M8 6.6h8"/>',
+    zmirot: '<path pathLength="1" d="M8 20.2v-8.8h3v8.8M13 20.2v-8.8h3v8.8"/><path pathLength="1" d="M9.5 8.6c-1-1-.4-2.4 0-3.4.7 1 1.4 2.2 0 3.4ZM14.5 8.6c-1-1-.4-2.4 0-3.4.7 1 1.4 2.2 0 3.4Z"/><path pathLength="1" d="M5 20.2h14"/>',
+    hagada: '<circle pathLength="1" cx="12" cy="12" r="8"/><path class="dot" d="M8 8.5h.01M12 7.2h.01M16 8.5h.01M7 12h.01M10.5 11h.01M13.5 11h.01M17 12h.01M8.5 15.2h.01M12 16.6h.01M15.5 15.2h.01"/>',
+    mazkeret: '<rect pathLength="1" x="4" y="10" width="16" height="10.5" rx="1"/><path pathLength="1" d="M3 7.2h18V10H3Z"/><path pathLength="1" d="M12 7.2v13.3"/><path pathLength="1" d="M12 7.2C10.6 4.4 7 4 7 6s3.6 1.2 5 1.2c1.4 0 5 .8 5-1.2s-3.6-1.6-5 1.2"/>',
+    kids: '<path pathLength="1" d="m12 4 2.1 4.4 4.8.6-3.5 3.3.9 4.7L12 14.7 7.7 17l.9-4.7-3.5-3.3 4.8-.6Z"/><path pathLength="1" d="M12 17.6v2.8"/>',
+    mark: '<path pathLength="1" d="M12 7.6c-2.3-1.7-5.2-2.1-8-1.7v12.4c2.8-.4 5.7 0 8 1.7 2.3-1.7 5.2-2.1 8-1.7V5.9c-2.8-.4-5.7 0-8 1.7Z"/><path pathLength="1" d="M12 7.6V20"/><path pathLength="1" d="M12 2.4v2.2M8.8 3.4l.8 1.4M15.2 3.4l-.8 1.4"/>'
+  };
+  const ic = (n, cls) => '<svg class="ic' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + (P[n] || '') + '</svg>';
+  const GLOGO = '<svg class="g" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.8 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 7l7.2 5.6c4.2-3.9 7.1-9.7 7.1-17.1z"/><path fill="#FBBC05" d="M10.5 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.8-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.2-5.6c-2.2 1.5-5 2.4-8.7 2.4-6.3 0-11.6-4.1-13.5-9.9l-7.8 6.1C6.6 42.6 14.6 48 24 48z"/></svg>';
+  const STAR = f => '<svg class="ic' + (f ? ' f' : '') + '" viewBox="0 0 24 24" aria-hidden="true">' + P.star + '</svg>';
+  const stars = (n, cls) => '<span class="' + (cls || 'stars') + '" role="img" aria-label="' + n + ' מתוך 5 כוכבים">' + [1, 2, 3, 4, 5].map(i => STAR(i <= Math.round(n))).join('') + '</span>';
+  function paintIcons(root) { (root || document).querySelectorAll('i[data-ic]').forEach(el => { el.outerHTML = ic(el.dataset.ic, el.dataset.cls); }); }
+  paintIcons();
+
+  /* ---------- catalog: every public product (809) ---------- */
+  const ALL = window.CATALOG_ALL || [];
+  const HERO = window.HERO_PRODUCT || [];
+  const byId = Object.fromEntries(ALL.map(p => [p.id, p]));
+  const base = p => p.name.split(' · נוסח')[0].split(' · עדות')[0].split(' · ')[0].trim();
+  const uniq = list => { const seen = new Set(); return list.filter(p => { const k = p.g + base(p); if (seen.has(k)) return false; seen.add(k); return true; }); };
+  /* picture: sharp local photo when we have one, else the product's cell in a thumbnail atlas */
+  const pic = (p, alt) => p.local ? '<img class="pic" src="img/' + p.id + '.jpg" alt="' + esc(alt || '') + '" loading="lazy" draggable="false">'
+    : (atlasLoad(p.at[0]), '<span class="pic" data-a="' + p.at[0] + '"' + (alt ? ' role="img" aria-label="' + esc(alt) + '"' : ' aria-hidden="true"') + ' style="--bg:url(atl/a' + p.at[0] + '.jpg);--bp:' + (p.at[1] * 100 / 6).toFixed(3) + '% ' + (p.at[2] * 100 / 6).toFixed(3) + '%"></span>');
+  function atlasLoad(i) { if (atlasLoad.s.has(i)) return; atlasLoad.s.add(i); const im = new Image(); im.onload = () => document.documentElement.classList.add('al-' + i); im.src = 'atl/a' + i + '.jpg'; }
+  atlasLoad.s = new Set();
+
+  const MENU = [
+    { id: 'siddur', name: 'סידורים', g: ['siddur'], subs: ['נוסח אשכנז', 'נוסח ספרד', 'נוסח עדות המזרח'], blurb: 'בכל הנוסחים, בכריכות עור, דמוי עור וכריכה קשה.', short: 'בכל הנוסחים', nus: true },
+    { id: 'machzor', name: 'מחזורים', g: ['machzor'], subs: ['כריכה קשה', 'כריכת עור', 'דמוי עור'], blurb: 'סטים לכל החגים ומחזורים בודדים, בכל הנוסחים.', short: 'סטים לכל החגים', nus: true },
+    { id: 'tehilim', name: 'תהילים', g: ['tehilim'], subs: ['תהילים תכשיט', 'בקשות ותחינות'], blurb: 'מתהילים קטן לכיס ועד מהדורות מהודרות בכריכת עור.', short: 'מכיס ועד מהודר' },
+    { id: 'chumash', name: 'חומשים', g: ['chumash'], subs: ['חומשים', 'ביאורי הפרשה', 'חומש עם סידור'], blurb: 'חומשים לבית ולבית הכנסת, עם ביאורים ובלעדיהם.', short: 'לבית ולבית הכנסת' },
+    { id: 'limud', name: 'ספרי לימוד', g: ['limud'], subs: ['גמרא', 'משניות', 'ספרי הלכה'], blurb: 'ש״ס, משניות, ספרי הלכה וסטים מלאים לבית ולבית המדרש.', short: 'ש״ס וסטים מלאים' },
+    { id: 'birkon', name: 'ברכונים', g: ['birkon'], subs: ['ברכת המזון', 'סדר הבדלה', 'הפרשת חלה', 'בקשות'], blurb: 'ברכונים לשולחן, ולמזכרת משמחה, עם הקדשה אישית והנחה לכמות.', short: 'לשולחן ולשמחות', nus: true },
+    { id: 'zmirot', name: 'זמירות שבת', g: ['zmirot'], subs: ['זמירות שבת', 'שירונים', 'ספרי קידוש'], blurb: 'זמירות, שירונים וספרי קידוש לשולחן השבת ולשבת חתן.', short: 'לשולחן השבת', nus: true },
+    { id: 'hagada', name: 'חגים וזמנים', g: ['hagada', 'megila', 'slichot'], subs: ['הגדות לפסח', 'מגילות אסתר', 'סליחות'], blurb: 'הגדות לפסח, מגילות אסתר, סליחות וכל מה שצריך לחגים.', short: 'הגדות, מגילות וסליחות' },
+    { id: 'mazkeret', name: 'מזכרות לאירועים', nav: 'מזכרות', g: ['birkon', 'zmirot'], subs: [], blurb: 'ברכונים, שירונים וזמירות בכמות לאירוע: בר מצווה, חתונה, שבע ברכות ואזכרה. הקדשה אחידה לכל הכמות, או שם אישי לכל עותק.', short: 'בכמות, עם הקדשה' },
+    { id: 'kids', name: 'ספרי ילדים', g: ['kids'], subs: [], blurb: 'ספרי קריאה, קומיקס וספרים בעקבות הפרשה לילדים.', short: 'לגיל הרך ולילדים' }
+  ];
+  const NUSACH = [{ id: 'ash', name: 'אשכנז', full: 'נוסח אשכנז' }, { id: 'sfd', name: 'ספרד', full: 'נוסח ספרד' }, { id: 'edot', name: 'עדות המזרח', full: 'נוסח עדות המזרח' }];
+  const nusName = id => (NUSACH.find(n => n.id === id) || {}).name || 'כל הנוסחים';
+  const nusFull = id => id === 'ash-sfd' ? 'נוסח אשכנז / ספרד' : ((NUSACH.find(n => n.id === id) || {}).full || 'כל הנוסחים');
+  const menuOf = id => MENU.find(x => x.id === id);
+  const inGroup = id => { const m = menuOf(id); return ALL.filter(p => m.g.includes(p.g)); };
+  const fitsNus = (p, k) => !k || k === 'all' || !p.n || p.n === k || (p.n === 'ash-sfd' && (k === 'ash' || k === 'sfd'));
+  /* three different siddurim per nusach, no model repeated across the three columns */
+  const nusPick = (() => { let c = null; return id => { if (!c) { c = {}; const used = new Set(); NUSACH.forEach(n => { c[n.id] = uniq(inGroup('siddur').filter(x => x.n === n.id && !used.has(base(x)))).sort((a, b) => (b.local - a.local) || ((b.c === 'עור') - (a.c === 'עור')) || (b.price - a.price)).slice(0, 5); c[n.id].forEach(x => used.add(base(x))); }); } return c[id]; }; })();
+  const nusIdx = () => Math.max(0, NUSACH.findIndex(n => n.id === myNus));
+  const nusCountSiddur = k => inGroup('siddur').filter(p => p.n && fitsNus(p, k)).length;
+  const IMG = { hero: 'gen4/hero-desktop.jpg', heroM: 'gen4/hero-mobile.jpg', machzor: 'gen4/tile-machzor.jpg', shas: 'gen4/tile-shas.jpg', tehilim: 'gen4/tile-tehilim.jpg', gilt: 'gen4/detail-gilt.jpg' };
+  const CIMG = { siddur: 'gen4/cat-siddur.jpg', machzor: 'gen4/cat-machzor.jpg', tehilim: 'gen4/cat-tehilim.jpg', chumash: 'gen4/cat-chumash.jpg', limud: 'gen4/cat-limud.jpg', birkon: 'gen4/cat-birkon.jpg', zmirot: 'gen4/cat-zmirot.jpg', hagada: 'gen4/cat-hagada.jpg', mazkeret: 'gen4/cat-mazkeret3.jpg', kids: 'gen4/cat-kids.jpg' };
+  /* real Google reviews, pulled 14.10.2026, quoted verbatim (emojis removed, cuts marked with …) */
+  const REV = { rating: 4.3, count: 65, url: 'https://www.google.com/maps/search/%D7%9E%D7%A8%D7%9B%D7%96+%D7%94%D7%A1%D7%99%D7%93%D7%95%D7%A8%D7%99%D7%9D', list: [
+    ['כרמי י.', 5, 'לפני 3 חודשים', 'רוצה להודות למשה היקר ממרכז הסידורים ירושלים. הזמנתי סידורי תפילה לעילוי נשמת אבא שלי ז"ל וקבלתי שירות מעולה מקצועי סובלני ומהיר עם משלוח של הסידורים עד פתח הבית'],
+    ['אוראל ע.', 5, 'לפני 7 חודשים', 'שירות מדהים, מחירים הכי זולים שנתקלתי! שלח את הכל תוך יומיים לאחר סקיצה מהירה, משלוח מהיר וזריז. איש שמעניין אותו שליחות ולא רק הכסף, מומלץ בחום!'],
+    ['אבישג כ.', 4, 'לפני 3 חודשים', 'שירות לקוחות נמדד דווקא כשיש תקלות, וכאן הם לגמרי הוכיחו את עצמם… המחירים טובים מאוד, האיכות מעולה… בשורה התחתונה יצאתי מאוד מרוצה ואני ממליצה בחום.'],
+    ['פרידה ע.', 5, 'לפני 3 חודשים', 'שירות מושלם!! כבר שנים שאני עובדת עם משה והסחורה פשוט נהדרת, יחס מקצועי ומהיר. ממליצה בחום'],
+    ['חגית ס.', 5, 'לפני 3 חודשים', 'אני רוצה להלל ולשבח את משה היקר ממרכז הסידורים שנתן לי שירות מעולה ומחיר נהדר… הכיתוב והעיטור מושלם, הספרים תוך 4 ימים כבר הגיעו. מומלץ בחום'],
+    ['רפאל ב.', 5, 'לפני 9 חודשים', 'הזמנתי ממרכז הסידורים מארז חומשים וסידור. מאוד ממליץ על המוצרים שלהם, איכות גבוהה, עם חריטה של השם, משלוח עד הבית ושירות עם חיוך'],
+    ['הודיה כ.', 5, 'לפני 3 חודשים', 'שירות מהיר אדיב עד הבית. מחיר הגיוני! לחלוטין אזמין עוד, רק בשמחות וימים טובים'],
+    ['נריה ס.', 5, 'לפני חודשיים', 'בעזרת ה׳, מעולה. שירות מעולה, משלוח חינם 350 ש״ח, מחיר טוב מאוד'],
+    ['אלי ב.', 5, 'לפני 3 חודשים', 'סידורים ממש יפים ומהודרים מחיר נוח לכל כיס. משלוח מהיר ואמין מומלץ באהבה גדולה'],
+    ['ליאל מ.', 5, 'לפני שנה', 'רוצה להמליץ על משה ממרכז הסידורים עשיתי הזמנה והגיע פחות מ7 ימי עסקים כולל חריטה מהממת וסידור יפהפה.'],
+    ['מרדכי ב.', 5, 'לפני שנה', 'הזמנה של ספרים לעילוי נשמת אימי האהובה ומשה היה כל כך קשוב, סבלני, מבין… הספרים היו ברמה גבוה העבודה היתה מושלמת… והתמונה באתר של הספרים בדיוק כמו שבמציאות!'],
+    ['אביטל ש.', 5, 'לפני שנה', 'היינו מרוצים מהמחיר, מהטבעת השם המדויקת וגם, הם היו זמינים וכשהסברנו שחשוב לנו שיגיע לפני ארוע, עשו מאמצים והערכנו זאת מאוד'],
+    ['יחיאל נ.', 5, 'לפני 11 חודשים', 'זאת הפעם השנייה שאני מבצע הזמנה ממרכז הסידורים ממשה היקר, שירות מעולה, מחירים מעולים ומשלוח מהיר ממליץ בחום'],
+    ['מנשה א.', 5, 'לפני 11 חודשים', 'מחירים מעולים. ההזמנה הגיע מסודרת ויפה. תקשורת טובה ועמידה בזמנים.'],
+    ['ליטל א.', 5, 'לפני 3 חודשים', 'השירות מהיר והסידורים איכותיים ויפים!'],
+    ['חיים ר.', 5, 'לפני 3 חודשים', 'שירות מצוין מענה אנושי מקסים'],
+    ['יונתן ט.', 5, 'לפני 4 חודשים', 'מחיר טוב מאוד מענה אנושי מדהים'],
+    ['ליאור ט.', 5, 'לפני 2 שנים', 'עבודה מקצועית, שרות מעבר למצופה, ביצוע ומשלוח בקצב כל כך מהיר שלא ניתן לתאר, כל זה מתגמד כאשר אתה נפגש בבעל עסק עם לב מזהב.'],
+    ['אבנר מ.', 5, 'לפני 3 שנים', 'מתן שירות מצויין. אני שמח על יחס טוב ותיקשורת מצויינת עם המוכר. ממליץ על משה היקר ממרכז הסידורים. בחור נחמד סבלני, והכי חשוב, מתחשב.']
+  ] };
+  const AVC = ['#5E35B1', '#00897B', '#C2185B', '#3949AB', '#6D4C41', '#00838F', '#7CB342', '#F4511E', '#546E7A'];
+  const ARW = ic('arrow');
+  const BI = '<span class="bi">' + ARW + '</span>';
+  const WA_NUM = '972526845740';
+  const waLink = t => 'https://wa.me/' + WA_NUM + (t ? '?text=' + encodeURIComponent(t) : '');
+  const pageUrl = h => location.href.split('#')[0] + (h || '');
+  const EXTA = ' target="_blank" rel="noopener"';
+  /* the product's real page on the client's site, so a shared link works for anyone */
+  const realUrl = p => { const s = p && (window.PURL || {})[p.id]; return s ? (s[0] === '~' ? s.slice(1) : 'https://siddurs-center.co.il/מוצרים/' + s + '/') : 'https://siddurs-center.co.il/'; };
+  function shareRow(title, u) {
+    const t = title + ' | מרכז הסידורים';
+    return '<div class="share" role="group" aria-label="שיתוף המוצר"><span>שיתוף</span>' +
+      '<a href="https://api.whatsapp.com/send?text=' + encodeURIComponent(t + ' ' + u) + '"' + EXTA + ' aria-label="שיתוף בוואטסאפ">' + ic('wa') + '</a>' +
+      '<a href="https://telegram.me/share/url?url=' + encodeURIComponent(u) + '&amp;text=' + encodeURIComponent(t) + '"' + EXTA + ' aria-label="שיתוף בטלגרם">' + ic('tg') + '</a>' +
+      '<a href="mailto:?subject=' + encodeURIComponent(t) + '&amp;body=' + encodeURIComponent(u) + '" aria-label="שליחה במייל">' + ic('mail') + '</a>' +
+      '<button type="button" data-copy="' + esc(u) + '" aria-label="העתקת קישור למוצר">' + ic('link') + '</button></div>';
+  }
+  document.addEventListener('click', e => { const b = e.target.closest('[data-copy]'); if (!b) return; const done = () => toast('הקישור הועתק', 'check'); if (navigator.clipboard) navigator.clipboard.writeText(b.dataset.copy).then(done, done); else done(); });
+  const kick = (no, t) => '<p class="kick">' + (no ? '<b>' + no + '</b>' : '') + esc(t) + '</p>';
+
+  /* ---------- "my nusach": one choice that follows the visitor everywhere ---------- */
+  let myNus = store.get('sc-nusach', 'all');
+  function renderNusPop() { $('#nus-pop-in').innerHTML = [{ id: 'all', full: 'כל הנוסחים' }].concat(NUSACH).map(n => '<button type="button" data-setnus="' + n.id + '" aria-pressed="' + (myNus === n.id) + '">' + esc(n.full) + ic('check') + '</button>').join(''); }
+  function setNus(k, quiet) { myNus = k; store.set('sc-nusach', k); $('#nus-cur').textContent = nusName(k); renderNusPop(); if (!quiet) toast(k === 'all' ? 'מציגים את כל הנוסחים' : 'מעכשיו מוצג ' + nusFull(k), 'check'); }
+  $('#nus-cur').textContent = nusName(myNus); renderNusPop();
+  $('#nus-pill').addEventListener('click', e => { e.stopPropagation(); const p = $('#nus-pop'); const o = !p.classList.contains('open'); p.classList.toggle('open', o); $('#nus-pill').setAttribute('aria-expanded', String(o)); if (o) setTimeout(() => p.querySelector('[aria-pressed="true"]').focus(), 50); });
+  document.addEventListener('click', e => { if (!e.target.closest('#nus-pop, #nus-pill')) { $('#nus-pop').classList.remove('open'); $('#nus-pill').setAttribute('aria-expanded', 'false'); } });
+
+  /* ---------- header nav + mega (the side picture follows the hovered item) ---------- */
+  const NAV_IDS = ['siddur', 'machzor', 'tehilim', 'chumash', 'mazkeret'];
+  const MORE_IDS = ['limud', 'birkon', 'zmirot', 'hagada', 'kids'];
+  $('#nav').innerHTML = NAV_IDS.map(id => '<li><a class="nl" href="#c-' + id + '" data-mega="' + id + '" aria-expanded="false" aria-haspopup="true">' + esc(menuOf(id).nav || menuOf(id).name) + ic('chev') + '</a></li>').join('') +
+    '<li><a class="nl" href="#all" data-mega="more" aria-expanded="false" aria-haspopup="true">עוד' + ic('chev') + '</a></li>';
+  $('#foot-cats').innerHTML = MENU.slice(0, 9).map(m => '<li><a href="#c-' + m.id + '">' + esc(m.name) + '</a></li>').join('');
+  let megaTimer = null;
+  function openMega(id) {
+    clearTimeout(megaTimer);
+    let title, items, chips, icon;
+    if (id === 'more') {
+      title = 'עוד קטגוריות'; icon = 'grid';
+      items = MORE_IDS.map(k => { const m = menuOf(k); return { href: '#c-' + k, name: m.name, sub: m.short, p: uniq(inGroup(k))[0], big: CIMG[k], cap: m.short }; });
+      chips = [['הקדשה אישית', '#engrave'], ['מזכרות בכמות', '#c-mazkeret'], ['יצירת קשר', '#contact-us']];
+    } else {
+      const m = menuOf(id); if (!m) return; icon = id;
+      const ps = uniq(inGroup(id));
+      title = m.name;
+      if (id === 'siddur') items = NUSACH.map((n, i) => ({ href: '#c-siddur-' + n.id, name: n.full, p: nusPick(n.id)[0] || ps[i], pp: true, cap: 'לכל סידורי ' + n.full }));
+      else items = ps.slice(0, 6).map(p => ({ href: '#p-' + p.id, name: base(p), p, prod: true }));
+      chips = [['לכל ה' + m.name, '#c-' + id]].concat(m.nus && myNus !== 'all' ? [['רק ' + nusFull(myNus), '#c-' + id + '-' + myNus]] : []).concat([['הקדשה אישית', '#engrave']]);
+    }
+    const first = items[0] || {};
+    const cardHref = id === 'more' ? '#c-limud' : '#c-' + id;
+    $('#mega-in').innerHTML =
+      '<div class="mg-list"><span class="t">' + ic(icon) + esc(title) + '</span><div class="mg-items">' + items.map((it, i) => '<a class="mg-it" href="' + it.href + '" data-mi="' + i + '"><span class="th">' + (it.p ? pic(it.p) : '') + '</span><span><b>' + esc(it.name) + '</b>' + (it.sub ? '<span>' + esc(it.sub) + '</span>' : '') + '</span></a>').join('') + '</div>' +
+      '<div class="mg-chips">' + chips.map(c => '<a href="' + c[1] + '">' + esc(c[0]) + '</a>').join('') + '</div></div>' +
+      '<a class="mg-card" id="mg-card" href="' + cardHref + '"><span class="mg-art" id="mg-art"></span><span class="cp2"><b id="mg-t"></b><span id="mg-s"></span></span></a>';
+    const show = it => {
+      const art = $('#mg-art'); if (!art) return;
+      art.innerHTML = (it.prod || it.pp) ? '<span class="mg-prod">' + pic(it.p) + '</span>' : '<img src="' + (it.big || CIMG[id] || CIMG.siddur) + '" alt="">';
+      art.firstChild.classList.add('in');
+      $('#mg-t').textContent = it.prod ? base(it.p) : (it.name || title); $('#mg-s').textContent = it.prod ? 'לצפייה במוצר' : (it.cap || (menuOf(id) || {}).short || '');
+      $('#mg-card').setAttribute('href', it.href || cardHref);
+    };
+    show(id === 'more' || id === 'siddur' ? first : { big: CIMG[id], name: title, cap: (menuOf(id) || {}).short, href: cardHref });
+    $('#mega-in').querySelectorAll('[data-mi]').forEach(a => { const go = () => show(items[+a.dataset.mi]); a.addEventListener('mouseenter', go); a.addEventListener('focus', go); });
+    $('#mega').classList.add('open'); $('#hdr').classList.add('solid');
+    document.querySelectorAll('[data-mega]').forEach(a => a.setAttribute('aria-expanded', String(a.dataset.mega === id)));
+  }
+  function closeMega(now) {
+    clearTimeout(megaTimer);
+    megaTimer = setTimeout(() => { $('#mega').classList.remove('open'); $('#hdr').classList.remove('solid'); document.querySelectorAll('[data-mega]').forEach(a => a.setAttribute('aria-expanded', 'false')); }, now ? 0 : 180);
+  }
+  document.querySelectorAll('[data-mega]').forEach(a => { a.addEventListener('mouseenter', () => openMega(a.dataset.mega)); a.addEventListener('focus', () => openMega(a.dataset.mega)); });
+  $('#nav').addEventListener('mouseleave', () => closeMega());
+  $('#mega').addEventListener('mouseenter', () => clearTimeout(megaTimer));
+  $('#mega').addEventListener('mouseleave', () => closeMega());
+  let lastY = 0;
+  window.addEventListener('scroll', () => {
+    const y = scrollY; const h = $('#hdr');
+    h.classList.toggle('stuck', y > 36);
+    if (y > 700 && y > lastY + 6 && !$('#mega').classList.contains('open') && !$('#nus-pop').classList.contains('open')) h.classList.add('hide');
+    if (y < lastY - 6 || y < 700) h.classList.remove('hide');
+    lastY = y;
+  }, { passive: true });
+
+  /* ---------- product card ---------- */
+  function card(p, opts) {
+    opts = opts || {};
+    const short = base(p);
+    const sibs = p.n ? ALL.filter(x => x.g === p.g && x.n && base(x) === short).length : 0;
+    const nl = !p.n ? '' : (sibs > 1 && (opts.multi || myNus === 'all')) ? 'זמין ב-' + sibs + ' נוסחים' : nusFull(p.n);
+    const mine = opts.nusBadge && myNus !== 'all' && p.n && fitsNus(p, myNus);
+    const badge = p.sale ? '<span class="badge">מבצע</span>' : (mine ? '<span class="badge me">' + ic('nusach') + 'הנוסח שלך</span>' : '');
+    return '<div class="pc' + (opts.rv === false ? '' : ' rv') + '"><a href="#p-' + p.id + '"><div class="pl">' + badge + pic(p, short) + '</div>' +
+      '<div class="meta"><div class="nm">' + esc(short) + '</div>' + (nl ? '<div class="nu">' + esc(nl) + '</div>' : '') +
+      '<div class="pr">' + (p.sale && p.regular > p.price ? '<span>' + money(p.price) + '</span><s>' + money(p.regular) + '</s>' : '<span>' + money(p.price) + '</span>') + (p.var ? '<span class="k">· כמה אפשרויות</span>' : '') + '</div></div></a>' +
+      (p.var ? '<a class="qa" href="#p-' + p.id + '" aria-label="בחירת אפשרויות ל' + esc(short) + '">' + ic('plus') + '</a>' : '<button class="qa" type="button" data-add="' + p.id + '" aria-label="הוספה לסל: ' + esc(short) + '">' + ic('plus') + '</button>') + '</div>';
+  }
+  const railBtns = id => '<div class="rbtns"><button type="button" data-rail="' + id + '" data-dir="-1" aria-label="הקודם">' + ic('prev') + '</button><button type="button" data-rail="' + id + '" data-dir="1" aria-label="הבא">' + ic('next') + '</button></div>';
+
+  /* ---------- hero: cinematic card carousel ---------- */
+  const SLIDES = [
+    { img: IMG.hero, m: IMG.heroM, tone: 'dark', pos: '30% 50%', ey: 'בס״ד · מרכז הסידורים', h: 'ספרי קודש, <em>כמו שצריך.</em>', sub: 'סידורים, מחזורים, תהילים וחומשים בכל הנוסחים, בכריכות עור ועם הקדשה אישית.', cta: ['לכל הסידורים', '#c-siddur'], cta2: ['בחירה לפי נוסח', '#nusach'], tag: [ic('nusach'), 'סידור רויאל, כריכת עור'], pid: 2614 },
+    { img: 'gen4/hero-2.jpg', tone: 'dark', pos: '22% 50%', ey: 'לקראת החגים', h: 'מחזור אחד, <em>לכל השנה.</em>', sub: 'סטים מלאים לראש השנה, יום כיפור ושלושת הרגלים, בכל הנוסחים.', cta: ['למחזורים', '#c-machzor'], tag: [ic('machzor'), 'סט מחזורים'], pid: 2078 },
+    { img: 'gen4/slide-mazkeret.jpg', tone: 'light', pos: '30% 50%', ey: 'מזכרות לאירועים', h: 'מזכרת לכל אורח, <em>עם הקדשה.</em>', sub: 'ברכונים ושירונים בכמות לחתונה, לבר מצווה ולשבע ברכות. הקדשה אחידה לכל הכמות, או שם לכל אחד.', cta: ['למזכרות', '#c-mazkeret'], cta2: ['איך עובדת הקדשה', '#engrave'], tag: [ic('users'), 'הנחה לכמות'], pid: 11835 },
+    { img: 'gen4/hero-3.jpg', tone: 'dark', pos: '25% 55%', ey: 'ספרי לימוד', h: 'ספרייה שלמה, <em>על מדף אחד.</em>', sub: 'ש״ס, משניות וספרי הלכה בסטים מלאים ובכריכות מהודרות.', cta: ['לספרי הלימוד', '#c-limud'], tag: [ic('limud'), 'סטים מלאים'], pid: 12296 }
+  ];
+  let hsT = null, hsI = 0; const HS_DUR = 7000; let hsPaused = false;
+  function hsGo(i) {
+    const el = $('#hc'); if (!el) return;
+    hsI = (i + SLIDES.length) % SLIDES.length;
+    const cards = el.querySelectorAll('.hc-card');
+    cards.forEach((c, k) => { c.classList.toggle('on', k === hsI); c.setAttribute('aria-hidden', String(k !== hsI)); c.querySelectorAll('a,button').forEach(a => a.tabIndex = k === hsI ? 0 : -1); });
+    el.querySelectorAll('.hc-dots button').forEach((b, k) => b.setAttribute('aria-current', String(k === hsI)));
+    $('#hc-live').textContent = 'שקופית ' + (hsI + 1) + ' מתוך ' + SLIDES.length;
+    hsPlay();
+  }
+  function hsPlay() {
+    const el = $('#hc'); if (!el) return;
+    clearTimeout(hsT); el.classList.remove('play'); void el.offsetWidth;
+    if (hsPaused || el.dataset.hover === '1' || reduced() || $('#ld')) return;
+    el.style.setProperty('--dur', HS_DUR + 'ms'); el.classList.add('play');
+    hsT = setTimeout(() => hsGo(hsI + 1), HS_DUR);
+  }
+  function initHero() {
+    const el = $('#hc'); if (!el) return;
+    hsI = 0; hsGo(0);
+    el.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') { el.dataset.hover = '1'; hsPlay(); } });
+    el.addEventListener('pointerleave', () => { el.dataset.hover = '0'; hsPlay(); });
+    el.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') { e.preventDefault(); hsGo(hsI + 1); } if (e.key === 'ArrowRight') { e.preventDefault(); hsGo(hsI - 1); } });
+    let x0 = null;
+    el.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') x0 = e.clientX; });
+    el.addEventListener('pointerup', e => { if (x0 === null) return; const dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 40) hsGo(hsI + (dx > 0 ? 1 : -1)); });
+    if (!initHero.bound) { initHero.bound = true; window.addEventListener('resize', () => { if ($('#hc')) hsGo(hsI); }, { passive: true }); }
+  }
+  function splitWords(h) {
+    if (h.dataset.split) return; h.dataset.split = '1';
+    const walk = n => { [...n.childNodes].forEach(c => { if (c.nodeType === 3) { const frag = document.createDocumentFragment(); c.textContent.split(/(\s+)/).forEach(t => { if (!t) return; if (/^\s+$/.test(t)) frag.appendChild(document.createTextNode(t)); else { const w = document.createElement('span'); w.className = 'w'; const i = document.createElement('i'); i.textContent = t; w.appendChild(i); frag.appendChild(w); } }); c.replaceWith(frag); } else if (c.nodeType === 1 && c.tagName !== 'BR') walk(c); }); };
+    walk(h);
+  }
+  function bindMag() {
+    if (!fine()) return;
+    document.querySelectorAll('.mag:not([data-mg])').forEach(b => {
+      b.dataset.mg = '1';
+      b.addEventListener('mousemove', e => { if (reduced()) return; const r = b.getBoundingClientRect(); b.style.transform = 'translate(' + ((e.clientX - r.left - r.width / 2) * .14).toFixed(1) + 'px,' + ((e.clientY - r.top - r.height / 2) * .22).toFixed(1) + 'px)'; });
+      b.addEventListener('mouseleave', () => { b.style.transform = ''; });
+    });
+  }
+
+  /* ---------- personal dedication (every product) ---------- */
+  let ded = { mode: 'none', t: '', names: '', c: 'gold', f: 'classic' };
+  const LETTER = { classic: ['קלאסי', '"Frank Ruhl Libre", serif', 700], modern: ['מודרני', '"IBM Plex Sans Hebrew", sans-serif', 600], fine: ['מעודן', 'Bellefair, serif', 400] };
+  const OCC = [['בר מצווה', 'לכבוד בר המצווה של '], ['חתונה', 'מזל טוב ל'], ['לעילוי נשמת', 'לעילוי נשמת '], ['מתנה', 'באהבה, ']];
+  const fontAttr = () => 'font-family:' + LETTER[ded.f][1].replace(/"/g, "'") + ';font-weight:' + LETTER[ded.f][2];
+  const FOIL = { gold: ['#8a6420', '#f3dc9a', '#b8892f', '#fff1c4', '#a87a2a', '#e9cf88'], silver: ['#6d7076', '#f4f5f7', '#9a9da3', '#ffffff', '#8b8e94', '#dfe1e4'] };
+  const foilFill = id => ded.c === 'blind' ? 'rgba(0,0,0,.5)' : 'url(#fg-' + id + '-' + ded.c + ')';
+  const grads = id => '<defs><filter id="st-' + id + '" x="-5%" y="-30%" width="110%" height="160%"><feDropShadow dx="0" dy="-.6" stdDeviation=".3" flood-color="#000" flood-opacity=".55"/><feDropShadow dx="0" dy=".8" stdDeviation=".35" flood-color="#fff" flood-opacity=".18"/></filter>' + Object.keys(FOIL).map(k => '<linearGradient id="fg-' + id + '-' + k + '" x1="0" x2="1" y1="0" y2=".3">' + FOIL[k].map((c, i) => '<stop offset="' + (i / 5) + '" stop-color="' + c + '"/>').join('') + '</linearGradient>').join('') + '</defs>';
+  const txA = id => ' style="' + fontAttr() + '" filter="url(#st-' + id + ')"';
+  const dedText = () => (ded.mode === 'names' ? (ded.names.split('\n').map(s => s.trim()).filter(Boolean)[0] || 'שם לכל עותק') : ded.t) || 'ההקדשה שלכם כאן';
+  const leatherFill = id => ded.c === 'blind' ? 'rgba(0,0,0,.55)' : 'url(#fg-' + id + '-' + ded.c + ')';
+  function dedPreview(id, onCover) {
+    if (onCover) return '<div class="ded-prev cover"><span class="tag2">הדמיה על סידור רויאל</span><div class="bk"><img src="img/2614.jpg" alt="הדמיית הקדשה על כריכת הסידור"><svg class="foil" viewBox="0 0 610 64" aria-hidden="true" data-foilsvg="' + id + '">' + grads(id) + '<text x="305" y="45" font-size="40" text-anchor="middle" direction="rtl" fill="' + foilFill(id) + '"' + txA(id) + ' data-foil>' + esc(dedText()) + '</text></svg></div></div>';
+    return '<div class="ded-prev"><span class="tag2">כך תיראה ההקדשה</span><div class="leather"><svg viewBox="0 0 800 500" aria-hidden="true" data-foilsvg="' + id + '" data-leather>' + grads(id) + '<text x="400" y="230" font-size="22" text-anchor="middle" direction="rtl" fill="' + leatherFill(id) + '" opacity=".85"' + txA(id) + '>' + (ded.mode === 'names' ? 'שם אישי' : 'לזכרון ולברכה') + '</text><text x="400" y="290" font-size="52" text-anchor="middle" direction="rtl" fill="' + leatherFill(id) + '"' + txA(id) + ' data-foil>' + esc(dedText()) + '</text></svg></div></div>';
+  }
+  function nusShow(k, focus) {
+    document.querySelectorAll('[data-nt]').forEach(b => { const on = b.dataset.nt === k; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; if (on && focus) b.focus(); });
+    document.querySelectorAll('.nsw-panel').forEach(pn => { const on = pn.id === 'np-' + k; pn.hidden = !on; requestAnimationFrame(() => pn.classList.toggle('on', on)); });
+  }
+  document.addEventListener('keydown', e => { const b = e.target.closest && e.target.closest('[data-nt]'); if (!b || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return; e.preventDefault(); const ids = NUSACH.map(n => n.id); let k = ids.indexOf(b.dataset.nt); k = e.key === 'Home' ? 0 : e.key === 'End' ? ids.length - 1 : (k + (e.key === 'ArrowLeft' ? 1 : -1) + ids.length) % ids.length; nusShow(ids[k], true); });
+  document.addEventListener('mouseover', e => { const b = e.target.closest && e.target.closest('[data-nt]'); if (b && matchMedia('(hover: hover)').matches && b.getAttribute('aria-selected') !== 'true') nusShow(b.dataset.nt); });
+  function dedBlock(id, p) {
+    if (id === 'ded-home' && ded.mode === 'none') ded.mode = 'one';
+    const onCover = p && (p.id === 2614 || p.id === 2608 || p.id === 2582);
+    return '<div class="ded" data-ded="' + id + '">' +
+      '<div class="seg" role="group" aria-label="סוג ההקדשה">' + (id === 'ded-home' ? [['one', 'הקדשה לכל הכמות'], ['names', 'שם לכל עותק']] : [['none', 'בלי הקדשה'], ['one', 'הקדשה לכל הכמות'], ['names', 'שם לכל עותק']]).map(m => '<button type="button" data-ded-mode="' + m[0] + '" aria-pressed="' + (ded.mode === m[0]) + '">' + m[1] + '</button>').join('') + '</div>' +
+      (ded.mode === 'none' ? '<div class="note">' + ic('quill') + '<span>אפשר להוסיף הקדשה או חריטה על הכריכה בתוספת תשלום: מזכרת מאירוע, או הנצחה לעילוי נשמה. לפני העבודה תקבלו סקיצה לאישור.</span></div>' :
+        dedPreview(id, onCover) +
+        (ded.mode === 'one'
+          ? '<div class="occ" role="group" aria-label="התחלה מהירה לפי אירוע">' + OCC.map(o => '<button type="button" data-ded-occ="' + esc(o[1]) + '">' + esc(o[0]) + '</button>').join('') + '</div>' +
+            '<div class="fld"><label for="' + id + '-t">נוסח ההקדשה <span class="cnt" data-ded-cnt aria-live="polite">' + ded.t.length + '/40</span></label><input id="' + id + '-t" data-ded-t maxlength="40" placeholder="לדוגמה: בר המצווה של יוסף, תשפ״ז" value="' + esc(ded.t) + '" autocomplete="off"><small>אותה הקדשה תוטבע על כל העותקים בהזמנה.</small></div>'
+          : '<div class="fld"><label for="' + id + '-n">שם לכל עותק, שם בכל שורה</label><textarea class="names" id="' + id + '-n" data-ded-n placeholder="משפחת כהן&#10;משפחת לוי&#10;משפחת מזרחי">' + esc(ded.names) + '</textarea><small id="' + id + '-nc" aria-live="polite">' + namesInfo() + '</small></div>') +
+        '<div class="ded-two">' +
+        '<div><span class="ol2">הטבעה</span><div class="seg" role="group" aria-label="צבע ההטבעה">' + [['gold', 'זהב'], ['silver', 'כסף']].map(c => '<button type="button" data-ded-c="' + c[0] + '" aria-pressed="' + (ded.c === c[0]) + '"><i class="sw ' + c[0] + '" aria-hidden="true"></i>' + c[1] + '</button>').join('') + '</div></div></div>' +
+        '<div class="note">' + ic('tag') + '<span>הקדשה בתוספת תשלום, והנחה לכמות. הסקיצה והמחיר הסופי נשלחים לאישור לפני העבודה.</span></div>') +
+    '</div>';
+  }
+  function namesInfo() { const n = ded.names.split('\n').map(s => s.trim()).filter(Boolean).length; return n ? n + ' שמות, ' + n + ' עותקים. הכמות בהזמנה תתעדכן בהתאם.' : 'כל שורה היא עותק אחד עם שם משלו.'; }
+  function refreshFoil() {
+    document.querySelectorAll('[data-foilsvg]').forEach(sv => { const id = sv.dataset.foilsvg; const leather = sv.hasAttribute('data-leather'); sv.querySelectorAll('text').forEach(t => t.setAttribute('fill', leather ? leatherFill(id) : foilFill(id))); sv.querySelectorAll('text').forEach(t => t.setAttribute('style', fontAttr())); const f = sv.querySelector('[data-foil]'); if (f) f.textContent = dedText(); });
+    document.querySelectorAll('[data-ded-cnt]').forEach(c => { c.textContent = ded.t.length + '/40'; });
+  }
+  document.addEventListener('input', e => {
+    const t = e.target;
+    if (t.matches('[data-ded-t]')) { ded.t = t.value; refreshFoil(); }
+    if (t.matches('[data-ded-n]')) {
+      ded.names = t.value; refreshFoil(); const c = document.getElementById(t.id + 'c'); if (c) c.textContent = namesInfo();
+      const n = ded.names.split('\n').map(s => s.trim()).filter(Boolean).length; const q = $('#qty-in'); if (q && n) { pstate.qty = n; q.value = n; syncQty(); }
+    }
+    if (t.id === 'qty-in') { pstate.qty = Math.max(1, Math.min(999, parseInt(t.value, 10) || 1)); syncQty(true); }
+  });
+  function redrawDed() { document.querySelectorAll('[data-ded]').forEach(el => { const id = el.dataset.ded; const p = id === 'ded-p' ? curProduct : byId[2614]; const tmp = document.createElement('div'); tmp.innerHTML = dedBlock(id, p); el.replaceWith(tmp.firstChild); }); }
+
+  /* ---------- views ---------- */
+  const INDEX = ['siddur', 'machzor', 'tehilim', 'chumash', 'limud', 'birkon', 'zmirot', 'hagada', 'mazkeret'];
+  function viewHome() {
+    const best = uniq(['siddur', 'machzor', 'tehilim', 'birkon', 'zmirot', 'hagada'].flatMap(g => uniq(inGroup(g).filter(p => fitsNus(p, myNus) && p.local)).slice(0, 2))).slice(0, 12);
+    const gift = uniq(inGroup('mazkeret').filter(p => /מזכרת|חתן|בר מצווה|שבע ברכות|ברכון/.test(p.name))).slice(0, 4);
+    const avatar = (n, i) => '<span class="av" style="background:' + AVC[i % AVC.length] + '" aria-hidden="true">' + esc(n[0]) + '</span>';
+    const half = Math.ceil(REV.list.length / 2);
+    const revRow = (list, off) => list.concat(list).map((r, i) => '<figure class="rc"' + (i >= list.length ? ' aria-hidden="true"' : '') + '><div class="hd">' + avatar(r[0], i + off) + '<div class="who"><b>' + esc(r[0]) + '</b><span>' + esc(r[2]) + '</span></div>' + GLOGO + '</div><div class="rt">' + stars(r[1]) + '</div><p>' + esc(r[3]) + '</p></figure>').join('');
+    const ixItems = INDEX.map((id, i) => { const m = menuOf(id); return { id, m, n: inGroup(id).length, no: String(i + 1).padStart(2, '0') }; });
+    return '' +
+    '<section class="hc" id="hc" tabindex="0" aria-roledescription="קרוסלה" aria-label="מחלקות נבחרות"><span class="sr" id="hc-live" aria-live="polite"></span><div class="hc-vp"><div class="hc-track" id="hc-track">' +
+      SLIDES.map((sl, i) => '<article class="hc-card ' + sl.tone + (i === 0 ? ' on' : '') + '" aria-roledescription="שקופית" aria-label="' + (i + 1) + ' מתוך ' + SLIDES.length + '"><div class="pz">' + (sl.m ? '<picture><source media="(max-width: 860px)" srcset="' + sl.m + '"><img src="' + sl.img + '" alt="" fetchpriority="high" style="object-position:' + sl.pos + '"></picture>' : '<img src="' + sl.img + '" alt="" loading="lazy" style="object-position:' + sl.pos + '">') + '</div>' +
+        (byId[sl.pid] ? '<a class="hc-prod" href="#p-' + sl.pid + '"><span class="t">' + pic(byId[sl.pid]) + '</span><span class="x"><b>' + esc(base(byId[sl.pid])) + '</b><span>' + money(byId[sl.pid].price) + '</span></span>' + ARW + '</a>' : '') +
+        '<span class="hc-no" dir="ltr" aria-hidden="true">' + String(i + 1).padStart(2, '0') + ' / ' + String(SLIDES.length).padStart(2, '0') + '</span>' +
+        '<div class="cp"><p class="kick">' + esc(sl.ey) + '</p>' + (i === 0 ? '<h1>' : '<h2>') + sl.h + (i === 0 ? '</h1>' : '</h2>') + '<p class="sub">' + esc(sl.sub) + '</p><div class="ctas"><a class="btn ' + (sl.tone === 'dark' ? 'light' : 'solid') + ' mag" href="' + sl.cta[1] + '">' + esc(sl.cta[0]) + BI + '</a>' + (sl.cta2 ? '<a class="tlink" href="' + sl.cta2[1] + '">' + esc(sl.cta2[0]) + ARW + '</a>' : '') + '</div></div></article>').join('') +
+      '</div>' +
+      '<div class="hc-nav"><button class="rb" type="button" data-hs="prev" aria-label="השקופית הקודמת">' + ic('prev') + '</button><div class="hc-dots" role="tablist" aria-label="בחירת שקופית">' + SLIDES.map((sl, i) => '<button type="button" role="tab" data-slide="' + i + '" aria-label="שקופית ' + (i + 1) + '" aria-current="' + (i === 0) + '"><span class="b"><i></i></span></button>').join('') + '</div><button class="rb" type="button" data-hs="next" aria-label="השקופית הבאה">' + ic('next') + '</button><button class="rb" type="button" data-hs-pause aria-label="עצירת ההחלפה האוטומטית">' + ic('pause') + '</button></div></div>' +
+    '</section>' +
+
+    '<section class="sec tight" style="padding-bottom:clamp(40px,5vw,64px)" aria-labelledby="cat-h"><div class="wrap">' +
+      '<div class="sh"><div class="tx rv"><h2 class="h2" id="cat-h">קנייה לפי קטגוריה</h2></div>' + railBtns('cats') + '</div>' +
+      '<div class="cat-row" id="rail-cats">' + INDEX.concat(['kids']).map(id => { const m = menuOf(id); return '<a class="cc2" href="#c-' + id + '"><div class="ph"><img src="' + CIMG[id] + '" alt="" loading="lazy" draggable="false"></div><div class="cap">' + ic(id) + '<b>' + esc(m.name) + '</b></div></a>'; }).join('') + '</div>' +
+    '</div></section>' +
+
+    '<section class="sec dark" id="nusach" aria-labelledby="nus-h"><div class="wrap">' +
+      '<div class="sh"><div class="tx rv">' + kick('', 'בוחרים פעם אחת') + '<h2 class="h2" id="nus-h">באיזה נוסח מתפללים אצלכם?</h2><p class="lead">בוחרים נוסח, והאתר זוכר: סידורים, מחזורים, ברכונים וזמירות יוצגו מעכשיו בנוסח שלכם. אפשר להחליף בכל רגע מהכפתור "נוסח" בראש האתר.</p></div></div>' +
+      '<div class="nsw rv"><div class="nsw-tabs" role="tablist" aria-label="בחירת נוסח">' + NUSACH.map((n, k) => '<button type="button" role="tab" id="nt-' + n.id + '" aria-controls="np-' + n.id + '" aria-selected="' + (k === nusIdx()) + '" tabindex="' + (k === nusIdx() ? 0 : -1) + '" data-nt="' + n.id + '"><span class="nn">' + esc(n.name) + '</span><span class="ln" aria-hidden="true"></span></button>').join('') + '</div>' +
+        '<div class="nsw-stage">' + NUSACH.map((n, k) => '<div class="nsw-panel' + (k === nusIdx() ? ' on' : '') + '" role="tabpanel" id="np-' + n.id + '" aria-labelledby="nt-' + n.id + '"' + (k === nusIdx() ? '' : ' hidden') + '><div class="shelf">' + nusPick(n.id).map(x => '<a class="sh-it" href="#p-' + x.id + '"><span class="ph">' + pic(x) + '</span><b>' + esc(base(x)) + '</b></a>').join('') + '</div>' +
+          '<div class="nsw-acts"><a class="btn light mag" href="#c-siddur-' + n.id + '">לכל סידורי ' + esc(n.full) + BI + '</a><button class="tlink" type="button" data-setnus="' + n.id + '">' + (myNus === n.id ? 'זה הנוסח שלכם' : 'לשמור כנוסח שלי') + ARW + '</button></div></div>').join('') + '</div></div>' +
+    '</div></section>' +
+
+    '<section class="feat" aria-labelledby="mz-h"><div class="pz" data-par="0.1"><img src="' + IMG.machzor + '" alt="סט מחזורים עת רצון בכריכת עור ורודה, על מפת פשתן" loading="lazy" style="object-position:70% 50%"></div>' +
+      '<div class="wrap"><div class="tx rv">' + kick('', 'לקראת החגים') + '<h2 class="h2" id="mz-h">סט אחד, כל החגים.</h2><p class="lead">ראש השנה, יום כיפור ושלושת הרגלים, באותה כריכה ובאותו נוסח. אפשר להוסיף הקדשה על כל הסט.</p>' +
+      '<div class="ctas"><a class="btn solid mag" href="#c-machzor' + (myNus !== 'all' ? '-' + myNus : '') + '">למחזורים' + BI + '</a><a class="tlink" href="#p-2078">סט עת רצון, סדרת אלגנט' + ARW + '</a></div></div></div>' +
+    '</section>' +
+
+    '<section class="sec" aria-labelledby="best-h"><div class="wrap">' +
+      '<div class="sh"><div class="tx rv">' + kick('', myNus === 'all' ? 'נבחרו בשבילכם' : 'בנוסח ' + nusName(myNus)) + '<h2 class="h2" id="best-h">המבוקשים בחנות</h2></div>' + railBtns('best') + '</div>' +
+      '<div class="rail-row" id="rail-best">' + best.map(p => card(p, { rv: false, nusBadge: true })).join('') + '</div>' +
+    '</div></section>' +
+
+    '<section class="sec stone" aria-labelledby="rev-h"><div class="wrap">' +
+      '<div class="rev-top"><div class="gbadge rv"><span class="gl">' + GLOGO + 'ביקורות Google</span><span class="sc"><span class="big" id="score" data-to="4.3">4.3</span>' + stars(4.3, 'gstars') + '</span><small>על סמך ' + REV.count + ' ביקורות</small></div>' +
+        '<div class="tx rv">' + kick('', 'מה הלקוחות כותבים') + '<h2 class="h2" id="rev-h">שירות שמדברים עליו.</h2></div>' +
+        '<a class="tlink rv" href="' + REV.url + '" target="_blank" rel="noopener">לכל הביקורות בגוגל' + ARW + '</a></div>' +
+    '</div>' +
+      '<div class="mq" tabindex="0" role="region" aria-label="ביקורות לקוחות מגוגל, נעצר במעבר עכבר"><div class="row">' + revRow(REV.list.slice(0, half), 0) + '</div></div>' +
+      '<div class="mq rev"><div class="row">' + revRow(REV.list.slice(half), 3) + '</div></div>' +
+      '<div class="rev-cta"><a class="btn line" href="' + REV.url + '" target="_blank" rel="noopener">' + GLOGO + 'כתבו לנו ביקורת בגוגל</a></div>' +
+    '</section>' +
+
+    '<section class="sec" id="engrave" aria-labelledby="eng-h"><div class="wrap"><div class="split">' +
+      '<div class="tx rv">' + kick('', 'הקדשה אישית') + '<h2 class="h2" id="eng-h">שם על הכריכה. זיכרון לשנים.</h2><p class="lead">לכל מוצר באתר אפשר להוסיף הקדשה או חריטה, בתוספת תשלום. הקלידו כאן ותראו איך זה ייראה.</p>' +
+        '<ol class="steps"><li><span>1</span><div><b>הקדשה אחידה לכל הכמות</b><p>מזכרת מאירוע: אותה הקדשה על כל העותקים, עם הנחה לכמות.</p></div></li><li><span>2</span><div><b>שם אישי לכל עותק</b><p>שם משפחה או שם פרטי על כל ספר, לכל אורח או לכל בן משפחה.</p></div></li><li><span>3</span><div><b>סקיצה לאישור</b><p>לפני העבודה נשלחת סקיצה בוואטסאפ, ורק אחרי אישור מתחילים.</p></div></li></ol>' +
+        '<div class="ctas" style="margin-top:32px"><a class="btn solid mag" href="#c-mazkeret">למזכרות לאירועים' + BI + '</a></div></div>' +
+      '<div class="rv">' + dedBlock('ded-home', byId[2614] || { id: 2614 }) + '</div>' +
+    '</div></div></section>' +
+
+    '<section class="sec dark" aria-labelledby="sets-h"><div class="wrap">' +
+      '<div class="sh"><div class="tx rv">' + kick('', 'ספרי לימוד') + '<h2 class="h2" id="sets-h">ספרייה שלמה, על מדף אחד.</h2><p class="lead">ש״ס, משניות וספרי הלכה בסטים מלאים ובכריכות מהודרות.</p></div><a class="btn light rv mag" href="#c-limud">לספרי הלימוד' + BI + '</a></div>' +
+      '<div class="lib-ph rvimg"><img src="' + IMG.shas + '" alt="סט ש״ס מתיבתא בכריכת עור, על מדף עץ כהה" loading="lazy"></div>' +
+      '<div class="sets">' + [12296, 6387, 12257].filter(id => byId[id]).map(id => card(byId[id])).join('') + '</div>' +
+    '</div></section>' +
+
+    '<section class="sec paper" aria-labelledby="gift-h"><div class="wrap">' +
+      '<div class="sh"><div class="tx rv">' + kick('', 'מזכרות בכמות') + '<h2 class="h2" id="gift-h">מזכרת שכל אורח לוקח הביתה.</h2><p class="lead">ברכונים ושירונים לחתונה, לבר מצווה, לשבת חתן ולאזכרה. מזמינים בכמות, עם הקדשה, ומקבלים הצעת מחיר.</p></div><a class="tlink rv" href="#c-mazkeret">לכל המזכרות' + ARW + '</a></div>' +
+      '<div class="gifts"><a class="ph rvimg" href="#c-mazkeret" aria-label="למזכרות לאירועים"><img src="' + CIMG.mazkeret + '" alt="" loading="lazy" style="object-position:50% 72%"></a>' +
+      '<div class="grid4">' + gift.map(p => card(p)).join('') + '</div></div>' +
+    '</div></section>' +
+
+    '<section class="sec tight" aria-label="השירות שלנו"><div class="wrap"><div class="prom draw" data-draw>' +
+      '<div>' + ic('truck') + '<b>משלוח חינם</b><p>בכל הזמנה מעל 350 ₪, לכל הארץ.</p></div>' +
+      '<div>' + ic('quill') + '<b>הקדשה אישית</b><p>לכל מוצר, עם סקיצה לאישור.</p></div>' +
+      '<div>' + ic('users') + '<b>הנחה לכמות</b><p>מזכרות לאירועים ולמוסדות.</p></div>' +
+      '<div>' + ic('shield') + '<b>תשלום מאובטח</b><p>ושירות אישי בוואטסאפ, מאדם אמיתי.</p></div>' +
+    '</div></div></section>';
+  }
+
+  let cstate = { nus: 'all', cover: '', sort: 'rec', shown: 24 };
+  function viewCategory(id) {
+    const m = menuOf(id) || MENU[0];
+    let src = inGroup(m.id);
+    if (m.id === 'mazkeret') src = src.filter(p => /מזכרת|חתן|בר מצווה|שבע ברכות|ברכון|שירון|ספרון/.test(p.name));
+    let items = src;
+    if (m.nus && cstate.nus !== 'all') items = items.filter(p => fitsNus(p, cstate.nus));
+    if (cstate.cover) items = items.filter(p => p.c === cstate.cover);
+    if (!m.nus || cstate.nus === 'all') items = uniq(items);
+    if (cstate.sort === 'low') items = items.slice().sort((a, b) => a.price - b.price);
+    if (cstate.sort === 'high') items = items.slice().sort((a, b) => b.price - a.price);
+    if (cstate.sort === 'rec') items = items.slice().sort((a, b) => (b.local - a.local));
+    const nusCount = k => k === 'all' ? uniq(src).length : src.filter(p => p.n && fitsNus(p, k)).length;
+    const covers = [...new Set(src.map(p => p.c).filter(Boolean))];
+    const shown = items.slice(0, cstate.shown);
+    const keep = m.nus && cstate.nus !== 'all' ? '-' + cstate.nus : '';
+    const related = MENU.filter(x => x.id !== m.id).slice(0, 8);
+    return '<div class="wrap">' +
+      '<header class="chead"><div><nav class="crumbs" aria-label="מיקום באתר"><a href="#home">דף הבית</a><span aria-hidden="true">/</span><span aria-current="page">' + esc(m.name) + '</span></nav>' +
+        '<h1 class="draw" data-draw>' + ic(m.id) + esc(m.name) + '</h1>' + (m.blurb ? '<p>' + esc(m.blurb) + '</p>' : '') + '</div>' +
+        (CIMG[m.id] ? '<div class="ph rvimg"><img src="' + CIMG[m.id] + '" alt=""></div>' : '') + '</header>' +
+      '<div class="smart">' +
+        (m.nus ? '<div class="row"><span class="lbl">נוסח</span><div class="seg" role="group" aria-label="בחירת נוסח">' + [{ id: 'all', name: 'כל הנוסחים' }].concat(NUSACH).map(n => '<button type="button" data-nus="' + n.id + '" aria-pressed="' + (cstate.nus === n.id) + '">' + esc(n.name) + '<span class="k">' + nusCount(n.id) + '</span></button>').join('') + '</div></div>' : '') +
+        '<div class="row"><span class="lbl">' + (keep ? 'באותו נוסח, גם' : 'עוברים ל') + '</span><div class="chips">' + related.map(x => '<a class="chip" href="#c-' + x.id + (x.nus ? keep : '') + '">' + ic(x.id) + esc(x.name) + '</a>').join('') + '</div></div>' +
+        '<div class="row">' + (covers.length > 1 ? '<span class="lbl">כריכה</span><div class="chips" role="group" aria-label="סוג כריכה">' + covers.map(c => '<button class="chip" type="button" data-cover="' + esc(c) + '" aria-pressed="' + (cstate.cover === c) + '">' + esc(c) + '</button>').join('') + '</div>' : '') +
+        '<label class="sort">מיון<select id="sort"><option value="rec"' + (cstate.sort === 'rec' ? ' selected' : '') + '>מומלצים</option><option value="low"' + (cstate.sort === 'low' ? ' selected' : '') + '>מחיר, מהנמוך</option><option value="high"' + (cstate.sort === 'high' ? ' selected' : '') + '>מחיר, מהגבוה</option></select></label></div>' +
+      '</div>' +
+      '<p class="count-line" aria-live="polite">' + items.length + ' מוצרים' + (keep ? ' ב' + nusFull(cstate.nus) : '') + '</p>' +
+      (shown.length ? '<div class="grid">' + shown.map(p => card(p, { nusBadge: m.nus, multi: cstate.nus === 'all' })).join('') + '</div>' : '<div class="empty"><p>אין כרגע מוצרים שמתאימים לבחירה הזו.</p><button class="btn line" type="button" data-reset>ניקוי הבחירה</button></div>') +
+      (items.length > shown.length ? '<div style="text-align:center;padding-bottom:100px;margin-top:-40px"><button class="btn line" type="button" data-more>להציג עוד ' + Math.min(24, items.length - shown.length) + ' מתוך ' + (items.length - shown.length) + '</button></div>' : '') +
+    '</div>';
+  }
+  function viewAll() {
+    return '<div class="wrap"><header class="chead" style="grid-template-columns:1fr"><div><nav class="crumbs" aria-label="מיקום באתר"><a href="#home">דף הבית</a><span aria-hidden="true">/</span><span aria-current="page">כל המוצרים</span></nav><h1>כל המוצרים</h1><p>' + ALL.length + ' מוצרים ב-' + MENU.length + ' קטגוריות.</p></div></header>' +
+      MENU.map(m => { const it = uniq(m.id === 'mazkeret' ? inGroup(m.id).filter(p => /מזכרת|חתן|בר מצווה|שבע ברכות/.test(p.name)) : inGroup(m.id)); return '<section style="padding-bottom:56px"><div class="sh" style="margin-bottom:24px"><h2 class="h3">' + esc(m.name) + ' <span style="color:var(--ink-3);font-size:.6em">' + inGroup(m.id).length + '</span></h2><a class="tlink" href="#c-' + m.id + '">לכל ה' + esc(m.name) + ARW + '</a></div><div class="rail-row" id="rail-all-' + m.id + '">' + it.slice(0, 12).map(p => card(p, { rv: false })).join('') + '</div></section>'; }).join('') + '</div>';
+  }
+
+  let pstate = { v: 0, img: 0, qty: 1 }, curProduct = null;
+  function syncQty(fromInput) {
+    const q = $('#qty-in'); if (q && !fromInput) q.value = pstate.qty;
+    document.querySelectorAll('[data-qc]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.qc === pstate.qty)));
+    const tot = $('#tot-line'); if (tot && curProduct) tot.textContent = 'סה״כ ' + money(+(curProduct.price * pstate.qty).toFixed(2));
+  }
+  function viewProduct(id) {
+    const hv = HERO.findIndex(h => String(h.id) === String(id));
+    if (hv >= 0) pstate.v = hv;
+    const p = byId[id] || (hv >= 0 ? Object.assign({ g: 'siddur', n: HERO[hv].n, local: true, at: [0, 0, 0] }, HERO[hv]) : ALL[0]);
+    curProduct = p;
+    const gallery = hv >= 0 ? HERO[pstate.v].gallery : null;
+    const title = hv >= 0 ? 'סידור עת רצון, דגם רויאל' : base(p);
+    const lines = (p.short || '').split('\n').map(s => s.trim()).filter(s => s && s !== base(p) && !s.includes(base(p).slice(0, 12)));
+    const grp = MENU.find(m => m.g.includes(p.g)) || MENU[0];
+    const sibs = (hv >= 0 ? HERO.map(h => ({ id: h.id, n: h.n })) : ALL.filter(x => base(x) === base(p) && x.g === p.g && x.n).map(x => ({ id: x.id, n: x.n }))).sort((a, b) => (b.id === p.id) - (a.id === p.id)).filter((x, i, arr) => arr.findIndex(y => y.n === x.n) === i);
+    const curN = p.n; const curK = curN === 'ash-sfd' ? 'ash' : curN;
+    const nusSwitch = sibs.length > 1 ? '<div class="blk"><span class="ol">נוסח <span>' + esc(nusFull(curN)) + '</span></span><div class="seg" role="group" aria-label="אותו ספר בנוסח אחר">' + sibs.map(s => '<a href="#p-' + s.id + '"' + (String(s.id) === String(p.id) ? ' aria-current="page"' : '') + '>' + esc(s.n === 'ash-sfd' ? 'אשכנז / ספרד' : nusName(s.n)) + '</a>').join('') + '</div></div>' : '';
+    const sameNus = curK ? uniq(ALL.filter(x => x.g !== p.g && ['siddur', 'machzor', 'birkon', 'zmirot'].includes(x.g) && x.n && fitsNus(x, curK))).sort((a, b) => b.local - a.local).slice(0, 10) : [];
+    const related = uniq(inGroup(grp.id).filter(x => base(x) !== base(p))).sort((a, b) => b.local - a.local).slice(0, 10);
+    const bulk = ['birkon', 'zmirot', 'tehilim'].includes(p.g) || /מזכרת|חתן|בר מצווה/.test(p.name);
+    const crumbNus = grp.nus && curK && curN !== 'ash-sfd';
+    const mainPic = gallery ? '<img class="pic" id="gmain" src="' + gallery[Math.min(pstate.img, gallery.length - 1)] + '" alt="' + esc(title) + '">' : pic(p, title);
+    return '<div class="wrap"><div class="pp">' +
+        '<div class="gal' + (gallery ? '' : ' single') + '"><button class="main" type="button" id="gzoom" aria-label="הגדלת התמונה">' + (p.sale ? '<span class="tag2">מבצע</span>' : (bulk ? '<span class="tag2">' + ic('users') + 'הנחה לכמות</span>' : '')) + mainPic + '</button>' +
+          (gallery ? '<div class="thumbs">' + gallery.map((g, i) => '<button type="button" data-img="' + i + '" aria-label="תמונה ' + (i + 1) + '" aria-current="' + (i === pstate.img) + '"><img class="pic" src="' + g + '" alt=""></button>').join('') + '</div>' : '') +
+        '</div>' +
+        '<div class="info">' +
+          '<nav class="crumbs" aria-label="מיקום באתר"><a href="#home">דף הבית</a><span aria-hidden="true">/</span><a href="#c-' + grp.id + (crumbNus ? '-' + curN : '') + '">' + esc(grp.name) + '</a></nav>' +
+          '<div class="chips2">' + (curN ? '<span>' + ic('nusach') + esc(nusFull(curN)) + '</span>' : '') + (p.c ? '<span>' + esc(p.c) + '</span>' : '') + (p.stock === false ? '<span>אזל מהמלאי</span>' : '<span>במלאי</span>') + '</div>' +
+          '<h1>' + esc(title) + '</h1>' +
+          '<div class="rate">' + GLOGO + stars(4.3) + '<span>4.3 · ' + REV.count + ' ביקורות על החנות</span></div>' +
+          '<div class="prow"><span class="price">' + money(p.price) + '</span>' + (p.sale && p.regular > p.price ? '<s>' + money(p.regular) + '</s>' : '') + (bulk ? '<span class="qd">' + ic('users') + 'הנחה לכמות</span>' : '') + '</div>' +
+          '<p class="pnote">כולל מע״מ · משלוח חינם בהזמנה מעל 350 ₪</p>' +
+          (lines.length ? '<ul class="desc">' + lines.slice(0, 5).map(l => '<li>' + esc(l) + '</li>').join('') + '</ul>' : '') +
+          nusSwitch +
+          '<div class="blk"><span class="ol">הקדשה אישית <span>בתוספת תשלום</span></span>' + dedBlock('ded-p', p) + '</div>' +
+          '<div class="blk"><span class="ol">כמות <span id="tot-line">סה״כ ' + money(p.price) + '</span></span>' +
+          '<div class="buy" id="buy"><div class="qty" role="group" aria-label="כמות"><button type="button" data-q="1" aria-label="להוסיף אחד">' + ic('plus') + '</button><input id="qty-in" type="number" inputmode="numeric" min="1" max="999" value="' + pstate.qty + '" aria-label="כמות"><button type="button" data-q="-1" aria-label="להוריד אחד">' + ic('minus') + '</button></div>' +
+          '<button class="btn solid" type="button" data-add="' + p.id + '">הוספה לסל' + BI + '</button></div>' +
+          (bulk ? '<div class="qchips" role="group" aria-label="כמויות מהירות לאירוע">' + [10, 25, 50, 100].map(n => '<button type="button" data-qc="' + n + '" aria-pressed="false">' + n + ' יח׳</button>').join('') + '</div>' : '') +
+          '<a class="wa-q" href="' + waLink('שלום, יש לי שאלה על ' + title + ' ' + realUrl(p)) + '"' + EXTA + '>' + ic('wa') + 'שאלה על המוצר? כתבו לנו בוואטסאפ</a>' + shareRow(title, realUrl(p)) + '</div>' +
+          '<div class="trust draw" data-draw><div>' + ic('truck') + 'משלוח חינם<br>מעל 350 ₪</div><div>' + ic('quill') + 'סקיצה לאישור<br>לפני הטבעה</div><div>' + ic('shield') + 'תשלום<br>מאובטח</div></div>' +
+          '<div class="accs"><details class="acc"><summary>משלוחים והחזרות' + ic('plus') + '</summary><div class="ab">משלוח חינם בהזמנה מעל 350 ₪. זמן האספקה מאושר בהזמנה. מוצר עם הקדשה מיוצר במיוחד בשבילכם ולכן אינו ניתן להחזרה, אלא אם יש בו פגם. <a href="#shipping" style="text-decoration:underline">כל התנאים</a></div></details>' +
+          '<details class="acc"><summary>הזמנה בכמות לאירוע' + ic('plus') + '</summary><div class="ab">מזמינים 10 עותקים ומעלה? כתבו לנו את הכמות ואת תאריך האירוע, ונחזור עם הצעת מחיר והנחה לכמות.</div></details></div>' +
+        '</div>' +
+      '</div>' +
+      (sameNus.length ? '<section aria-labelledby="sn-h" style="padding-bottom:clamp(64px,8vw,110px)"><div class="sh"><div class="tx">' + kick('', 'משלימים את הסט') + '<h2 class="h2" id="sn-h" style="font-size:clamp(30px,3.2vw,44px)">עוד בנוסח ' + esc(nusName(curK)) + '</h2></div>' + railBtns('nus') + '</div><div class="rail-row" id="rail-nus">' + sameNus.map(x => card(x, { rv: false })).join('') + '</div></section>' : '') +
+      '<section aria-labelledby="rel-h" style="padding-bottom:clamp(80px,10vw,140px)"><div class="sh"><h2 class="h2" id="rel-h" style="font-size:clamp(30px,3.2vw,44px)">עוד ' + esc(grp.name) + '</h2>' + railBtns('rel') + '</div><div class="rail-row" id="rail-rel">' + related.map(x => card(x, { rv: false })).join('') + '</div></section>' +
+    '</div>';
+  }
+  function setFbuy() {
+    const f = $('#fbuy'); const p = curProduct;
+    if (!location.hash.startsWith('#p-') || !p) { f.classList.remove('on'); f.innerHTML = ''; f.setAttribute('aria-hidden', 'true'); return; }
+    f.innerHTML = '<span class="t">' + pic(p) + '</span><span class="x"><b>' + esc(base(p)) + '</b><span>' + money(p.price) + '</span></span><button class="btn solid" type="button" data-add="' + p.id + '" data-fbuy>הוספה לסל</button>';
+  }
+  function fbuyWatch() {
+    const f = $('#fbuy'); const b = $('#buy');
+    if (!b || !location.hash.startsWith('#p-')) return;
+    const r = b.getBoundingClientRect(); const out = r.bottom < 80 || r.top > innerHeight;
+    f.classList.toggle('on', out); f.setAttribute('aria-hidden', String(!out));
+  }
+
+  const pageHead = (crumb, title, lead) => '<header class="ph-head"><nav class="crumbs" aria-label="מיקום באתר"><a href="#home">דף הבית</a><span aria-hidden="true">/</span><span aria-current="page">' + esc(crumb) + '</span></nav><h1>' + esc(title) + '</h1>' + (lead ? '<p class="lead">' + esc(lead) + '</p>' : '') + '</header>';
+  function viewAbout() {
+    const q = REV.list.find(r => r[0] === 'מרדכי ב.');
+    return '<div class="wrap">' + pageHead('אודות', 'מרכז הסידורים', 'חנות ספרי קודש מירושלים: סידורים, מחזורים, תהילים וחומשים בכל הנוסחים, עם הקדשה אישית ושירות של אדם אמיתי שעונה לכם.') +
+      '<section class="about-split" style="padding-bottom:clamp(80px,10vw,140px)"><div class="ph rvimg"><img src="' + IMG.gilt + '" alt="פינת סידור בכריכת עור כחולה עם חיתוך דפים מוזהב"></div>' +
+        '<div class="rv">' + kick('', 'מה אנחנו עושים') + '<h2 class="h2">ספר שנפתח כל יום צריך להיות יפה.</h2><p class="lead">אנחנו מביאים סידורים, מחזורים וספרי לימוד בכריכות עור ובמהדורות מהודרות, בכל הנוסחים. לכל ספר אפשר להוסיף הקדשה: לבר מצווה, לחתונה, לעילוי נשמה, או מזכרת בכמות לאירוע.</p><p class="lead">משה, שמנהל את החנות, עונה אישית בוואטסאפ, שולח סקיצה לפני שמתחילים, ודואג שהספרים יגיעו עד הבית.</p></div></section>' +
+      '<section class="sec tight" style="padding-top:0"><div class="vals draw" data-draw><div>' + ic('nusach') + '<b>כל הנוסחים</b><p>אשכנז, ספרד ועדות המזרח, ומעבר נוח ביניהם בכל האתר.</p></div><div>' + ic('quill') + '<b>הקדשה מדויקת</b><p>סקיצה לאישור לפני העבודה, כדי שהשם ייצא בדיוק כמו שרציתם.</p></div><div>' + ic('wa') + '<b>אדם אמיתי עונה</b><p>שאלה על ספר, נוסח או הזמנה? כותבים בוואטסאפ ומקבלים תשובה.</p></div></div></section>' +
+      '<section class="sec" style="padding-top:0"><blockquote class="pull rv">"' + esc(q[3]) + '"<cite>' + esc(q[0]) + ', ביקורת בגוגל</cite></blockquote></section></div>';
+  }
+  function viewContact() {
+    return '<div class="wrap">' + pageHead('יצירת קשר', 'דברו איתנו.', 'הדרך הכי מהירה היא וואטסאפ. כתבו איזה ספר, באיזה נוסח, איזו הקדשה ואיזו כמות, ונחזור אליכם.') +
+      '<div class="cgrid" style="padding-bottom:clamp(80px,10vw,140px)"><div class="ccards draw" data-draw>' +
+        '<a class="ccard main" href="' + waLink('שלום, הגעתי מהאתר') + '"' + EXTA + '>' + ic('wa') + '<div><b>וואטסאפ</b><span dir="ltr">052-6845740</span><span> · הכי מהיר</span></div></a>' +
+        '<a class="ccard" href="tel:+972526845740">' + ic('phone') + '<div><b>טלפון</b><span dir="ltr">052-6845740</span></div></a>' +
+        '<a class="ccard" href="mailto:sidurscenter@gmail.com">' + ic('mail') + '<div><b>מייל</b><span>sidurscenter@gmail.com</span></div></a>' +
+        '<a class="ccard" href="https://telegram.me/share/url?url=https%3A%2F%2Fsiddurs-center.co.il%2F&amp;text=%D7%9E%D7%A8%D7%9B%D7%96%20%D7%94%D7%A1%D7%99%D7%93%D7%95%D7%A8%D7%99%D7%9D"' + EXTA + '>' + ic('tg') + '<div><b>טלגרם</b><span>שיתוף האתר עם חברים ומשפחה</span></div></a>' +
+        '<a class="ccard" href="#track">' + ic('truck') + '<div><b>איפה ההזמנה שלי?</b><span>מעקב הזמנה לפי מספר הזמנה וטלפון</span></div></a>' +
+      '</div>' +
+      '<form class="form rv" data-form novalidate><h2>השאירו הודעה</h2>' +
+        '<div class="row2"><div class="fld"><label for="f-n">שם</label><input id="f-n" name="n" autocomplete="name" required></div><div class="fld"><label for="f-p">טלפון</label><input id="f-p" name="p" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" required></div></div>' +
+        '<div class="fld"><label for="f-t">במה נוכל לעזור?</label><select id="f-t" name="t"><option>שאלה על ספר</option><option>הקדשה אישית</option><option>מזכרות בכמות לאירוע</option><option>הזמנה קיימת</option></select></div>' +
+        '<div class="fld"><label for="f-m">הודעה</label><textarea id="f-m" name="m"></textarea><small>נחזור אליכם בוואטסאפ או בטלפון.</small></div>' +
+        '<button class="btn solid" type="submit">שליחה' + BI + '</button></form></div></div>';
+  }
+  function viewShipping() {
+    return '<div class="wrap">' + pageHead('משלוחים והחזרות', 'מההזמנה עד הבית.', 'משלוח חינם בהזמנה מעל 350 ₪, לכל הארץ. ככה זה עובד, צעד אחרי צעד.') +
+      '<ol class="tl draw" data-draw style="padding-block:clamp(20px,4vw,48px) clamp(64px,8vw,110px)"><li><span class="dotc">' + ic('bag') + '</span><b>מזמינים</b><p>באתר או בוואטסאפ. מקבלים אישור עם מספר הזמנה.</p></li><li><span class="dotc">' + ic('quill') + '</span><b>מאשרים סקיצה</b><p>אם יש הקדשה, שולחים לכם סקיצה לאישור לפני העבודה.</p></li><li><span class="dotc">' + ic('mazkeret') + '</span><b>אורזים</b><p>הספרים נבדקים ונארזים בקפידה.</p></li><li><span class="dotc">' + ic('truck') + '</span><b>מגיע עד הבית</b><p>מקבלים הודעה כשהמשלוח יוצא, עם מספר מעקב.</p></li></ol>' +
+      '<section class="faq" style="padding-bottom:clamp(80px,10vw,140px)"><h2 class="h2" style="margin-bottom:24px">שאלות נפוצות</h2>' +
+        '<details class="acc"><summary>כמה זמן לוקח משלוח?' + ic('plus') + '</summary><div class="ab">זמן האספקה מאושר בהזמנה. הזמנה עם הקדשה לוקחת מעט יותר, ולכן לאירוע כדאי להזמין מראש ולציין את התאריך.</div></details>' +
+        '<details class="acc"><summary>יש לי אירוע בתאריך מסוים. מה עושים?' + ic('plus') + '</summary><div class="ab">כותבים את תאריך האירוע בהזמנה או בוואטסאפ, ואנחנו מאשרים מראש אם אפשר לעמוד בו.</div></details>' +
+        '<details class="acc"><summary>אפשר להזמין בכמות גדולה?' + ic('plus') + '</summary><div class="ab">כן. ברכונים, תהילים, בקשות ומזכרות בכמויות לאירועים, אזכרות, שבתות חתן, בר מצווה, חתונות ומוסדות, עם הנחה לכמות.</div></details>' +
+        '<details class="acc"><summary>אפשר להחזיר ספר?' + ic('plus') + '</summary><div class="ab">ספר בלי הקדשה אפשר להחזיר לפי תקנון האתר. ספר עם הקדשה מיוצר במיוחד בשבילכם, ולכן לא ניתן להחזיר אותו, אלא אם יש בו פגם.</div></details>' +
+      '</section></div>';
+  }
+  function viewTrack() {
+    return '<div class="wrap">' + pageHead('מעקב הזמנה', 'איפה ההזמנה שלי?', 'מכניסים את מספר ההזמנה והטלפון שהזמנתם איתו, ורואים באיזה שלב היא.') +
+      '<form class="form track rv" data-track novalidate style="margin-bottom:clamp(80px,10vw,140px)"><div class="fld"><label for="t-o">מספר הזמנה</label><input id="t-o" inputmode="numeric" dir="ltr" placeholder="לדוגמה 18452" required></div><div class="fld"><label for="t-p">טלפון</label><input id="t-p" type="tel" inputmode="tel" dir="ltr" autocomplete="tel" required></div><button class="btn solid" type="submit">בדיקת סטטוס' + BI + '</button><div id="t-res" aria-live="polite"></div></form></div>';
+  }
+  function viewCheckout() {
+    const total = cart.reduce((s, c) => s + c.q * itemOf(c.id).price, 0);
+    const ship = total >= FREE || !total ? 0 : 30;
+    return '<div class="wrap">' + pageHead('תשלום', 'סיום הזמנה', '') +
+      '<div class="co"><form class="form" data-form novalidate><div class="steps-bar"><span aria-current="step">1 · פרטים</span><span>2 · משלוח</span><span>3 · תשלום</span></div>' +
+        '<div class="row2"><div class="fld"><label for="c-n">שם מלא</label><input id="c-n" autocomplete="name" required></div><div class="fld"><label for="c-p">טלפון</label><input id="c-p" type="tel" inputmode="tel" dir="ltr" autocomplete="tel" required></div></div>' +
+        '<div class="fld"><label for="c-a">כתובת למשלוח</label><input id="c-a" autocomplete="street-address" required></div>' +
+        '<div class="row2"><div class="fld"><label for="c-c">עיר</label><input id="c-c" autocomplete="address-level2" required></div><div class="fld"><label for="c-d">תאריך אירוע, אם יש</label><input id="c-d" type="date"><small>כדי שנוודא שההזמנה תגיע בזמן.</small></div></div>' +
+        '<fieldset style="border:0;padding:0;margin:0" class="fld"><legend style="font-size:14px;font-weight:500;margin-bottom:6px">אופן משלוח</legend><div class="choice"><label><input type="radio" name="sh" checked><b>משלוח עד הבית</b><span>' + (ship ? money(ship) : 'חינם') + '</span></label><label><input type="radio" name="sh"><b>איסוף עצמי בירושלים</b><span>חינם</span></label></div></fieldset>' +
+        '<button class="btn solid" type="submit">המשך לתשלום' + BI + '</button></form>' +
+      '<aside class="sum" aria-label="סיכום הזמנה"><h2>הסל שלך</h2>' +
+        (cart.length ? cart.map(c => { const p = itemOf(c.id); return '<div class="ci2"><div class="t">' + pic(p) + '</div><div><div class="n">' + esc(base(p)) + '</div>' + (c.e ? '<div style="font-size:13px;color:var(--gold)">הקדשה: ' + esc(c.e) + '</div>' : '') + '<span style="font-size:13px;color:var(--ink-3)">כמות ' + c.q + '</span></div><div class="p">' + money(+(p.price * c.q).toFixed(2)) + '</div></div>'; }).join('') : '<p class="lead" style="margin:0">הסל עדיין ריק. <a href="#c-siddur" style="text-decoration:underline">לסידורים</a></p>') +
+        '<div class="ln"><span>סכום ביניים</span><span>' + money(+total.toFixed(2)) + '</span></div><div class="ln"><span>משלוח</span><span>' + (ship ? money(ship) : 'חינם') + '</span></div><div class="ln t"><span>סך הכל</span><span>' + money(+(total + ship).toFixed(2)) + '</span></div>' +
+        '<div class="safe">' + ic('shield') + 'תשלום מאובטח. בקונספט הזה התשלום לא פעיל.</div></aside></div></div>';
+  }
+  function viewA11y() {
+    return '<div class="wrap" style="padding-block:calc(var(--ut) + 140px) 140px;max-width:860px"><h1 class="h2">הצהרת נגישות</h1><p class="lead">אנחנו רוצים שכל אחד יוכל לקנות אצלנו בנוחות. האתר נבנה לפי התקן הישראלי 5568 ברמה AA, ומותאם לקוראי מסך, לניווט במקלדת ולמובייל.</p>' +
+      '<ol class="steps"><li><span>1</span><div><b>תפריט נגישות</b><p>הגדלת טקסט, ניגודיות גבוהה, הדגשת קישורים, גופן קריא ועצירת אנימציות. ההתאמות נשמרות לביקור הבא.</p></div></li><li><span>2</span><div><b>ניווט במקלדת</b><p>Tab לניווט, Enter לבחירה, Esc לסגירת חלונות, וקישור "דילוג לתוכן" בתחילת כל עמוד.</p></div></li><li><span>3</span><div><b>תנועה מכבדת</b><p>מי שהגדיר במכשיר "הפחתת תנועה" יקבל אתר בלי אנימציות, וגם הסליידר נעצר.</p></div></li></ol>' +
+      '<p class="lead">נתקלתם בבעיה? כתבו לנו בוואטסאפ <span dir="ltr">052-6845740</span>, ונטפל.</p><p style="margin-top:32px"><a class="btn line" href="#home">חזרה לדף הבית</a></p></div>';
+  }
+  function viewSimple(title, text) { return '<div class="wrap" style="padding-block:calc(var(--ut) + 140px) 140px"><h1 class="h2">' + esc(title) + '</h1><p class="lead">' + esc(text) + '</p><p style="margin-top:32px"><a class="btn line" href="#home">חזרה לדף הבית</a></p></div>'; }
+
+  /* ---------- router ---------- */
+  function route() {
+    const h = (location.hash || '#home').slice(1);
+    closeMega(true); closeAll(); clearTimeout(hsT);
+    let html, tab = 'home';
+    if (h === 'home' || h === '' || h === 'main') html = viewHome();
+    else if (h === 'nusach' || h === 'engrave') { html = viewHome(); setTimeout(() => { const el = document.getElementById(h); if (el) el.scrollIntoView(); }, 0); }
+    else if (h.startsWith('c-')) {
+      const parts = h.slice(2).split('-'); const id = parts[0];
+      if (parts[1]) cstate = { nus: parts[1], cover: '', sort: 'rec', shown: 24 };
+      else if (route.lastCat !== id) cstate = { nus: (menuOf(id) || {}).nus ? myNus : 'all', cover: '', sort: 'rec', shown: 24 };
+      route.lastCat = id; html = viewCategory(id); tab = 'cats';
+    }
+    else if (h.startsWith('p-')) { const id = h.slice(2); if (String(route.lastP) !== id) { pstate = { v: 0, img: 0, qty: 1 }; } route.lastP = id; html = viewProduct(id); }
+    else if (h === 'all') { html = viewAll(); tab = 'cats'; }
+    else if (h === 'a11y') html = viewA11y();
+    else if (h === 'about') html = viewAbout();
+    else if (h === 'contact-us') html = viewContact();
+    else if (h === 'shipping') html = viewShipping();
+    else if (h === 'track') html = viewTrack();
+    else if (h === 'checkout') html = viewCheckout();
+    else html = viewSimple('העמוד הזה בבנייה', 'בקונספט הזה מוצגים דף הבית, כל הקטגוריות, עמודי המוצר, אודות, יצירת קשר, משלוחים, מעקב הזמנה, תשלום והצהרת נגישות. שאר העמודים ייבנו באותה שפה.');
+    $('#main').innerHTML = html;
+    if (!h.startsWith('p-')) curProduct = null;
+    document.querySelectorAll('[data-tab]').forEach(t => t.removeAttribute('aria-current'));
+    const t = document.querySelector('[data-tab="' + tab + '"]'); if (t) t.setAttribute('aria-current', 'page');
+    if (!/^(nusach|engrave)$/.test(h)) window.scrollTo(0, 0);
+    afterRender(); initHero(); setFbuy();
+    const h1 = $('#main h1');
+    document.title = h1 && !/^(home|nusach|engrave|)$/.test(h) ? h1.textContent + ' · מרכז הסידורים' : 'מרכז הסידורים · כל ספרי הקודש במקום אחד';
+    if (route.ran && !/^(home|nusach|engrave|)$/.test(h)) $('#main').focus({ preventScroll: true });
+    route.ran = true;
+  }
+  window.addEventListener('hashchange', route);
+  function afterRender() { reveal(); initRails(); initIndex(); bindMag(); onScrollFx(); }
+
+  /* ---------- category index: hover swaps the picture ---------- */
+  function initIndex() {
+    const list = $('#ix-list'); if (!list) return;
+    const set = i => {
+      list.querySelectorAll('.ix-name').forEach(a => a.setAttribute('aria-current', String(+a.dataset.ixi === i)));
+      document.querySelectorAll('.ix-frame img').forEach(im => im.classList.toggle('on', +im.dataset.ix === i));
+      const m = menuOf(INDEX[i]); $('#ix-cap').innerHTML = (m.subs.length ? m.subs : [m.short]).slice(0, 3).map(s => '<span>' + esc(s) + '</span>').join('');
+    };
+    list.querySelectorAll('.ix-name').forEach(a => { const go = () => set(+a.dataset.ixi); a.addEventListener('mouseenter', go); a.addEventListener('focus', go); });
+  }
+
+  /* ---------- rails: buttons + mouse drag ---------- */
+  let drag = null;
+  function initRails() {
+    document.querySelectorAll('.rail-row, .cat-row').forEach(r => {
+      const id = r.id.replace('rail-', '');
+      const upd = () => { const max = r.scrollWidth - r.clientWidth; const x = Math.abs(r.scrollLeft); document.querySelectorAll('[data-rail="' + id + '"]').forEach(b => { b.disabled = (+b.dataset.dir < 0 ? x < 4 : x > max - 4); }); };
+      r.addEventListener('scroll', upd, { passive: true }); upd();
+      r.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button !== 0) return; drag = { r, sx: e.clientX, sl: r.scrollLeft, moved: false }; });
+      r.addEventListener('click', e => { if (r.dataset.moved === '1') { e.preventDefault(); e.stopPropagation(); r.dataset.moved = ''; } }, true);
+    });
+  }
+  window.addEventListener('pointermove', e => { if (!drag) return; const dx = e.clientX - drag.sx; if (Math.abs(dx) > 6) { drag.moved = true; drag.r.classList.add('drag'); } if (drag.moved) drag.r.scrollLeft = drag.sl - dx; });
+  window.addEventListener('pointerup', () => { if (!drag) return; drag.r.dataset.moved = drag.moved ? '1' : ''; drag.r.classList.remove('drag'); drag = null; });
+
+  function onScrollFx() {
+    if (!reduced() && innerWidth > 860) document.querySelectorAll('[data-par]').forEach(el => { const b = el.parentElement.getBoundingClientRect(); if (b.bottom < 0 || b.top > innerHeight) return; const c = (b.top + b.height / 2 - innerHeight / 2) / innerHeight; el.style.transform = 'translate3d(0,' + (c * +el.dataset.par * -100).toFixed(1) + 'px,0)'; });
+    fbuyWatch();
+  }
+  let fxRaf = 0;
+  window.addEventListener('scroll', () => { if (fxRaf) return; fxRaf = requestAnimationFrame(() => { fxRaf = 0; onScrollFx(); }); }, { passive: true });
+
+  /* ---------- footer wordmark: draws in gold, glow follows the mouse (Fuzailov) ---------- */
+  (function () {
+    const mark = $('#ft-mark'); if (!mark) return;
+    const svg = mark.querySelector('svg'); const rg = $('#ftr');
+    if ('IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) mark.classList.add('in'); }), { threshold: .3 }).observe(mark); else mark.classList.add('in');
+    if (fine()) { svg.addEventListener('pointermove', e => { const r = svg.getBoundingClientRect(); rg.setAttribute('cx', ((e.clientX - r.left) / r.width * 1000).toFixed(0)); rg.setAttribute('cy', ((e.clientY - r.top) / r.height * 170).toFixed(0)); mark.classList.add('hot'); }); svg.addEventListener('pointerleave', () => mark.classList.remove('hot')); }
+  })();
+
+  /* ---------- reveal ---------- */
+  let io = null;
+  function reveal() {
+    if (reduced() || !('IntersectionObserver' in window)) { document.querySelectorAll('.rvimg, [data-draw]').forEach(e => e.classList.add('on')); return; }
+    if (!io) io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.remove('pend'); e.target.classList.add('on'); if (e.target.querySelector && e.target.querySelector('#score')) countUp(); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('#main .rv, #main .rvimg, [data-draw], .ft .rv').forEach(el => { if (el.classList.contains('rv') && el.getBoundingClientRect().top > innerHeight * .92) el.classList.add('pend'); io.observe(el); });
+    if (!window.hio) window.hio = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('words-in'); window.hio.unobserve(e.target); } }), { rootMargin: '0px 0px -10% 0px' });
+    document.querySelectorAll('#main .h2, .ft .h2').forEach(h => { if (h.getBoundingClientRect().top > innerHeight * .9) { splitWords(h); window.hio.observe(h); } });
+  }
+  function countUp() {
+    const el = $('#score'); if (!el || el.dataset.done) return; el.dataset.done = '1';
+    const to = +el.dataset.to; const t0 = performance.now();
+    const step = t => { const k = Math.min(1, (t - t0) / 1400); el.textContent = (to * (1 - Math.pow(1 - k, 3))).toFixed(1); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+
+  /* ---------- cart (drawer on the right) ---------- */
+  let cart = store.get('sc-cart-v6', []);
+  const FREE = 350;
+  function saveCart() { store.set('sc-cart-v6', cart); renderCart(); }
+  function itemOf(id) { return byId[id] || (HERO.find(x => String(x.id) === String(id)) && Object.assign({ local: true, at: [0, 0, 0] }, HERO.find(x => String(x.id) === String(id)))); }
+  function renderCart() {
+    cart = cart.filter(c => itemOf(c.id));
+    const n = cart.reduce((s, c) => s + c.q, 0);
+    document.querySelectorAll('[data-count]').forEach(el => { const was = el.textContent; el.textContent = n; el.hidden = !n; if (n && String(n) !== was) { el.classList.remove('cart-bump'); void el.offsetWidth; el.classList.add('cart-bump'); } });
+    const total = cart.reduce((s, c) => s + c.q * itemOf(c.id).price, 0);
+    if (!cart.length) { $('#cart-items').innerHTML = '<div class="cempty">' + ic('bag') + '<p>הסל עדיין ריק.</p><a class="btn solid" href="#c-siddur" data-close>לסידורים</a></div>'; $('#cart-foot').innerHTML = ''; return; }
+    const left = Math.max(0, FREE - total);
+    $('#cart-items').innerHTML = '<div class="ship">' + (left ? 'עוד <b>' + money(+left.toFixed(2)) + '</b> ויש לכם משלוח חינם' : '<b>יש לכם משלוח חינם</b>') + '<div class="bar"><i style="width:' + Math.min(100, Math.round(total / FREE * 100)) + '%"></i></div></div>' +
+      cart.map((c, i) => { const p = itemOf(c.id); return '<div class="ci2"><div class="t">' + pic(p) + '</div><div><div class="n">' + esc(base(p)) + '</div>' + (c.e ? '<div style="font-size:13px;color:var(--gold)">הקדשה: ' + esc(c.e) + '</div>' : '') + '<div class="sq"><button type="button" data-cq="' + i + '" data-d="1" aria-label="להוסיף אחד">' + ic('plus') + '</button><span>' + c.q + '</span><button type="button" data-cq="' + i + '" data-d="-1" aria-label="להוריד אחד">' + ic('minus') + '</button></div></div><div class="p">' + money(+(p.price * c.q).toFixed(2)) + '</div></div>'; }).join('');
+    $('#cart-foot').innerHTML = '<div class="tot"><span>סך הכל</span><span>' + money(+total.toFixed(2)) + '</span></div><button class="btn solid" type="button" data-checkout>למעבר לתשלום' + BI + '</button>';
+  }
+  function addToCart(id, q, e) { const c = cart.find(x => String(x.id) === String(id) && (x.e || '') === (e || '')); if (c) c.q += q; else cart.push({ id: isNaN(id) ? id : Number(id), q, e: e || '' }); saveCart(); toast(e ? 'נוסף לסל, עם הקדשה' : 'נוסף לסל', 'check'); }
+  let toastT = null;
+  function toast(t, icon) { const el = $('#toast'); el.innerHTML = (icon ? ic(icon) : '') + esc(t); el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), 2000); }
+
+  /* ---------- overlays ---------- */
+  let lastFocus = null, openId = null;
+  function open(id) {
+    closeAll(); lastFocus = document.activeElement; openId = id;
+    const el = $('#' + id); el.hidden = false; $('#scrim').hidden = false; document.body.classList.add('locked');
+    requestAnimationFrame(() => { el.classList.add('open'); $('#scrim').classList.add('on'); });
+    if (id === 'search') { renderSearch(''); setTimeout(() => $('#q').focus(), 60); }
+    if (id === 'cart') { renderCart(); setTimeout(() => el.querySelector('[data-close]').focus(), 60); }
+    if (id === 'sheet') {
+      $('#sheet-in').innerHTML = '<div class="snus"><p>הנוסח שלי</p><div class="seg" role="group" aria-label="הנוסח שלי">' + [{ id: 'all', name: 'כל הנוסחים' }].concat(NUSACH).map(n => '<button type="button" data-setnus="' + n.id + '" aria-pressed="' + (myNus === n.id) + '">' + esc(n.name) + '</button>').join('') + '</div></div>' +
+        MENU.map(m => '<details><summary>' + ic(m.id) + esc(m.name) + ic('plus', 'pl') + '</summary><ul>' + (m.id === 'siddur' ? NUSACH.map(n => '<li><a href="#c-siddur-' + n.id + '">' + esc(n.full) + '</a></li>').join('') : '') + '<li><a href="#c-' + m.id + (m.nus && myNus !== 'all' ? '-' + myNus : '') + '"><b>לכל ה' + esc(m.name) + ' (' + inGroup(m.id).length + ')</b></a></li></ul></details>').join('');
+      setTimeout(() => { const f = el.querySelector('[aria-pressed="true"]'); if (f) f.focus(); }, 60);
+    }
+  }
+  function closeAll() {
+    if (!openId) return;
+    const el = $('#' + openId); el.classList.remove('open'); $('#scrim').classList.remove('on'); document.body.classList.remove('locked');
+    const id = openId; openId = null;
+    setTimeout(() => { if (openId !== id) { el.hidden = true; if (!openId) $('#scrim').hidden = true; } }, 600);
+    if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Tab' || !openId) return;
+    const f = [...$('#' + openId).querySelectorAll('a[href], button, input, select, summary')].filter(x => x.offsetParent !== null);
+    if (!f.length) return; const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+  function renderSearch(q) {
+    const sug = ['סידור', 'מחזור', 'תהילים', 'ברכון', 'חומש', 'הגדה', 'ש״ס', 'מזכרת'];
+    $('#sugg').innerHTML = q ? '' : sug.map(s => '<button class="chip" type="button" data-sug="' + s + '">' + s + '</button>').join('');
+    const qq = q.trim().replace(/״/g, '"'); const words = qq.split(/\s+/).filter(Boolean);
+    const res = words.length ? ALL.filter(p => words.every(w => p.name.includes(w) || (p.short || '').includes(w))).sort((a, b) => b.local - a.local).slice(0, 24) : [];
+    $('#sres').innerHTML = qq ? (res.length ? res.map(p => card(p, { rv: false })).join('') : '<p class="count-line">לא נמצאו מוצרים. אפשר לנסות מילה אחרת, או לכתוב לנו בוואטסאפ.</p>') : '';
+  }
+  $('#q').addEventListener('input', e => renderSearch(e.target.value));
+  $('#scrim').addEventListener('click', closeAll);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAll(); closeMega(true); closeA11y(); $('#nus-pop').classList.remove('open'); } });
+
+  /* ---------- accessibility menu ---------- */
+  const A11Y = [['a-t1', 'text', 'טקסט גדול'], ['a-t2', 'zoom', 'טקסט גדול מאוד'], ['a-contrast', 'contrast', 'ניגודיות גבוהה'], ['a-links', 'link', 'הדגשת קישורים'], ['a-read', 'font', 'גופן קריא'], ['a-still', 'pause', 'עצירת אנימציות']];
+  let a11y = store.get('sc-a11y', []);
+  function applyA11y() { const r = document.documentElement; A11Y.forEach(([k]) => r.classList.toggle(k, a11y.includes(k))); $('#a11y-opts').innerHTML = A11Y.map(([k, i, t]) => '<button type="button" data-a11y="' + k + '" aria-pressed="' + a11y.includes(k) + '">' + ic(i) + t + '</button>').join(''); }
+  applyA11y();
+  function closeA11y() { const p = $('#a11y'); if (p.hidden) return; p.classList.remove('open'); $('#a11y-btn').setAttribute('aria-expanded', 'false'); setTimeout(() => { p.hidden = true; }, 300); }
+  $('#a11y-btn').addEventListener('click', () => { const p = $('#a11y'); if (!p.hidden) return closeA11y(); p.hidden = false; requestAnimationFrame(() => p.classList.add('open')); $('#a11y-btn').setAttribute('aria-expanded', 'true'); setTimeout(() => p.querySelector('button').focus(), 60); });
+
+  document.addEventListener('click', e => {
+    const t = e.target.closest('button, a'); if (!t) return;
+    const d = t.dataset;
+    if (d.open) { e.preventDefault(); return open(d.open); }
+    if (d.slide !== undefined) return hsGo(+d.slide);
+    if (d.hs) return hsGo(hsI + (d.hs === 'next' ? 1 : -1));
+    if (d.hsPause !== undefined) { hsPaused = !hsPaused; t.innerHTML = ic(hsPaused ? 'play' : 'pause'); t.setAttribute('aria-label', hsPaused ? 'הפעלת ההחלפה האוטומטית' : 'עצירת ההחלפה האוטומטית'); hsPlay(); return; }
+    if (d.rail) { const r = $('#rail-' + d.rail); const c = r.firstElementChild; const step = c ? c.getBoundingClientRect().width + 18 : 300; r.scrollBy({ left: -step * (+d.dir), behavior: reduced() ? 'auto' : 'smooth' }); return; }
+    if (d.close !== undefined) { if (t.tagName === 'BUTTON') e.preventDefault(); return closeAll(); }
+    if (d.setnus) {
+      setNus(d.setnus); $('#nus-pop').classList.remove('open'); $('#nus-pill').setAttribute('aria-expanded', 'false');
+      if (openId === 'sheet') { open('sheet'); return; }
+      const h = location.hash;
+      if (h.startsWith('#c-')) { const id = h.slice(3).split('-')[0]; if ((menuOf(id) || {}).nus) location.hash = '#c-' + id + (d.setnus === 'all' ? '' : '-' + d.setnus); else { cstate.nus = d.setnus; rerender(); } }
+      else if (!h.startsWith('#p-')) { const y = scrollY; route(); window.scrollTo(0, y); }
+      return;
+    }
+    if (d.nt) { nusShow(d.nt); return; }
+    if (d.pick) { setNus(d.pick, true); location.hash = '#c-siddur-' + d.pick; return; }
+    if (d.dedMode) { ded.mode = d.dedMode; redrawDed(); const b = document.querySelector('[data-ded-mode="' + ded.mode + '"]'); if (b) b.focus(); return; }
+    if (d.dedF) { ded.f = d.dedF; refreshFoil(); document.querySelectorAll('[data-ded-f]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.dedF === ded.f))); return; }
+    if (d.dedOcc != null) { ded.t = d.dedOcc; const box = e.target.closest('[data-ded]'); const inp = box && box.querySelector('[data-ded-t]'); if (inp) { inp.value = ded.t; inp.focus(); inp.setSelectionRange(ded.t.length, ded.t.length); } refreshFoil(); return; }
+    if (d.dedC) { ded.c = d.dedC; refreshFoil(); document.querySelectorAll('[data-ded-c]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.dedC === ded.c))); return; }
+    if (d.qc) { pstate.qty = +d.qc; syncQty(); return; }
+    if (d.a11y) { a11y = a11y.includes(d.a11y) ? a11y.filter(x => x !== d.a11y) : a11y.concat(d.a11y); if (d.a11y === 'a-t2') a11y = a11y.filter(x => x !== 'a-t1'); if (d.a11y === 'a-t1') a11y = a11y.filter(x => x !== 'a-t2'); store.set('sc-a11y', a11y); applyA11y(); const b = $('[data-a11y="' + d.a11y + '"]'); if (b) b.focus(); hsPlay(); return; }
+    if (d.a11yReset !== undefined) { a11y = []; store.set('sc-a11y', a11y); applyA11y(); hsPlay(); return; }
+    if (d.sug) { $('#q').value = d.sug; return renderSearch(d.sug); }
+    if (d.nus) { location.hash = '#c-' + route.lastCat + (d.nus === 'all' ? '' : '-' + d.nus); if (d.nus === 'all') { cstate.nus = 'all'; rerender(); } return; }
+    if (d.cover !== undefined) { cstate.cover = cstate.cover === d.cover ? '' : d.cover; cstate.shown = 24; return rerender(); }
+    if (d.reset !== undefined) { cstate = { nus: 'all', cover: '', sort: 'rec', shown: 24 }; return rerender(); }
+    if (d.more !== undefined) { cstate.shown += 24; return rerender(); }
+    if (d.img !== undefined) { pstate.img = +d.img; const g = document.querySelectorAll('.thumbs button'); g.forEach(b => b.setAttribute('aria-current', String(b.dataset.img === d.img))); $('#gmain').src = g[+d.img].querySelector('img').src; return; }
+    if (t.id === 'gzoom') { t.classList.toggle('zoom'); t.setAttribute('aria-label', t.classList.contains('zoom') ? 'הקטנת התמונה' : 'הגדלת התמונה'); return; }
+    if (d.q !== undefined) { pstate.qty = Math.max(1, pstate.qty + +d.q); syncQty(); return; }
+    if (d.add) {
+      const onP = location.hash.startsWith('#p-') && !t.classList.contains('qa');
+      let note = '';
+      if (onP && ded.mode === 'one' && ded.t.trim()) note = ded.t.trim() + ' (' + (ded.c === 'gold' ? 'זהב' : ded.c === 'silver' ? 'כסף' : 'עיוורת') + ')';
+      if (onP && ded.mode === 'names') { const ns = ded.names.split('\n').map(s => s.trim()).filter(Boolean); if (ns.length) note = ns.length + ' שמות: ' + ns.slice(0, 3).join(', ') + (ns.length > 3 ? '…' : ''); }
+      addToCart(d.add, onP ? pstate.qty : 1, note); return;
+    }
+    if (d.cq !== undefined) { const c = cart[+d.cq]; c.q += +d.d; if (c.q <= 0) cart.splice(+d.cq, 1); return saveCart(); }
+    if (d.checkout !== undefined) { closeAll(); location.hash = '#checkout'; return; }
+  });
+  document.addEventListener('pointermove', e => { const z = e.target.closest('#gzoom.zoom'); if (!z) return; const r = z.getBoundingClientRect(); const pc = z.querySelector('.pic'); if (pc) pc.style.transformOrigin = ((e.clientX - r.left) / r.width * 100).toFixed(1) + '% ' + ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%'; });
+  document.addEventListener('change', e => { if (e.target.id === 'sort') { cstate.sort = e.target.value; rerender(); } });
+  document.addEventListener('submit', e => {
+    const f = e.target; e.preventDefault();
+    const bad = [...f.querySelectorAll('[required]')].filter(x => !x.value.trim());
+    f.querySelectorAll('[aria-invalid]').forEach(x => x.removeAttribute('aria-invalid'));
+    if (bad.length) { bad.forEach(x => x.setAttribute('aria-invalid', 'true')); bad[0].focus(); toast('חסר: ' + bad.map(x => f.querySelector('label[for="' + x.id + '"]').textContent).join(', ')); return; }
+    if (f.hasAttribute('data-track')) { $('#t-res').innerHTML = '<p class="lead" style="margin-top:6px">בקונספט הזה המעקב לא מחובר. באתר החי כאן יופיע שלב ההזמנה: התקבלה, בהקדשה, נשלחה, עם מספר מעקב.</p>'; return; }
+    toast('בקונספט הזה הטופס לא נשלח', 'check');
+  });
+  function rerender() { const y = scrollY; const h = (location.hash || '#home').slice(1); $('#main').innerHTML = h.startsWith('p-') ? viewProduct(h.slice(2)) : viewCategory(h.startsWith('c-') ? h.slice(2).split('-')[0] : 'siddur'); window.scrollTo(0, y); afterRender(); document.querySelectorAll('#main .rv.pend').forEach(el => { if (el.getBoundingClientRect().top < innerHeight) el.classList.remove('pend'); }); }
+
+  /* ---------- boot: loader once per visit ---------- */
+  renderCart(); route();
+  const ld = $('#ld');
+  let seen = false; try { seen = sessionStorage.getItem('sc-ld') === '1'; sessionStorage.setItem('sc-ld', '1'); } catch (e) { /* ignore */ }
+  if (seen || reduced()) { ld.remove(); hsPlay(); }
+  else {
+    document.body.classList.add('locked');
+    const t0 = performance.now();
+    const heroImg = new Promise(r => { const im = document.querySelector('.hc-card img'); if (!im || im.complete) r(); else { im.addEventListener('load', r); im.addEventListener('error', r); } });
+    const done = () => { ld.classList.add('out'); document.body.classList.remove('locked'); setTimeout(() => { ld.remove(); hsPlay(); }, 450); };
+    Promise.race([Promise.all([document.fonts ? document.fonts.ready : 0, heroImg]), new Promise(r => setTimeout(r, 2600))]).then(() => setTimeout(done, Math.max(0, 1750 - (performance.now() - t0))));
+  }
+})();
+</script>
+</body></html>
