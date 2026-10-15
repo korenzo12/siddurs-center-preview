@@ -934,6 +934,27 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
 .swatches button[aria-checked="true"] { box-shadow: inset 0 0 0 1.5px var(--ink); }
 .swatches button:active { transform: scale(.94); }
 @media (hover: hover) { .swatches button:hover { box-shadow: inset 0 0 0 1px var(--ink-3); } .swatches button[aria-checked="true"]:hover { box-shadow: inset 0 0 0 1.5px var(--ink); } }
+
+/* v11 nusach doors */
+.doors { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(12px, 1.6vw, 22px); margin-top: clamp(8px, 2vw, 24px); }
+.door { position: relative; display: block; aspect-ratio: 4 / 5; border-radius: 26px; overflow: hidden; isolation: isolate; color: var(--on); background: #1a1714; }
+.door img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.6s var(--out); }
+.door::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgba(10,9,8,.88) 0%, rgba(10,9,8,.35) 38%, transparent 62%); }
+.door::before { content: ""; position: absolute; inset: 0; z-index: 3; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(243,238,230,.1); transition: box-shadow .5s var(--ease); pointer-events: none; }
+.door .c { position: absolute; z-index: 2; inset-inline: clamp(20px, 2.2vw, 32px); bottom: clamp(20px, 2.2vw, 32px); display: grid; gap: 8px; }
+.door b { font: 600 clamp(36px, 3.6vw, 54px)/1 var(--disp); letter-spacing: -.025em; }
+.door .c > span { font-size: 14.5px; color: var(--on-2); max-width: 30ch; }
+.door i { justify-self: start; display: inline-flex; align-items: center; gap: 10px; height: 42px; margin-top: 10px; padding: 0 18px; border-radius: 999px; font-style: normal; font-size: 14px; background: rgba(243,238,230,.14); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: background-color .4s var(--ease), color .4s var(--ease); }
+.door i .ic { width: 15px; height: 15px; transition: transform .6s var(--out); }
+.door .mine { position: absolute; z-index: 2; top: 18px; inset-inline-start: 18px; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; background: var(--gold-l); color: var(--ink); font: 500 12.5px/1 var(--sans); font-style: normal; } .door .mine .ic { width: 14px; height: 14px; }
+@media (hover: hover) { .door:hover img { transform: scale(1.06); } .door:hover::before { box-shadow: inset 0 0 0 1.5px var(--gold-l); } .door:hover i { background: var(--on); color: var(--ink); } .door:hover i .ic { transform: translateX(-4px); } }
+.door:focus-visible::before { box-shadow: inset 0 0 0 2px var(--gold-l); }
+@media (max-width: 860px) {
+  .doors { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 78%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: calc(var(--gut) * -1); padding-inline: var(--gut); }
+  .doors::-webkit-scrollbar { display: none; }
+  .door { scroll-snap-align: center; border-radius: 22px; }
+}
+@media (prefers-reduced-motion: reduce) { .door img, .door i, .door i .ic { transition: none; } }
 </style>
 
 <div class="app" dir="rtl" lang="he" id="app">
@@ -1379,9 +1400,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
 
     '<section class="sec dark" id="nusach" aria-labelledby="nus-h"><div class="wrap">' +
       '<div class="sh"><div class="tx rv">' + kick('', 'בוחרים פעם אחת') + '<h2 class="h2" id="nus-h">באיזה נוסח מתפללים אצלכם?</h2><p class="lead">בוחרים נוסח, והאתר זוכר: סידורים, מחזורים, ברכונים וזמירות יוצגו מעכשיו בנוסח שלכם. אפשר להחליף בכל רגע מהכפתור "נוסח" בראש האתר.</p></div></div>' +
-      '<div class="nsw rv"><div class="nsw-tabs" role="tablist" aria-label="בחירת נוסח">' + NUSACH.map((n, k) => '<button type="button" role="tab" id="nt-' + n.id + '" aria-controls="np-' + n.id + '" aria-selected="' + (k === nusIdx()) + '" tabindex="' + (k === nusIdx() ? 0 : -1) + '" data-nt="' + n.id + '"><span class="nn">' + esc(n.name) + '</span><span class="ln" aria-hidden="true"></span></button>').join('') + '</div>' +
-        '<div class="nsw-stage">' + NUSACH.map((n, k) => '<div class="nsw-panel' + (k === nusIdx() ? ' on' : '') + '" role="tabpanel" id="np-' + n.id + '" aria-labelledby="nt-' + n.id + '"' + (k === nusIdx() ? '' : ' hidden') + '><div class="shelf">' + nusPick(n.id).map(x => '<a class="sh-it" href="#p-' + x.id + '"><span class="ph">' + pic(x) + '</span><b>' + esc(base(x)) + '</b></a>').join('') + '</div>' +
-          '<div class="nsw-acts"><a class="btn light mag" href="#c-siddur-' + n.id + '">לכל סידורי ' + esc(n.full) + BI + '</a><button class="tlink" type="button" data-setnus="' + n.id + '">' + (myNus === n.id ? 'זה הנוסח שלכם' : 'לשמור כנוסח שלי') + ARW + '</button></div></div>').join('') + '</div></div>' +
+      '<div class="doors">' + NUSACH.map(n => '<a class="door rv" href="#c-siddur-' + n.id + '" data-pick="' + n.id + '"><img src="gen4/nus-' + n.id + '.jpg" alt="" loading="lazy" draggable="false"><span class="c"><b>' + esc(n.name) + '</b><span>סידורים, מחזורים, ברכונים וזמירות בנוסח ' + esc(n.name) + '</span><i>לסידורי ' + esc(n.full) + ARW + '</i></span>' + (myNus === n.id ? '<em class="mine">' + ic('check') + 'הנוסח שלכם</em>' : '') + '</a>').join('') + '</div>' +
     '</div></section>' +
 
     '<section class="feat" aria-labelledby="mz-h"><div class="pz" data-par="0.1"><img src="' + IMG.machzor + '" alt="סט מחזורים עת רצון בכריכת עור ורודה, על מפת פשתן" loading="lazy" style="object-position:70% 50%"></div>' +
