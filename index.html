@@ -1518,7 +1518,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
   function fitPlate(svg) { svg.querySelectorAll('[data-fit]').forEach(t => { try { const w = t.getComputedTextLength(); if (w > 236) t.setAttribute('font-size', (parseFloat(t.getAttribute('font-size')) * 236 / w).toFixed(1)); } catch (e) {} }); }
   function dedPreview(id) {
     const defs = '<defs>' + Object.keys(FOIL).map(k => '<linearGradient id="fg-' + id + '-' + k + '" x1="0" x2="1" y1="0" y2=".35">' + FOIL[k].map((c, n) => '<stop offset="' + (n / 5) + '" stop-color="' + c + '"/>').join('') + '</linearGradient>').join('') + '</defs>';
-    return '<div class="ded-prev plate ' + (ded.c === 'ink' ? 'white' : 'leather') + '" data-plate-wrap><span class="tag2">כך תיראה ההקדשה</span><div class="cv"><svg viewBox="0 0 300 380" role="img" aria-label="הדמיית ההקדשה על הכריכה" data-plate="' + id + '">' + defs + '<g data-plate-in>' + plateInner(id) + '</g></svg></div></div>';
+    return '<div class="ded-prev plate ' + (ded.c === 'ink' ? 'white' : 'leather') + '" data-plate-wrap><span class="tag2">הדמיה להמחשה בלבד</span><div class="cv"><svg viewBox="0 0 300 380" role="img" aria-label="הדמיית ההקדשה על הכריכה" data-plate="' + id + '">' + defs + '<g data-plate-in>' + plateInner(id) + '</g></svg></div></div>';
   }
   function refreshFoil() {
     document.querySelectorAll('[data-plate]').forEach(sv => { const id = sv.dataset.plate; sv.querySelector('[data-plate-in]').innerHTML = plateInner(id); fitPlate(sv); const w = sv.closest('[data-plate-wrap]'); if (w) { w.classList.toggle('white', ded.c === 'ink'); w.classList.toggle('leather', ded.c !== 'ink'); } });
@@ -1549,7 +1549,7 @@ p, .lead, .sub, li, figcaption, blockquote { text-wrap: pretty; }
         (ded.mode === 'names' ? '<div class="fld"><label for="' + id + '-n">שם לחריטה, שורה לכל ספר</label><textarea class="names" id="' + id + '-n" data-ded-n placeholder="משפחת כהן&#10;משפחת לוי&#10;משפחת מזרחי">' + esc(ded.names) + '</textarea><small id="' + id + '-nc" aria-live="polite">' + namesInfo() + '</small></div>' : '') +
         '<div class="ded-two"><div><span class="ol2">צבע ההטבעה</span><div class="seg" role="group" aria-label="צבע ההטבעה">' + [['gold', 'זהב'], ['silver', 'כסף'], ['ink', 'שחור']].map(c => '<button type="button" data-ded-c="' + c[0] + '" aria-pressed="' + (ded.c === c[0]) + '"><i class="sw ' + c[0] + '" aria-hidden="true"></i>' + c[1] + '</button>').join('') + '</div></div></div>' +
         '<div class="dprice" data-ded-price aria-live="polite">' + priceLine() + '</div>' +
-        '<div class="note">' + ic('tag') + '<span>לפני העבודה נשלחת סקיצה לאישור בוואטסאפ, ורק אחרי אישור מטביעים.</span></div>') +
+        '<div class="note">' + ic('tag') + '<span>ההדמיה כאן להמחשה בלבד. לפני ההטבעה נשלחת אליכם בוואטסאפ הדמיה מדויקת של העיצוב, ומטביעים רק אחרי האישור שלכם.</span></div>') +
     '</div>';
   }
   function namesInfo() { const n = dedNames().length; return n ? n + (n === 1 ? ' שם, ספר אחד.' : ' שמות, ' + n + ' ספרים.') + ' הכמות בהזמנה תתעדכן בהתאם.' : 'כל שורה היא ספר אחד עם שם משלו.'; }
