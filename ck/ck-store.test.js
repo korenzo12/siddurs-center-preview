@@ -951,9 +951,11 @@
      h1 + paragraph = page head, h3 = small label or a step/value title, h2 = a section, a paragraph starting with "•" = a list item.
      Anything added that has no special place is shown at the end, in the same type. The amount in "משלוח חינם ... ₪" always follows the site setting. */
   const freeFix = h => h.replace(/(משלוח חינם[^\d<]{0,30})\d[\d,]*(\s*(?:₪|ש״ח|ש"ח))/g, (m, a, b) => a + CFG.free.toLocaleString('he-IL') + b);
+  /* Elementor drops dir="ltr": web addresses, phones and mail read left to right again */
+  const ltrFix = h => h.replace(/<a (?![^>]*dir=)([^>]*href="(?:tel:|mailto:|https?:)[^"]*")/g, '<a dir="ltr" $1').replace(/<span>(https?:\/\/[^<]+)<\/span>/g, '<span dir="ltr">$1</span>');
   function carrierBlocks(root) {
     return [...root.querySelectorAll('h1,h2,h3,h4,p,img')].map(e => e.tagName === 'IMG' ? { t: 'img', src: e.currentSrc || e.getAttribute('src') || '', alt: e.getAttribute('alt') || '' }
-      : { t: e.tagName.toLowerCase().replace('h4', 'h3'), h: freeFix(e.innerHTML.trim()), x: freeFix(e.textContent.trim()) }).filter(b => b.t === 'img' ? b.src : b.x);
+      : { t: e.tagName.toLowerCase().replace('h4', 'h3'), h: ltrFix(freeFix(e.innerHTML.trim())), x: freeFix(e.textContent.trim()) }).filter(b => b.t === 'img' ? b.src : b.x);
   }
   const VAL_IC = ['nusach', 'quill', 'wa', 'truck', 'bag', 'mazkeret'], STEP_IC = ['bag', 'quill', 'mazkeret', 'truck'];
   const isLi = b => b.t === 'p' && /^[•·*-]\s/.test(b.x);
