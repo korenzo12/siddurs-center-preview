@@ -106,6 +106,20 @@
   const ARW = ic('arrow');
   const BI = '<span class="bi">' + ARW + '</span>';
   const EXTA = ' target="_blank" rel="noopener"';
+  /* phone, WhatsApp, mail and the free-shipping threshold come from the header and footer the shop edits in Elementor */
+  CFG.phone = '0526845740'; CFG.mail = 'sidurscenter@gmail.com';
+  function readSiteFacts() {
+    const scope = [...document.querySelectorAll('[data-elementor-type="header"], [data-elementor-type="footer"], .elementor-location-header, .elementor-location-footer, header, footer')];
+    const pick = sel => { for (const r of scope) { const a = r.querySelector(sel); if (a) return a; } return document.querySelector(sel); };
+    const tel = pick('a[href^="tel:"]'); if (tel) { const d = tel.getAttribute('href').replace(/[^\d+]/g, '').replace(/^\+?972/, '0'); if (/^0\d{8,9}$/.test(d)) CFG.phone = d; }
+    const wa = pick('a[href*="wa.me/"]'); if (wa) { const m = wa.getAttribute('href').match(/wa\.me\/(\d{9,15})/); if (m) CFG.wa = m[1]; }
+    const ml = pick('a[href^="mailto:"]'); if (ml) { const m = ml.getAttribute('href').slice(7).split('?')[0].trim(); if (/@/.test(m)) CFG.mail = m; }
+    const txt = scope.map(r => r.textContent).join(' ') || document.body.textContent;
+    const f = txt.match(/משלוח חינם[^\d₪]{0,24}(\d[\d,]{1,6})/); if (f) { const v = +f[1].replace(/,/g, ''); if (v > 0 && v < 100000) CFG.free = v; }
+  }
+  const phoneShow = () => CFG.phone.replace(/^(\d{2,3})(\d{7})$/, '$1-$2');
+  const telHref = () => 'tel:+972' + CFG.phone.replace(/^0/, '');
+  const freeTxt = () => CFG.free.toLocaleString('he-IL') + ' ₪';
   const waLink = t => 'https://wa.me/' + CFG.wa + (t ? '?text=' + encodeURIComponent(t) : '');
   const NUSACH = [{ id: 'ash', name: 'אשכנז', full: 'נוסח אשכנז' }, { id: 'sfd', name: 'ספרד', full: 'נוסח ספרד' }, { id: 'edot', name: 'עדות המזרח', full: 'נוסח עדות המזרח' }];
   const nusName = id => (NUSACH.find(n => n.id === id) || {}).name || '';
@@ -418,7 +432,7 @@
         h1html +
         '<div class="rate">' + GLOGO + stars(4.3) + '<span>4.3 · 65 ביקורות על החנות</span></div>' +
         '<div class="prow" id="ck-prow">' + priceRow() + '</div>' +
-        '<p class="pnote">כולל מע״מ · משלוח חינם בהזמנה מעל 350 ₪</p>' +
+        '<p class="pnote">כולל מע״מ · משלוח חינם בהזמנה מעל ' + freeTxt() + '</p>' +
         (lines.length ? '<ul class="desc">' + lines.map(l => '<li>' + esc(l) + '</li>').join('') + '</ul>' : '') +
         nusSwitch + attrBlocks(p) +
         '<div class="blk"><span class="ol">הקדשה אישית <span>בתוספת תשלום</span></span>' + dedBlock('ded-p') + '</div>' +
@@ -427,8 +441,8 @@
         '<button class="btn solid" type="button" data-ck-add>הוספה לסל' + BI + '</button></div>' +
         (cur.bulk ? '<div class="qchips" role="group" aria-label="כמויות מהירות לאירוע">' + [10, 25, 50, 100].map(k => '<button type="button" data-qc="' + k + '" aria-pressed="false">' + k + ' יח׳</button>').join('') + '</div>' : '') +
         '<a class="wa-q" href="' + waLink('שלום, יש לי שאלה על ' + title + ' ' + p.permalink) + '"' + EXTA + '>' + ic('wa') + 'שאלה על המוצר? כתבו לנו בוואטסאפ</a>' + shareRow(title, p.permalink) + '</div>' +
-        '<div class="trust"><div>' + ic('truck') + 'משלוח חינם<br>מעל 350 ₪</div><div>' + ic('quill') + 'סקיצה לאישור<br>לפני הטבעה</div><div>' + ic('shield') + 'תשלום<br>מאובטח</div></div>' +
-        '<div class="accs"><details class="acc"><summary>משלוחים והחזרות' + ic('plus') + '</summary><div class="ab">משלוח חינם בהזמנה מעל 350 ₪. זמן האספקה מאושר בהזמנה. מוצר עם הקדשה מיוצר במיוחד בשבילכם ולכן אינו ניתן להחזרה, אלא אם יש בו פגם. <a href="/refund_returns/" style="text-decoration:underline">כל התנאים</a></div></details>' +
+        '<div class="trust"><div>' + ic('truck') + 'משלוח חינם<br>מעל ' + freeTxt() + '</div><div>' + ic('quill') + 'סקיצה לאישור<br>לפני הטבעה</div><div>' + ic('shield') + 'תשלום<br>מאובטח</div></div>' +
+        '<div class="accs"><details class="acc"><summary>משלוחים והחזרות' + ic('plus') + '</summary><div class="ab">משלוח חינם בהזמנה מעל ' + freeTxt() + '. זמן האספקה מאושר בהזמנה. מוצר עם הקדשה מיוצר במיוחד בשבילכם ולכן אינו ניתן להחזרה, אלא אם יש בו פגם. <a href="/refund_returns/" style="text-decoration:underline">כל התנאים</a></div></details>' +
         '<details class="acc"><summary>הזמנה בכמות לאירוע' + ic('plus') + '</summary><div class="ab">מזמינים 10 עותקים ומעלה? כתבו לנו את הכמות ואת תאריך האירוע, ונחזור עם הצעת מחיר והנחה לכמות.</div></details></div>' +
       '</div>' +
       '</div>' +
@@ -514,7 +528,7 @@
     if (grp) jobs.push(apiCached('/products?per_page=20&orderby=popularity&' + (grp.id ? 'category=' + grp.id : 'search=' + encodeURIComponent(grp.q || grp.name))).then(list => fill('rail-rel', list.filter(x => { const g = groupOf(x.name); return !g || !grp.q || g.name === grp.name; }))).catch(() => {}));
     await Promise.all(jobs);
   }
-  const ss = { get(k) { try { const v = sessionStorage.getItem(k); if (!v) return null; const o = JSON.parse(v); return (Date.now() - o.t < 6e5) ? o.v : null; } catch (e) { return null; } }, set(k, v) { try { sessionStorage.setItem(k, JSON.stringify({ t: Date.now(), v })); } catch (e) {} } };
+  const ss = { get(k) { try { const v = sessionStorage.getItem(k); if (!v) return null; const o = JSON.parse(v); return (Date.now() - o.t < 18e4) ? o.v : null; } catch (e) { return null; } }, set(k, v) { try { sessionStorage.setItem(k, JSON.stringify({ t: Date.now(), v })); } catch (e) {} } };
   async function apiCached(path) { const c = ss.get('ck' + path); if (c) return c; const v = await api(path); ss.set('ck' + path, v); return v; }
   function fromCarrier(rootEl) {
     const q = s => rootEl.querySelector(s);
@@ -669,8 +683,13 @@
   let allP = null;
   function loadCatalog() {
     if (allP) return allP;
-    try { const c = JSON.parse(localStorage.getItem('ck-cat') || 'null'); if (c && Date.now() - c.t < 12e5 && c.v && c.v.length) return (allP = Promise.resolve(c.v)); } catch (e) {}
-    allP = fetchAll('/products').then(list => { const out = list.filter(notDed).map(slim); try { localStorage.setItem('ck-cat', JSON.stringify({ t: Date.now(), v: out })); } catch (e) {} return out; });
+    /* up to 3 minutes old: use as is. Older: show it at once and refresh in the background, so a change in the shop shows within minutes */
+    let c = null; try { c = JSON.parse(localStorage.getItem('ck-cat') || 'null'); } catch (e) {}
+    const age = c && c.v && c.v.length ? Date.now() - c.t : Infinity;
+    if (age < 18e4) return (allP = Promise.resolve(c.v));
+    const net = fetchAll('/products').then(list => { const out = list.filter(notDed).map(slim); try { localStorage.setItem('ck-cat', JSON.stringify({ t: Date.now(), v: out })); } catch (e) {} return out; });
+    if (age < 864e5) { net.then(v => { allP = Promise.resolve(v); document.dispatchEvent(new CustomEvent('ck-catalog')); }).catch(() => {}); return (allP = Promise.resolve(c.v)); }
+    allP = net;
     allP.catch(() => { allP = null; });
     return allP;
   }
@@ -737,7 +756,8 @@
   function viewAll(data) {
     const total = data ? data.total : 0;
     return '<div class="wrap"><header class="chead" style="grid-template-columns:1fr"><div>' + crumbs('כל המוצרים') + '<h1>כל המוצרים</h1><p>' + (data ? total + ' מוצרים ב-' + MENU.length + ' קטגוריות.' : 'טוען…') + '</p></div></header>' +
-      MENU.map(m => { const it = data ? uniq(m.id === 'mazkeret' ? (data[m.id] || []).filter(p => /מזכרת|חתן|בר מצווה|שבע ברכות/.test(p.name)) : (data[m.id] || [])) : []; return '<section style="padding-bottom:56px"><div class="sh" style="margin-bottom:24px"><h2 class="h3">' + esc(m.name) + ' <span style="color:var(--ink-3);font-size:.6em">' + (data ? (data[m.id] || []).length : '') + '</span></h2><a class="tlink" href="' + esc(mlink(m.id)) + '">לכל ה' + esc(m.name) + ARW + '</a></div><div class="rail-row" id="ck-rail-all-' + m.id + '">' + (data ? it.slice(0, 12).map(p => ccard(p, data[m.id], { rv: false })).join('') : SKC.repeat(6)) + '</div></section>'; }).join('') + '</div>';
+      MENU.map(m => { const it = data ? uniq(m.id === 'mazkeret' ? (data[m.id] || []).filter(p => /מזכרת|חתן|בר מצווה|שבע ברכות/.test(p.name)) : (data[m.id] || [])) : []; return '<section style="padding-bottom:56px"><div class="sh" style="margin-bottom:24px"><h2 class="h3">' + esc(m.name) + ' <span style="color:var(--ink-3);font-size:.6em">' + (data ? (data[m.id] || []).length : '') + '</span></h2><a class="tlink" href="' + esc(mlink(m.id)) + '">לכל ה' + esc(m.name) + ARW + '</a></div><div class="rail-row" id="ck-rail-all-' + m.id + '">' + (data ? it.slice(0, 12).map(p => ccard(p, data[m.id], { rv: false })).join('') : SKC.repeat(6)) + '</div></section>'; }).join('') +
+      (data && data.extra ? data.extra.map(x => '<section style="padding-bottom:56px"><div class="sh" style="margin-bottom:24px"><h2 class="h3">' + esc(x.c.name) + ' <span style="color:var(--ink-3);font-size:.6em">' + x.list.length + '</span></h2><a class="tlink" href="' + esc(x.c.path) + '">לכל ' + esc(x.c.name) + ARW + '</a></div><div class="rail-row">' + uniq(x.list).slice(0, 12).map(p => ccard(p, x.list, { rv: false })).join('') + '</div></section>').join('') : '') + '</div>';
   }
 
   /* the page is drawn edge to edge like the concept: cancel any side padding of the Elementor block it sits in */
@@ -811,10 +831,18 @@
     if (cview.kind === 'all') {
       const all = await loadCatalog();
       const data = { total: all.length }; MENU.forEach(m => { data[m.id] = all.filter(p => m.g.includes(p.g)); });
-      cview.data = data; return paintCat(data);
+      cview.data = data; paintCat(data);
+      /* main categories outside the ten groups (sales, new ranges) get their own row, as soon as they have a picture */
+      try {
+        const extra = (await getCats()).filter(c => !c.p && c.img && c.n > 0 && !TERM[c.id]);
+        const rows = [];
+        for (const c of extra) { const list = await sourceOf({ kind: 'term', term: c.id }); if (list.length) rows.push({ c, list }); }
+        if (rows.length) { data.extra = rows; data.total = all.length; paintCat(data); }
+      } catch (e) {}
+      return;
     }
     /* first paint fast: one page of this category (≈4s on this server); the full catalog completes the counts right after */
-    const fresh = (() => { try { const c = JSON.parse(localStorage.getItem('ck-cat') || 'null'); return c && Date.now() - c.t < 12e5; } catch (e) { return false; } })();
+    const fresh = (() => { try { const c = JSON.parse(localStorage.getItem('ck-cat') || 'null'); return c && c.v && c.v.length && Date.now() - c.t < 864e5; } catch (e) { return false; } })();
     if (!fresh && (cview.kind === 'menu' || cview.kind === 'term')) {
       const qp = cview.term ? '/products?category=' + cview.term : (cview.m.id === 'siddur' ? '/products?search=' + encodeURIComponent('סידור') : '');
       if (qp) fetch(CFG.api + qp + '&per_page=100', { credentials: 'same-origin' }).then(r => r.ok ? r.json() : []).then(list => {
@@ -827,6 +855,14 @@
     if (cstate.cover && !cview.src.some(p => p.c === cstate.cover)) cstate.cover = '';
     paintCat(cview.src);
   }
+  /* the shop changed something since this browser last looked: repaint with the fresh list */
+  document.addEventListener('ck-catalog', async () => {
+    if (!cview || !cwrap) return;
+    try {
+      if (cview.kind === 'all') { const all = await loadCatalog(); const data = { total: all.length, extra: cview.data && cview.data.extra }; MENU.forEach(m => { data[m.id] = all.filter(p => m.g.includes(p.g)); }); cview.data = data; return paintCat(data); }
+      if (cview.kind === 'menu') { cview.src = await sourceOf(cview); paintCat(cview.src); }
+    } catch (e) {}
+  });
   function catState() {
     paintCat(cview.kind === 'all' ? cview.data : (cview.src || cview.part));
     const u = new URL(location.href);
@@ -868,9 +904,9 @@
       '<section class="sec" style="padding-top:0"><blockquote class="pull rv">"' + esc(QUOTE[1]) + '"<cite>' + esc(QUOTE[0]) + ', ביקורת בגוגל</cite></blockquote></section></div>',
     contact: () => '<div class="wrap">' + pageHead('יצירת קשר', 'דברו איתנו.', 'הדרך הכי מהירה היא וואטסאפ. כתבו איזה ספר, באיזה נוסח, איזו הקדשה ואיזו כמות, ונחזור אליכם.') +
       '<div class="cgrid" style="padding-bottom:clamp(80px,10vw,140px)"><div class="ccards draw" data-draw>' +
-        '<a class="ccard main" href="' + waLink('שלום, הגעתי מהאתר') + '"' + EXTA + '>' + ic('wa') + '<div><b>וואטסאפ</b><span dir="ltr">052-6845740</span><span> · הכי מהיר</span></div></a>' +
-        '<a class="ccard" href="tel:+972526845740">' + ic('phone') + '<div><b>טלפון</b><span dir="ltr">052-6845740</span></div></a>' +
-        '<a class="ccard" href="mailto:sidurscenter@gmail.com">' + ic('mail') + '<div><b>מייל</b><span>sidurscenter@gmail.com</span></div></a>' +
+        '<a class="ccard main" href="' + waLink('שלום, הגעתי מהאתר') + '"' + EXTA + '>' + ic('wa') + '<div><b>וואטסאפ</b><span dir="ltr">' + phoneShow() + '</span><span> · הכי מהיר</span></div></a>' +
+        '<a class="ccard" href="' + telHref() + '">' + ic('phone') + '<div><b>טלפון</b><span dir="ltr">' + phoneShow() + '</span></div></a>' +
+        '<a class="ccard" href="mailto:' + esc(CFG.mail) + '">' + ic('mail') + '<div><b>מייל</b><span>' + esc(CFG.mail) + '</span></div></a>' +
         '<a class="ccard" href="https://telegram.me/share/url?url=https%3A%2F%2Fsiddurs-center.co.il%2F&amp;text=%D7%9E%D7%A8%D7%9B%D7%96%20%D7%94%D7%A1%D7%99%D7%93%D7%95%D7%A8%D7%99%D7%9D"' + EXTA + '>' + ic('tg') + '<div><b>טלגרם</b><span>שיתוף האתר עם חברים ומשפחה</span></div></a>' +
         '<a class="ccard" href="/my-account/orders/">' + ic('truck') + '<div><b>ההזמנות שלי</b><span>סטטוס ההזמנה בחשבון שלכם באתר</span></div></a>' +
       '</div>' +
@@ -879,7 +915,7 @@
         '<div class="fld"><label for="f-t">במה נוכל לעזור?</label><select id="f-t" name="t"><option>שאלה על ספר</option><option>הקדשה אישית</option><option>מזכרות בכמות לאירוע</option><option>הזמנה קיימת</option></select></div>' +
         '<div class="fld"><label for="f-m">הודעה</label><textarea id="f-m" name="m"></textarea><small>נחזור אליכם בוואטסאפ או בטלפון.</small></div>' +
         '<button class="btn solid" type="submit">שליחה' + BI + '</button></form></div></div>',
-    shipping: () => '<div class="wrap">' + pageHead('משלוחים והחזרות', 'מההזמנה עד הבית.', 'משלוח חינם בהזמנה מעל 350 ₪, לכל הארץ. ככה זה עובד, צעד אחרי צעד.') +
+    shipping: () => '<div class="wrap">' + pageHead('משלוחים והחזרות', 'מההזמנה עד הבית.', 'משלוח חינם בהזמנה מעל ' + freeTxt() + ', לכל הארץ. ככה זה עובד, צעד אחרי צעד.') +
       '<ol class="tl draw" data-draw style="padding-block:clamp(20px,4vw,48px) clamp(64px,8vw,110px)"><li><span class="dotc">' + ic('bag') + '</span><b>מזמינים</b><p>באתר או בוואטסאפ. מקבלים אישור עם מספר הזמנה.</p></li><li><span class="dotc">' + ic('quill') + '</span><b>מאשרים סקיצה</b><p>אם יש הקדשה, שולחים לכם סקיצה לאישור לפני העבודה.</p></li><li><span class="dotc">' + ic('mazkeret') + '</span><b>אורזים</b><p>הספרים נבדקים ונארזים בקפידה.</p></li><li><span class="dotc">' + ic('truck') + '</span><b>מגיע עד הבית</b><p>מקבלים הודעה כשהמשלוח יוצא, עם מספר מעקב.</p></li></ol>' +
       '<section class="faq" style="padding-bottom:clamp(80px,10vw,140px)"><h2 class="h2" style="margin-bottom:24px">שאלות נפוצות</h2>' +
         '<details class="acc"><summary>כמה זמן לוקח משלוח?' + ic('plus') + '</summary><div class="ab">זמן האספקה מאושר בהזמנה. הזמנה עם הקדשה לוקחת מעט יותר, ולכן לאירוע כדאי להזמין מראש ולציין את התאריך.</div></details>' +
@@ -910,11 +946,91 @@
         '<p style="margin-top:32px"><a class="btn line" href="/">חזרה לדף הבית</a></p></div>';
     }
   };
+  /* ---------- content pages read their words from the page itself ----------
+     the shop edits headings and paragraphs in Elementor; the design is built around them in order:
+     h1 + paragraph = page head, h3 = small label or a step/value title, h2 = a section, a paragraph starting with "•" = a list item.
+     Anything added that has no special place is shown at the end, in the same type. The amount in "משלוח חינם ... ₪" always follows the site setting. */
+  const freeFix = h => h.replace(/(משלוח חינם[^\d<]{0,30})\d[\d,]*(\s*(?:₪|ש״ח|ש"ח))/g, (m, a, b) => a + CFG.free.toLocaleString('he-IL') + b);
+  function carrierBlocks(root) {
+    return [...root.querySelectorAll('h1,h2,h3,h4,p,img')].map(e => e.tagName === 'IMG' ? { t: 'img', src: e.currentSrc || e.getAttribute('src') || '', alt: e.getAttribute('alt') || '' }
+      : { t: e.tagName.toLowerCase().replace('h4', 'h3'), h: freeFix(e.innerHTML.trim()), x: freeFix(e.textContent.trim()) }).filter(b => b.t === 'img' ? b.src : b.x);
+  }
+  const VAL_IC = ['nusach', 'quill', 'wa', 'truck', 'bag', 'mazkeret'], STEP_IC = ['bag', 'quill', 'mazkeret', 'truck'];
+  const isLi = b => b.t === 'p' && /^[•·*-]\s/.test(b.x);
+  const liH = b => b.h.replace(/^\s*[•·*-]\s*/, '');
+  function restHtml(rest) {
+    let out = '', ul = [];
+    const flush = () => { if (ul.length) { out += '<ul class="a11y-list">' + ul.map(b => '<li>' + liH(b) + '</li>').join('') + '</ul>'; ul = []; } };
+    rest.forEach(b => { if (isLi(b)) return ul.push(b); flush();
+      out += b.t === 'h2' ? '<h2 class="h2" style="margin-top:40px">' + b.h + '</h2>' : b.t === 'h3' ? '<h3 class="h3" style="margin-top:28px">' + b.h + '</h3>' : b.t === 'img' ? '<div class="ph rvimg" style="margin-top:28px"><img src="' + esc(b.src) + '" alt="' + esc(b.alt) + '"></div>' : '<p class="lead">' + b.h + '</p>'; });
+    flush();
+    return out ? '<section class="sec" style="padding-top:0">' + out + '</section>' : '';
+  }
+  const LIVE = {
+    about: B => {
+      let i = 0; const nx = t => B[i] && B[i].t === t ? B[i++] : null;
+      const h1 = nx('h1'); if (!h1) return null; const lead = nx('p');
+      let img = null, kick = null, h2 = null; const leads = [], vals = [], rest = [];
+      while (i < B.length) {
+        const b = B[i++];
+        if (b.t === 'img' && !img) { img = b; continue; }
+        if (b.t === 'h3' && !h2 && B[i] && B[i].t === 'h2') { kick = b; continue; }
+        if (b.t === 'h2' && !h2) { h2 = b; while (B[i] && B[i].t === 'p') leads.push(B[i++]); continue; }
+        if (b.t === 'h3' && h2 && !rest.length) { vals.push({ b, p: B[i] && B[i].t === 'p' ? B[i++] : null }); continue; }
+        rest.push(b);
+      }
+      return '<div class="wrap">' + pageHead('אודות', h1.x, lead ? lead.x : '') +
+        '<section class="about-split" style="padding-bottom:clamp(80px,10vw,140px)"><div class="ph rvimg"><img src="' + esc(img ? img.src : ASSET + 'gen4/detail-gilt.jpg') + '" alt="' + esc(img ? img.alt : 'פינת סידור בכריכת עור כחולה עם חיתוך דפים מוזהב') + '"></div>' +
+        '<div class="rv">' + (kick ? kick2(kick.x) : '') + (h2 ? '<h2 class="h2">' + h2.h + '</h2>' : '') + leads.map(p => '<p class="lead">' + p.h + '</p>').join('') + '</div></section>' +
+        (vals.length ? '<section class="sec tight" style="padding-top:0"><div class="vals draw" data-draw>' + vals.map((v, k) => '<div>' + ic(VAL_IC[k % VAL_IC.length]) + '<b>' + v.b.h + '</b>' + (v.p ? '<p>' + v.p.h + '</p>' : '') + '</div>').join('') + '</div></section>' : '') +
+        restHtml(rest) +
+        '<section class="sec" style="padding-top:0"><blockquote class="pull rv">"' + esc(QUOTE[1]) + '"<cite>' + esc(QUOTE[0]) + ', ביקורת בגוגל</cite></blockquote></section></div>';
+    },
+    contact: B => {
+      let i = 0; const nx = t => B[i] && B[i].t === t ? B[i++] : null;
+      const h1 = nx('h1'); if (!h1) return null; const lead = nx('p'); const ft = nx('h2');
+      const old = PAGES.contact();
+      const head = pageHead('יצירת קשר', h1.x, lead ? lead.x : '');
+      return old.replace(/<header class="ph-head">[\s\S]*?<\/header>/, head).replace('<h2>השאירו הודעה</h2>', '<h2>' + (ft ? ft.h : 'השאירו הודעה') + '</h2>').replace(/<\/div>$/, restHtml(B.slice(i)) + '</div>');
+    },
+    shipping: B => {
+      let i = 0; const nx = t => B[i] && B[i].t === t ? B[i++] : null;
+      const h1 = nx('h1'); if (!h1) return null; const lead = nx('p');
+      const steps = [], faq = [], close = []; let fh = null; const rest = [];
+      while (B[i] && B[i].t === 'h3') { const b = B[i++]; steps.push({ b, p: B[i] && B[i].t === 'p' ? B[i++] : null }); }
+      if (B[i] && B[i].t === 'h2') { fh = B[i++]; while (B[i] && B[i].t === 'h3') { const b = B[i++]; faq.push({ b, p: B[i] && B[i].t === 'p' ? B[i++] : null }); } while (B[i] && B[i].t === 'p') close.push(B[i++]); }
+      while (i < B.length) rest.push(B[i++]);
+      const AL = 'text-decoration:underline;text-underline-offset:3px';
+      const ln = h => h.replace(/<a (?![^>]*style=)/g, '<a style="' + AL + '" ');
+      return '<div class="wrap">' + pageHead('משלוחים והחזרות', h1.x, lead ? lead.x : '') +
+        (steps.length ? '<ol class="tl draw" data-draw style="padding-block:clamp(20px,4vw,48px) clamp(64px,8vw,110px)">' + steps.map((s, k) => '<li><span class="dotc">' + ic(STEP_IC[k % STEP_IC.length]) + '</span><b>' + s.b.h + '</b>' + (s.p ? '<p>' + s.p.h + '</p>' : '') + '</li>').join('') + '</ol>' : '') +
+        (fh ? '<section class="faq" style="padding-bottom:clamp(80px,10vw,140px)"><h2 class="h2" style="margin-bottom:24px">' + fh.h + '</h2>' +
+          faq.map(q => '<details class="acc"><summary>' + q.b.h + ic('plus') + '</summary><div class="ab">' + (q.p ? ln(q.p.h) : '') + '</div></details>').join('') +
+          close.map((p, k) => '<p class="lead"' + (k ? '' : ' style="margin-top:28px"') + '>' + ln(p.h) + '</p>').join('') + '</section>' : '') +
+        restHtml(rest) + '</div>';
+    },
+    a11y: B => {
+      let i = 0; const nx = t => B[i] && B[i].t === t ? B[i++] : null;
+      const h1 = nx('h1'); if (!h1) return null;
+      const body = list => { let out = '', ul = []; const flush = (c) => { if (ul.length) { out += '<ul class="a11y-list' + (ul.some(b => /<b>|<strong>/.test(b.h)) ? ' a11y-contact' : '') + '">' + ul.map(b => '<li>' + liH(b) + '</li>').join('') + '</ul>'; ul = []; } };
+        list.forEach(b => { if (isLi(b)) return ul.push(b); flush(); out += b.t === 'h3' ? '<h3 class="h3">' + b.h + '</h3>' : b.t === 'img' ? '' : '<p class="lead">' + b.h + '</p>'; }); flush(); return out; };
+      const intro = []; while (B[i] && B[i].t !== 'h2') intro.push(B[i++]);
+      let secs = '';
+      while (i < B.length) { const h = B[i++]; const inner = []; while (B[i] && B[i].t !== 'h2') inner.push(B[i++]); secs += '<section class="a11y-sec"><h2 class="h3">' + h.h + '</h2>' + body(inner) + '</section>'; }
+      return '<div class="wrap ckx-a11y" style="padding-block:calc(var(--ut) + 140px) 140px;max-width:860px">' +
+        '<nav class="crumbs" aria-label="מיקום באתר"><a href="/">דף הבית</a><span aria-hidden="true">/</span><span aria-current="page">' + esc(h1.x) + '</span></nav>' +
+        '<h1 class="h2">' + h1.h + '</h1>' + body(intro) + secs +
+        '<p style="margin-top:32px"><a class="btn line" href="/">חזרה לדף הבית</a></p></div>';
+    }
+  };
   function initPage(root) {
     const key = [...root.classList].map(c => (c.match(/^ckpg-(\w+)$/) || [])[1]).find(Boolean);
     if (!key || !PAGES[key]) return;
     const w = document.createElement('div'); w.className = 'ckx ckx-pg ckx-page';
-    w.innerHTML = PAGES[key]();
+    let html = null;
+    try { const B = carrierBlocks(root); if (LIVE[key]) html = LIVE[key](B); } catch (e) { html = null; }
+    w.innerHTML = html || PAGES[key](); w.dataset.ckSrc = html ? 'page' : 'built';
+    window.__ckDiag = { page: () => ({ live: LIVE[key] ? LIVE[key](carrierBlocks(root)) : '', built: PAGES[key]() }) };
     root.parentNode.insertBefore(w, root); root.classList.add('ckpg-done'); fitWrap(w); reveal(w);
   }
   document.addEventListener('submit', e => {
@@ -1075,9 +1191,10 @@
   const pathOf = h => { try { return decodeURIComponent(new URL(h, location.href).pathname).replace(/\/+$/, '/'); } catch (e) { return ''; } };
   const pidOf = h => { try { const u = new URL(h, location.href); return +(u.searchParams.get('p') || 0); } catch (e) { return 0; } };
   const plain = s => decode(String(s || '').replace(/<[^>]+>/g, '')).trim();
+  function getCats() { return cached('ck-cats', 3e5, () => fetchAll('/products/categories').then(l => l.map(c => ({ id: c.id, p: c.parent, name: plain(c.name), n: c.count, path: pathOf(c.permalink), img: c.image ? (c.image.thumbnail || c.image.src) : '' })))); }
   async function syncMenu() {
     const mgs = [...document.querySelectorAll('.h-mg')]; if (!mgs.length) return;
-    const cats = await cached('ck-cats', 3e5, () => fetchAll('/products/categories').then(l => l.map(c => ({ id: c.id, p: c.parent, name: plain(c.name), n: c.count, path: pathOf(c.permalink), img: c.image ? (c.image.thumbnail || c.image.src) : '' }))));
+    const cats = await getCats();
     window.__ckMenuSync = cats.length;
     const byPath = new Map(cats.map(c => [c.path, c]));
     const total = c => c.n + cats.filter(x => x.p === c.id).reduce((t, x) => t + total(x), 0);
@@ -1129,12 +1246,14 @@
     adminCatNotice(cats);
   }
   function paintMenuItem(mg, a, p) {
-    if (pidOf(a.href) !== p.id) a.href = p.link;
-    const nm = a.querySelector('.h-mg-name'); if (nm && p.name) nm.textContent = p.name;
+    /* the shop's own short label stays; only a product that replaced a missing one gets its (short) name */
+    const swapped = pidOf(a.href) !== p.id; if (swapped) a.href = p.link;
+    const label = swapped ? base(p.name) : '';
+    const nm = a.querySelector('.h-mg-name'); if (nm && label) nm.textContent = label;
     const th = a.querySelector('.h-mg-thimg'); if (th && p.th && th.getAttribute('src') !== p.th) { th.removeAttribute('srcset'); th.src = p.th; }
     const k = (a.className.match(/\bh-i(\d+)\b/) || [])[1]; if (k == null) return;
     const layer = mg.querySelector('.h-l' + k); if (!layer) return;
-    const cap = layer.querySelector('.h-cap-t'); if (cap && p.name) cap.textContent = p.name;
+    const cap = layer.querySelector('.h-cap-t'); if (cap && label) cap.textContent = label;
     const li = layer.querySelector('img'); if (li && p.img && li.getAttribute('src') !== p.img) { li.removeAttribute('srcset'); li.src = p.img; }
   }
   /* only a logged-in site manager sees this: a main category with products but no picture stays out of the menu */
@@ -1159,6 +1278,7 @@
     if (!document.querySelector('.h-mg, .ckp, .ckc, .ckpg')) return;
     document.documentElement.classList.add('ck-on');
     if (![...document.querySelectorAll('link[rel=stylesheet]')].some(l => /elementor\/css\/base-desktop\.css/.test(l.href))) document.documentElement.classList.add('ck-nobase');
+    try { readSiteFacts(); } catch (e) {}
     mountOverlays(); badge(); loadCart(); initCheckout();
     const root = document.querySelector('.ckp');
     if (root && !root.classList.contains("ckp-done")) initProduct(root).catch(e => { console.error("ck-store product", e); });
