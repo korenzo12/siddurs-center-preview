@@ -1201,7 +1201,7 @@
     const byPath = new Map(cats.map(c => [c.path, c]));
     const total = c => c.n + cats.filter(x => x.p === c.id).reduce((t, x) => t + total(x), 0);
     const hide = el => el && el.style.setProperty('display', 'none', 'important');
-    const catLinks = [...document.querySelectorAll('.h-ni a[href*="product-category"]')];
+    const catLinks = [...document.querySelectorAll('.h-ni a[href*="product-category"], .mm-item a[href*="product-category"]')];
     /* a category that no longer exists or has nothing in it: hide the link (a whole menu tab if it is the tab itself) */
     catLinks.forEach(a => { const c = byPath.get(pathOf(a.href)); if (c && total(c) > 0) return; hide(a.classList.contains('h-nl') ? a.closest('.h-ni') : a); });
     window.__ckMenuHidden = catLinks.filter(a => a.style.display === 'none').length;
@@ -1229,7 +1229,8 @@
       }
     }
     /* categories opened after launch */
-    const linked = new Set([...document.querySelectorAll('.h-ni a[href*="product-category"]')].map(a => pathOf(a.href)));
+    const linked = new Set([...document.querySelectorAll('.h-ni a[href*="product-category"]:not([data-ck-new])')].map(a => pathOf(a.href)));
+    const mLinked = new Set([...document.querySelectorAll('.mm-item a[href*="product-category"]')].map(a => pathOf(a.href)));
     const fresh = cats.filter(c => c.id >= NEW_CAT_FROM && c.n > 0 && (c.p || c.img) && !linked.has(c.path));
     const more = [...document.querySelectorAll('.h-ni')].find(n => /עוד/.test(((n.querySelector('.h-nl-t') || {}).textContent || ''))) || [...document.querySelectorAll('.h-ni')].pop();
     const list = more && more.querySelector('.h-mg-items'); const tpl = list && list.querySelector('a.h-mg-it');
@@ -1244,6 +1245,19 @@
       if (!src) { try { const one = await cached('ck-catimg:' + c.id, 3e5, () => fetch(CFG.api + '/products?per_page=1&category=' + c.id, { credentials: 'same-origin' }).then(r => r.ok ? r.json() : []).then(l => l[0] && l[0].images[0] ? l[0].images[0].thumbnail : '')); src = one; } catch (e) {} }
       if (im) { im.removeAttribute('srcset'); im.removeAttribute('id'); if (src) { im.src = src; im.alt = ''; } else im.remove(); }
       list.appendChild(a);
+    }
+    /* the phone menu (rows under "קטגוריות") gets the same new categories, with the parent's icon */
+    const rows = [...document.querySelectorAll('.mm-item a.m-row')]; const lastRow = rows[rows.length - 1];
+    if (lastRow) {
+      let after = lastRow;
+      for (const c of cats.filter(c => c.id >= NEW_CAT_FROM && c.n > 0 && (c.p || c.img) && !mLinked.has(c.path))) {
+        const r = lastRow.cloneNode(true); r.removeAttribute('data-id'); r.removeAttribute('data-interaction-id'); r.style.removeProperty('display');
+        r.href = c.path; r.dataset.ckNew = c.id;
+        const nm = r.querySelector('.m-name'); if (nm) nm.textContent = c.name;
+        const parentRow = c.p && rows.find(x => byPath.get(pathOf(x.href)) && byPath.get(pathOf(x.href)).id === c.p);
+        const ic0 = r.querySelector('img.m-ic'); if (ic0) ic0.src = parentRow && parentRow.querySelector('img.m-ic') ? parentRow.querySelector('img.m-ic').src : ASSET + 'icons/limud-g.svg';
+        after.after(r); after = r;
+      }
     }
     adminCatNotice(cats);
   }
